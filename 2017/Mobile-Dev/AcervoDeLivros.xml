@@ -1,0 +1,87 @@
+<Acervo>
+  <Livro>
+    <Titulo>AS ALEGRES MATRONAS DE WINDSOR</Titulo>
+    <CodigoISBN>85.254.1138-8</CodigoISBN>
+    <Autor outros="">W.Shakespeare</Autor>
+    <Preco>16.90</Preco>
+    <editora>LMP</editora>
+    <Evento>
+      <cidade></cidade>
+      <estado></estado>
+      <data>
+        <inicio></inicio>
+        <termino></termino>
+      </data>
+    </Evento>
+  </Livro>
+  <Livro>
+    <Titulo>A Sociedade do Anel - Volume 1. Série O Senhor dos Anéis</Titulo>
+    <CodigoISBN>8533613377</CodigoISBN>
+    <Autor outros="">J.R.R. Tolkien</Autor>
+    <Preco>55.00</Preco>
+    <Evento>
+      <cidade></cidade>
+      <estado></estado>
+      <data>
+        <inicio></inicio>
+        <termino></termino>
+      </data>
+    </Evento>
+    </Livro>
+  <Livro>
+    <Titulo>Uma Breve História do Tempo</Titulo>
+    <CodigoISBN>8580576466</CodigoISBN>
+    <Autor outros="">Stephen Halking</Autor>
+    <Preco>22.90</Preco>
+    <Evento>
+      <cidade></cidade>
+      <estado></estado>
+      <data>
+        <inicio></inicio>
+        <termino></termino>
+      </data>
+    </Evento>
+    </Livro>
+  <Livro>
+    <Titulo>História Concisa da Revolução Russa</Titulo>
+    <CodigoISBN>8577990907</CodigoISBN>
+    <Autor outros="">Richard Pipes</Autor>
+    <Preco>20.71</Preco>
+    <Evento>
+      <cidade></cidade>
+      <estado></estado>
+      <data>
+        <inicio></inicio>
+        <termino></termino>
+      </data>
+    </Evento>
+    </Livro>
+  <Livro>
+    <Titulo>Aristóteles em Nova Perspectiva. Introdução à Teoria dos Quatro Discursos</Titulo>
+    <CodigoISBN>8562910198</CodigoISBN>
+    <Autor outros="">Olavo de Carvalho</Autor>
+    <Preco>28.77</Preco>
+    <Evento>
+      <cidade></cidade>
+      <estado></estado>
+      <data>
+        <inicio></inicio>
+        <termino></termino>
+      </data>
+    </Evento>
+    </Livro>
+  <Livro>
+    <Titulo>A Nova Era e a Revolução Cultural. Fritjof Capra e Antonio Gramsci</Titulo>
+    <CodigoISBN>8567394260</CodigoISBN>
+    <Autor outros="">Olavo de Carvalho</Autor>
+    <Preco>33.90</Preco>
+    <Evento>
+      <cidade></cidade>
+      <estado></estado>
+      <data>
+        <inicio></inicio>
+        <termino></termino>
+      </data>
+    </Evento>
+    </Livro>
+</Acervo>

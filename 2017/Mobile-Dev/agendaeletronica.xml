@@ -1,0 +1,68 @@
+<AgendaEletronica>
+  <Pessoa>
+    <Dados
+      nome="Vinicius"
+      endereco="Rua Joana Darc"
+      CEP="97060-360"
+      cidade="Santa Maria"
+      estado="RS"
+      pais="BR"
+      >
+    </Dados>
+    <telefone
+      celular="55999996870"
+      residencial="xx-xxxx-xxxx"
+      trabalho=""
+      outros="">
+    </telefone>
+    <categoria
+      amigos="X"
+      trabalho=""
+      conhecidos=""
+      ></categoria>
+  </Pessoa>
+  <Pessoa>
+    <Dados
+      nome="João"
+      endereco="Rua Marcheral Teodoro"
+      CEP="97060590"
+      cidade="Outra Cidade"
+      estado="RS"
+      pais="BR"
+      >
+    </Dados>
+    <telefone
+      celular="55-9999-4930"
+      residencial=""
+      trabalho=""
+      outros="">
+    </telefone>
+    <categoria
+      amigos=""
+      trabalho="X"
+      conhecidos=""
+      ></categoria>
+  </Pessoa>
+  <Pessoa>
+    <Dados
+      nome="Patrícia Mauer"
+      endereco="Rua Santa Maria"
+      CEP="6580238"
+      cidade="Outra cidade II"
+      estado="RS"
+      pais="BR"
+      >
+    </Dados>
+    <telefone
+      celular="55-79692222"
+      residencial=""
+      trabalho=""
+      outros="">
+    </telefone>
+    <categoria
+      amigos=""
+      trabalho=""
+      conhecidos="X"
+      ></categoria>
+  </Pessoa>
+</AgendaEletronica>
