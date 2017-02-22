@@ -1,0 +1,29 @@
+Por cadastra : incluir/alterar dados
+
+Cadastrar Motorista
+Cadastrar Usuário
+Informar o itinerário
+Informar e validar o cartão de crédito
+Realizar login(seja como usuário ou motorista)
+Calcular estimativa de preço (fixo ou dinâmica)
+COnfigurar tabela de preços (por horário, tipo de carro e cidade)
+Enviar documentos do motoristas (CNH, ant. criminais, carros...)
+validar documentos do motoristas (CNH, ant. criminais, carros...)
+Selecionar Motorista para atender chamada
+Acompanhar itinerario no mapa
+Consultar valores a receber (para o motorista)
+Calcular taxas pelo uso do aplicativo
+Permitir uso de cupom em chamada
+Avaliar atendimento recebido ( motorista e carona)
+consultar itinerários realizados (para ambos)
+Exibir perfil do motorista e do usuário
+Permitir não aceitar o motorista sugerido
+Multar por cancelamento de chamada (????)
+Permitir filtrar o motorista(por idade, sexo, ..., pontuação)
+Aceitar/Rejeitar chamada
+Cadastrar o carro
+Enviar cupom para amigo
+Permitir informar necessidades especiais (cadeirante, malas, pets)
+Permitir excluir/suspender motorista/usuário
+Reportar erros do aplicativo
+Exibir mapa com informações sobre demanda
