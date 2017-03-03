@@ -38,7 +38,6 @@
         android:text="My Great App"
         android:textSize="50sp"
         android:textColor="@android:color/black"
-        android:background="@color/colorAccent"
-        android:padding="10dp" />
+        android:background="@color/colorAccent" />
 
 </RelativeLayout>
