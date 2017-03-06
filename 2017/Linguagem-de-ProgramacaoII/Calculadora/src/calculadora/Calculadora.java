@@ -79,4 +79,9 @@ public class Calculadora {
         operadores.clear();
         return res.toString();
     }    
+    
+    public void Clear(){
+        operandos.clear();
+        operadores.clear();        
+    }
 }
