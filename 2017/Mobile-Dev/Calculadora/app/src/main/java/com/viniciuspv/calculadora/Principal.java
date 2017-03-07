@@ -3,6 +3,7 @@ package com.viniciuspv.calculadora;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -53,11 +54,10 @@ public class Principal extends AppCompatActivity {
 
 
     public void insertNumber(android.view.View v){
-        System.out.println("Vai entrara");
+
         switch (v.getId()){
             case R.id.button0:
-                System.out.println("Caiu no switch certo");
-                InputExpression.setText("0" + InputExpression.getText());
+                InputExpression.setText(InputExpression.getText() + "0");
                 break;
             case R.id.button1:
                 InputExpression.setText(InputExpression.getText() + "1");
@@ -88,6 +88,45 @@ public class Principal extends AppCompatActivity {
                 break;
         }
         InputExpression.setSelection(InputExpression.getText().length());
+    }
+
+    public void insertOperator(android.view.View v){
+        switch (v.getId()){
+            case R.id.buttonPlus:
+                calc.addOperator(InputExpression.getText().toString(), '+');
+                InputExpression.setText(InputExpression.getText() + "+");
+                break;
+            case R.id.buttonMinus:
+                calc.addOperator(InputExpression.getText().toString(), '-');
+                InputExpression.setText(InputExpression.getText() + "-");
+                break;
+            case R.id.buttonDivision:
+                calc.addOperator(InputExpression.getText().toString(), '/');
+                InputExpression.setText(InputExpression.getText() + "/");
+                break;
+            case R.id.buttonMultiply:
+                calc.addOperator(InputExpression.getText().toString(), 'x');
+                InputExpression.setText(InputExpression.getText() + "x");
+                break;
+
+        }
+
+    }
+
+    public void selfOperations(android.view.View v){
+        switch (v.getId()){
+            case R.id.buttonClear:
+                InputExpression.setText("");
+                calc.clearCalc();
+                calc.clearResult();
+                break;
+        }
+    }
+
+    public void calcOperation(android.view.View v){
+        calc.CalculateExpression(InputExpression.getText().toString());
+        InputExpression.setText("");
+        InputExpression.setText(Integer.toString(calc.result));
     }
 
 
