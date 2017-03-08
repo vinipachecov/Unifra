@@ -21,8 +21,6 @@ public class Calculadora {
     public void addOperator(String input, char operator){
         findOperand(input);
         operators.add(operator);
-        System.out.println("Valores nos operandos" + operands);
-        System.out.println("Valores nos operadores" + operators);
     }
 
     public void addOperand(int operand){
@@ -69,7 +67,6 @@ public class Calculadora {
                 break;
             }
         }
-        System.out.println("Operandos  = " + operands);
     }
 
 
@@ -77,7 +74,6 @@ public class Calculadora {
         int index_operands = 0;
         for(int i = 0; i <operators.size(); i++){
             if(i==0){
-                System.out.println("CAIU QUANDO 2 TEM SÓ DOIS");
                 findOperand(input);
                 CalcOperands(operands.get(index_operands),operands.get(index_operands+1), operators.get(i));
                 index_operands+=2;
