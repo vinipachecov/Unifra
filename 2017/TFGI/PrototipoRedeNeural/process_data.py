@@ -10,6 +10,7 @@ def get_data():
     X = data[:, :-1]
     Y = data[:, -1]
     
+    #Normalizacao dos dados
     X[:,0] = (X[:,0] - X[:,0].mean()) / X[:,0].std()
     X[:,1] = (X[:,1] - X[:,1].mean()) / X[:,1].std()
         

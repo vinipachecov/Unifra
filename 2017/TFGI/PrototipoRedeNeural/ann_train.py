@@ -63,6 +63,10 @@ Xtest= X[60:]
 Ytest = Y[60: ]
 Ytest_ind = y2indicator(Ytest, K)
 
+#Para plotar
+pos = np.where(Y == 1)
+neg = np.where(Y == 0)
+
 
 ##Pesos aleatorios iniciais
 W1 = np.random.randn(D, M)
@@ -76,7 +80,7 @@ b2 = np.zeros(K)
 
 train_costs = []
 test_costs = []
-learning_rate = 0.001
+learning_rate = 0.01
 for i in xrange(10000):
     pYtrain, Ztrain = forward(Xtrain, W1, b1, W2, b2)
     pYtest, Ztest = forward(Xtest, W1, b1, W2, b2)
@@ -98,7 +102,22 @@ for i in xrange(10000):
 print "Taxa de classificacao do set de treino:", classification_rate(Ytrain, predict(pYtrain))
 print "Taxa de classificacao do set de teste:", classification_rate(Ytest, predict(pYtest))
 
+plt.figure(1)
 legend1, = plt.plot(train_costs, label='custo de treino')
 legend2, = plt.plot(test_costs, label='custo de teste')
 plt.legend([legend1, legend2])
 plt.show()
+
+
+##Plotando o gráfico dos dados
+plt.figure(2)
+plt.scatter(X[pos, 0], X[pos, 1], marker='o', c='r')
+plt.scatter(X[neg, 0], X[neg, 1], marker='x', c='g')
+plt.xlabel('Exam 1 Score')
+plt.ylabel('Exam 2 Score')
+plt.legend(['Nao admitido', 'Admitido'])
+plt.show()
+
+
+
+
