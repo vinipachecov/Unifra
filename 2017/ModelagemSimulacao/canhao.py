@@ -20,13 +20,33 @@ from pygame.locals import *
 # x = miraintesidade * cos(angulo(radianos))
 # y = miraintesidade * sin(angulo(radianos))
 
+ # O vector de forca eh na verdade o valor do vetor do canhao (direcao)
+ # e com iss0 basta ir somando esse vector, transformar ele em unitario( se quiser)
+ # e fazer com que ele atualize a posicao do circulo cada vez com que ele for desenhado
+ # Com isso fataria o caculo do vetor de forca estaria resolvido e faltaria apenas
+ # a programacao da soma do offset(deslocamento) - gravidade para simular a queda
+ # do tiro.
+
+class bola:
+
+    cor = (0,0,60)
+    pos = (0,0)
+    vel = (0,0)
+
+    def lanca(self, start, gravity):
+        self.pos((self.pos + start))
+
+
+
+
+
 class canhao:
     Height = 300
     Width = 400
     gravity = 1
     forca = 5
     ang = 45
-    miraintes = 20
+    miraintes = 50
     mira = pg.math.Vector2(miraintes*np.cos((ang * np.pi) / 180) , Height - miraintes*np.sin((ang * np.pi) / 180) )
     origem = (0,Height)
     screen = 0
@@ -34,12 +54,12 @@ class canhao:
 
 
     def desenha_canhao(self):
-        print (self.mira[0], self.mira[1])
-        pg.draw.line(self.screen,(255,0,0),self.origem, self.mira, width=5)
+        pg.draw.line(self.screen,(255,0,0),self.origem, self.mira)
 
 
     def tiro(self):
-        print (10)
+        pg.draw.circle(self.screen, (0,0,255),)
+
 
     def Mainloop(self):
         pg.init()
