@@ -1,0 +1,4 @@
+Nome = viniccsioa
+Email = vinipachecov@mgial.com
+Cidade = Santa Maria
+Estado Civil = Casado

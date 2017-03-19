@@ -1,0 +1,4 @@
+Nome = roger
+Email = roger@gmail.com
+Cidade = Santa Maria
+Estado Civil = Casado
