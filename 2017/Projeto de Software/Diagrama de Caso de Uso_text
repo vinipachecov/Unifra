@@ -1,0 +1,51 @@
+Diagrama de Casos de uso
+
+UC001 - Cadastrar Motorista ( motorista)
+	extend	Enviar documentos (motorista)
+	Validar documentos do motorista ( administrador)
+
+UC002 - Realizar Login (motorista / cliente)
+
+UC003 - Cadastrar Carro (motorista)
+
+UCOO4 - Cadastrar Cliente 
+	informar e validar cartão de crédito
+
+UC005 - Fazer chamada de motorista (cliente)
+	extend Filtrar carros por tamanho/conforto mediante preço diferenciado
+	extend informar necessidades especiais
+	include	Informar o Itinerário (cliente)
+	Exibir perfil (cliente ou motorista)
+	Extend Filtrar motorista
+	Selecionar motorista para atender chamada
+	Calcular estimativa de preço (fixo ou dinâmico)
+
+UC006 - Aceitar/recusar chamada (motorista/cliente)
+	Aceitar/recusar chamada (enquanto motorista)
+	include	acompanhar itinerários no mapa (cliente/motorista)
+	Efetuar pagamento	
+	Calcular taxas pelo uso do app
+	informar multa por cancelamento de chamada
+	Informar tempo estimado de espera
+
+UC007 - Avaliar atendimento recebido
+
+UC008 - Exibir mapa com informações sobre demanda 
+
+UC009 - Multa por cancelamento de chamada (administrador)
+
+UC010 - Enviar cupom para amigo (cliente)
+
+UC011 - permitir suspender/excluir motorista/usuario (administrador)
+
+UC012 - Configurar tabela de preços (por horário, tipo de carro ou cidade) (Administrador)
+
+UC013 - Permitir uso de cupom em chamadas (administrador)
+
+UC014 - Permitir agenda corrida
+
+UC015 - Consultar valores a receber (para o motorista)
+
+UC016 - Reportar erros do aplicativo (Cliente/Motorista)
+
+UC017 - consultar itinerários realizados
