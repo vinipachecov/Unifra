@@ -29,16 +29,16 @@ public class Aula16marco {
         
 //        //testes Descomentar para testar
 //        
-//        System.out.println("Todos clientes e suas prioridades");
-//        for (Cliente listClient : listClients) {
-//            System.out.println("Cliente " + listClient.getID() + " Prioridade="
-//                    + listClient.getPrioridade() + " Valor= " + 
-//                    listClient.getValor()
-//            );            
-//        }
-//        System.out.println("----------------------------");
-//        System.out.println("----------------------------");
-//        System.out.println("----------------------------");
+        System.out.println("Todos clientes e suas prioridades");
+        for (Cliente listClient : listClients) {
+            System.out.println("Cliente " + listClient.getID() + " Prioridade="
+                    + listClient.getPrioridade() + " Valor= " + 
+                    listClient.getValor()
+            );            
+        }
+        System.out.println("----------------------------");
+        System.out.println("----------------------------");
+        System.out.println("----------------------------");
                 
         //Organiza os Clientes pela ordem de prioridade 
         // parte 1 adiciona os valores em vetores separados        

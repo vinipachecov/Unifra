@@ -25,6 +25,7 @@ public class Principal extends AppCompatActivity {
         bottombutton2 = (Button) findViewById(R.id.bottombutton2);
         bottombutton3 = (Button) findViewById(R.id.bottombutton3);
         player = (TextView) findViewById(R.id.Player);
+        
     }
 
     @Override
