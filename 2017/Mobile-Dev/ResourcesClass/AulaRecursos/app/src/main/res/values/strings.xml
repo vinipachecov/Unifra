@@ -1,0 +1,13 @@
+<resources>
+    <string name="nome_app">AulaRecursos</string>
+    <string name="app_name">ResourceClass</string>
+    <string name="login_area">Login Area</string>
+    <string name="area_de_login">Area de Login</string>
+    <string name="login_entrar_botao">Entrar</string>
+    <string name="login_button">Sign In</string>
+    <string name="hint_senha">Senha </string>
+    <string name="password">Password</string>
+    <string name="cadastrar_Texto">Cadastrar</string>
+    <string name="register_text">Register</string>
+
+</resources>
