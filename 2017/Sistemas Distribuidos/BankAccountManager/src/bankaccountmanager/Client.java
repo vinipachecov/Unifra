@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Client;
+package bankaccountmanager;
 
 import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.Scanner;
 
 /**
  *
@@ -157,10 +158,31 @@ public class Client extends javax.swing.JFrame {
                 public void run(){
                     while(true){
                         try {                            
+                            
+                            // Create a channel of communication with the server
+                            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
                             DataInputStream in = new DataInputStream(socket.getInputStream());
-                            String mensagemRecebida = in.readUTF();     
+                            //read menu of operations
+                            String menuOperations = in.readUTF();     
+                            chatAreaJTA.append(menuOperations+ '\n');           
+                            Integer operation = in.readInt();
+                            switch(operation){
+                                case 1:
+                                    // chooses check ammount
+                                    Double ammunt = in.readDouble();
+                                    chatAreaJTA.append("Ammount Available is" + ammunt);                                    
+                                    break;
+                                case 2:       
+                                    chatAreaJTA.append( in.readUTF() + "\n");                                   
+                                    break;
+                                case 3:
+                                    chatAreaJTA.append(in.readUTF() + "\n");
+                                     break;   
+                                default:
+                                    String error = in.readUTF();                                
+                            }                                                   
                             //adiciona mensagem na interface gráfica do chat
-                            chatAreaJTA.append(mensagemRecebida + '\n');                            
+                            chatAreaJTA.append( "\n"+ "\n" +"\n"+ "\n");                            
                         } catch (Exception e) {
                             chatAreaJTA.append("Servidor erro 500" + '\n');
                             mensagemJTF.setEnabled(false);
@@ -178,19 +200,18 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_conectarButtonMouseClicked
 
     private void enviaMensagem(){
-        String mensagem  = mensagemJTF.getText().toString();
-        String nick = nickJTF.getText().toString();
+        String mensagem  = mensagemJTF.getText().toString();        
         try {
             //cria canal de envio UTF
             DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
             //envia mensagem
-            outStream.writeUTF(nick + "disse: " + mensagem);
+            outStream.writeUTF(mensagem);
         } catch (Exception e) {
             chatAreaJTA.append("Servidor erro 500" + '\n');
             mensagemJTF.setEnabled(false);
             enviarMenssagemButton.setEnabled(false);
         }
-        
+        mensagemJTF.setText("");        
         
     }
     private void enviarMenssagemButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_enviarMenssagemButtonMouseClicked
@@ -246,6 +267,12 @@ public class Client extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 

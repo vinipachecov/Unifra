@@ -100,6 +100,7 @@ public class Servidor extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             server = new ServerSocket(Integer.parseInt(portaJTF.getText().toString()));
+            
             logJTA.append("Server Started with Success" + '\n');            
         } catch (Exception e) {
         }
@@ -111,23 +112,25 @@ public class Servidor extends javax.swing.JFrame {
                 try {            
                     //wait connection of a clinet
                     while(true){
-                        Socket client = server.accept();
+                        Socket client = server.accept();                        
                         //add client to our client list
                         logJTA.append("Cliente " + client.getInetAddress() + client.getPort() + "has connected" +  '\n');
                         clientList.add(client);
                         //Create a secondary thread to wait messages                 
                         new Thread(){
                             Socket myclient = client;
-                            public void run(){
+                            public void run(){//
                                 try {
                                     DataInputStream inStream = new DataInputStream(myclient.getInputStream());
-                                    String messageReceived = inStream.readUTF();
-                                    logJTA.append("Cliente disse " + messageReceived + '\n');
-                                    for (Socket iclient : clientList) {
-                                        //if(iclient != myclient)
-                                        DataOutputStream out = new DataOutputStream(iclient.getOutputStream());
-                                        out.writeUTF(messageReceived);
-                                    }
+                                    while(true){
+                                        String messageReceived = inStream.readUTF();
+                                        logJTA.append("Cliente disse " + messageReceived + '\n');
+                                        for (Socket iclient : clientList) {
+                                            //if(iclient != myclient)
+                                            DataOutputStream out = new DataOutputStream(iclient.getOutputStream());
+                                            out.writeUTF(messageReceived);
+                                        }                                        
+                                    }                                    
                                 } catch (Exception e) {
                                     //case where client leaved
                                     e.printStackTrace();

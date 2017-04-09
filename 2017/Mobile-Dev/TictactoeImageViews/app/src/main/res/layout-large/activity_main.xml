@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context="com.example.root.tictactoeimageviews.MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:srcCompat="@drawable/tictactoefield"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout2"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="138dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"
+        android:id="@+id/relativeLayout2">
+
+        <TextView
+            android:id="@+id/Player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Jogador 1"
+            android:textColor="#000000"
+            android:textSize="40sp" />
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/bot3ImageView"
+        android:layout_width="108dp"
+        android:layout_height="129dp"
+        android:layout_marginBottom="94dp"
+        android:onClick="playerturn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.799"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/emptyspace"
+        tools:layout_constraintBottom_creator="1" />
+
+    <ImageView
+        android:id="@+id/top3ImageView"
+        android:layout_width="108dp"
+        android:layout_height="129dp"
+        android:layout_marginBottom="448dp"
+        android:onClick="playerturn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.793"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/emptyspace"
+        tools:layout_constraintBottom_creator="1" />
+
+    <ImageView
+        android:id="@+id/mid2ImageView"
+        android:layout_width="108dp"
+        android:layout_height="129dp"
+        android:layout_marginBottom="271dp"
+        android:onClick="playerturn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/emptyspace"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintHorizontal_bias="0.498" />
+
+    <ImageView
+        android:id="@+id/top2ImageView"
+        android:layout_width="108dp"
+        android:layout_height="129dp"
+        android:layout_marginBottom="450dp"
+        android:onClick="playerturn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/emptyspace"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintHorizontal_bias="0.498" />
+
+    <ImageView
+        android:id="@+id/top1ImageView"
+        android:layout_width="108dp"
+        android:layout_height="0dp"
+        android:onClick="playerturn"
+        app:srcCompat="@drawable/emptyspace"
+        android:layout_marginLeft="91dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="98dp"
+        app:layout_constraintBottom_toBottomOf="@+id/top2ImageView"
+        app:layout_constraintTop_toTopOf="@+id/top2ImageView"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/mid1ImageView"
+        android:layout_width="108dp"
+        android:layout_height="129dp"
+        android:layout_marginBottom="272dp"
+        android:onClick="playerturn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.198"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/emptyspace"
+        tools:layout_constraintBottom_creator="1" />
+
+    <ImageView
+        android:id="@+id/mid3ImageView"
+        android:layout_width="108dp"
+        android:layout_height="129dp"
+        android:layout_marginBottom="272dp"
+        android:onClick="playerturn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.78"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/emptyspace"
+        tools:layout_constraintBottom_creator="1" />
+
+    <ImageView
+        android:id="@+id/bot1ImageView"
+        android:layout_width="108dp"
+        android:layout_height="129dp"
+        android:layout_marginBottom="95dp"
+        android:onClick="playerturn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.219"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/emptyspace"
+        tools:layout_constraintBottom_creator="1" />
+
+    <ImageView
+        android:id="@+id/bot2ImageView"
+        android:layout_width="108dp"
+        android:layout_height="129dp"
+        android:layout_marginBottom="95dp"
+        android:onClick="playerturn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/emptyspace"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintHorizontal_bias="0.498" />
+
+</android.support.constraint.ConstraintLayout>

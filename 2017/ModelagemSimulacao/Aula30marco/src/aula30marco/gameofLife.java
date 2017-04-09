@@ -12,7 +12,6 @@ import javax.swing.JOptionPane;
  * @author root
  */
 public class gameofLife extends javax.swing.JFrame {    
-    Automaton [][]mat2;
     Matrix mat;
     public int cont_geracao;
     
@@ -28,12 +27,14 @@ public class gameofLife extends javax.swing.JFrame {
      
         int dim = Integer.parseInt(JOptionPane.showInputDialog(null,
                 "Insira a dimensao da matriz"));        
-        int linhaviva = Integer.parseInt(JOptionPane.showInputDialog(null,
-                "Insira o número da linha que estara viva"));        
-        mat2 = new Automaton[dim][dim];
+//        int linhaviva = Integer.parseInt(JOptionPane.showInputDialog(null,
+//                "Insira o número da linha que estara viva"));            
         mat = new Matrix(dim,dim, this);
-        mat.patternMatrix(linhaviva);
-        DesenhaMatriz(4,4);
+        //mat.patternMatrix(linhaviva);
+        DesenhaMatriz(dim,dim);
+        System.out.println("MATRIZ ANTES");
+        mat.printStates();
+        newGenerationButton.setEnabled(false);
     }
 
     /**
@@ -45,7 +46,6 @@ public class gameofLife extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -53,23 +53,13 @@ public class gameofLife extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         contGeracaoLabel = new javax.swing.JLabel();
         newGenerationButton = new javax.swing.JToggleButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 23, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 20, Short.MAX_VALUE)
-        );
-
         jLabel1.setText("Se uma célula tiver um vizinho vivo, ela nasce ou segue viva.");
 
-        jLabel2.setText("Se uma célula não tiver vizinhos vivos, ela morre.");
+        jLabel2.setText("Se uma célula não tiver vizinhos vivos, ela mantêm o estado.");
 
         jLabel3.setText("Regras");
 
@@ -86,6 +76,13 @@ public class gameofLife extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Configurar Matriz");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -97,8 +94,8 @@ public class gameofLife extends javax.swing.JFrame {
                         .addComponent(contGeracaoLabel)
                         .addGap(27, 27, 27)
                         .addComponent(newGenerationButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1))
                     .addComponent(jLabel2)
                     .addComponent(jLabel1)
                     .addComponent(jLabel3)
@@ -120,11 +117,10 @@ public class gameofLife extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addGap(13, 13, 13)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(contGeracaoLabel)
-                        .addComponent(newGenerationButton)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(contGeracaoLabel)
+                    .addComponent(newGenerationButton)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -138,9 +134,33 @@ public class gameofLife extends javax.swing.JFrame {
         newGeneration();
     }//GEN-LAST:event_newGenerationButtonMouseClicked
 
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        // TODO add your handling code here:
+        ConfigMatrix configmat = new ConfigMatrix(mat.getLins(),this);
+        
+        
+    }//GEN-LAST:event_jButton1MouseClicked
+
     /**
      * @param args the command line arguments
      */
+    
+    public void setMatrix(Matrix newMat){
+        removeMatrix();   
+        mat = newMat;
+        newGenerationButton.setEnabled(true);
+        //disableClick();             
+        DesenhaMatriz(mat.getLins(), mat.getCols());
+        mat.printStates();
+    }
+    
+    public void disableClick(){
+        for (int i = 0; i < mat.getLins(); i++) {
+            for (int j = 0; j < mat.getCols(); j++) {
+                mat.mat[i][j].setEnabled(false);
+            }            
+        }
+    }
     
     public void newGeneration(){
           if(mat != null){
@@ -150,33 +170,51 @@ public class gameofLife extends javax.swing.JFrame {
                 }                
             }
         }        
-        mat = mat.newGenaration();
+        mat = mat.newGeneration(this);
         DesenhaMatriz(mat.getLins(), mat.getCols());
         newGenerationButton.setSelected(false);
         cont_geracao++;
         contGeracaoLabel.setText("Geração: " + cont_geracao);        
     }
     
-     public void newGenerationInserted(Automaton different){
-        if(different.getState()) {
-            if(mat != null){              
-              for (int i = 0; i < mat.getLins(); i++) {
-                  for (int j = 0; j < mat.getCols(); j++) {
-                      this.remove(mat.getCell(i, j));                        
-                    }                
-                }
-            }                    
-        }else{
-            int lin = different.getLin();
-            int col = different.getCol();
-            mat.mat[lin][col] = new Automaton(lin,col,!different.getState(),this);
+     public void newGenerationInserted(int i , int j){
+         
+         
+        //remove cells from GUI
+        for (int k = 0; k < mat.getLins(); k++) {
+            for (int l = 0; l < mat.getCols(); l++) {                
+                this.remove(mat.getCell(k, l));                        
+            }                
         }
-          
-        mat = mat.newGenaration();
+//
+//        //check if clicked block has to change it's state
+//        // if it's alive keep alive
+//        // if it's dead switch to FrankenAlive         
+//        
+        if(!mat.mat[i][j].getState()){
+            System.out.println("Modificou o i = " + i + " j = " + j );
+            mat.mat[i][j] = new Automaton(i,j,!mat.mat[i][j].getState(),this);
+            System.out.println("Nova matriz com o automato clicado alterado");    
+            mat.printStates();
+        }
+        
+        
+            
+        mat = mat.newGeneration(this);
+                
         DesenhaMatriz(mat.getLins(), mat.getCols());
+        this.repaint();
         newGenerationButton.setSelected(false);
         cont_geracao++;
         contGeracaoLabel.setText("Geração: " + cont_geracao);        
+    }
+     
+    public void removeMatrix(){
+        for (int k = 0; k < mat.getLins(); k++) {
+            for (int l = 0; l < mat.getCols(); l++) {                
+                this.remove(mat.getCell(k, l));                        
+            }                
+        }     
     }
     
     public void DesenhaMatriz(int lins, int cols){        
@@ -221,12 +259,12 @@ public class gameofLife extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel contGeracaoLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JToggleButton newGenerationButton;
     // End of variables declaration//GEN-END:variables
 }

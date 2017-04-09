@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Client;
+package calculadorasockets;
 
 import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.Scanner;
 
 /**
  *
@@ -157,10 +158,14 @@ public class Client extends javax.swing.JFrame {
                 public void run(){
                     while(true){
                         try {                            
+                            //read menu of operations
                             DataInputStream in = new DataInputStream(socket.getInputStream());
                             String mensagemRecebida = in.readUTF();     
+                            chatAreaJTA.append(mensagemRecebida + '\n');                                                        
+                            //read the result
+                            Integer result = in.readInt();                              
                             //adiciona mensagem na interface gráfica do chat
-                            chatAreaJTA.append(mensagemRecebida + '\n');                            
+                            chatAreaJTA.append( "\n"+ "\n" + result + "\n"+ "\n" +"\n" +"\n");                            
                         } catch (Exception e) {
                             chatAreaJTA.append("Servidor erro 500" + '\n');
                             mensagemJTF.setEnabled(false);
@@ -184,7 +189,7 @@ public class Client extends javax.swing.JFrame {
             //cria canal de envio UTF
             DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
             //envia mensagem
-            outStream.writeUTF(nick + "disse: " + mensagem);
+            outStream.writeUTF(mensagem);
         } catch (Exception e) {
             chatAreaJTA.append("Servidor erro 500" + '\n');
             mensagemJTF.setEnabled(false);
@@ -246,6 +251,8 @@ public class Client extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 

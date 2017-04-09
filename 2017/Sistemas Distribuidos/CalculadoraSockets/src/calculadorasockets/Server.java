@@ -1,9 +1,16 @@
+package calculadorasockets;
 
+
+import com.sun.xml.internal.ws.api.pipe.Engine;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import jdk.nashorn.internal.objects.Global;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngine;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,13 +22,13 @@ import java.util.ArrayList;
  *
  * @author root
  */
-public class Servidor extends javax.swing.JFrame {
+public class Server extends javax.swing.JFrame {
     ServerSocket server;
     ArrayList<Socket> clientList;
     /**
      * Creates new form Servidor
      */
-    public Servidor() {
+    public Server() {
         initComponents();
         clientList = new ArrayList<Socket>();
         
@@ -100,6 +107,9 @@ public class Servidor extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             server = new ServerSocket(Integer.parseInt(portaJTF.getText().toString()));
+            //create equation handler
+                        
+            
             logJTA.append("Server Started with Success" + '\n');            
         } catch (Exception e) {
         }
@@ -109,25 +119,60 @@ public class Servidor extends javax.swing.JFrame {
         new Thread(){
             public void run(){
                 try {            
+                    //equation handler
+                    ScriptEngineManager mgr = new ScriptEngineManager();
+                    ScriptEngine engine = mgr.getEngineByName("JavaScript");
+                    
                     //wait connection of a clinet
                     while(true){
-                        Socket client = server.accept();
+                        Socket client = server.accept();     
+                        
+                        //
+                        
                         //add client to our client list
                         logJTA.append("Cliente " + client.getInetAddress() + client.getPort() + "has connected" +  '\n');
                         clientList.add(client);
                         //Create a secondary thread to wait messages                 
                         new Thread(){
                             Socket myclient = client;
-                            public void run(){
+                            public void run(){//
                                 try {
+                                    
+                                    //Order
+                                    /*
+                                    1) Send operations types
+                                    2) Get operation Type
+                                    3) Send result
+                                    
+                                    */
+                                    
+                                    //first get what operation user needs
+                                    DataOutputStream output = new DataOutputStream(myclient.getOutputStream());
                                     DataInputStream inStream = new DataInputStream(myclient.getInputStream());
-                                    String messageReceived = inStream.readUTF();
-                                    logJTA.append("Cliente disse " + messageReceived + '\n');
-                                    for (Socket iclient : clientList) {
-                                        //if(iclient != myclient)
-                                        DataOutputStream out = new DataOutputStream(iclient.getOutputStream());
-                                        out.writeUTF(messageReceived);
-                                    }
+                                    //Send all operations types
+                                    String operacoes = "Operações possíveis" + '\n'
+                                            + "1 - Adicao \n"
+                                            + "2 - Subtracao \n"
+                                            + "3 - Multiplicacao \n"
+                                            + "4 - Divisao";
+                                    
+                                    //send to client a string with our menu with
+                                    // all operations                                                                        
+                                    
+                                    while(true){
+                                        try{
+                                            output.writeUTF(operacoes);                                        
+                                        }catch(Exception e){
+                                            logJTA.append("Error sending menu to client " +e.getMessage() );
+                                        }
+                                        try {
+                                            String equation = inStream.readUTF();
+                                            logJTA.append("Received equation = " + equation);
+                                            output.writeInt((int)engine.eval(equation));
+                                        } catch (Exception e) {
+                                            logJTA.append("Error Receiving equation from client " +e.getMessage() );
+                                        }                                                                             
+                                    }                                    
                                 } catch (Exception e) {
                                     //case where client leaved
                                     e.printStackTrace();
@@ -166,20 +211,21 @@ public class Servidor extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Servidor().setVisible(true);
+                new Server().setVisible(true);
             }
         });
     }

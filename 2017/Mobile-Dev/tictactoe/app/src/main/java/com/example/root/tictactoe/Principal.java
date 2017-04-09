@@ -13,20 +13,20 @@ public class Principal extends AppCompatActivity {
     Jogo jogo;
     int jogadas = 0;
 
-    public void initializewidgets(){
-        jogo = new Jogo();
-        upbutton1 = (Button) findViewById(R.id.upbutton1);
-        upbutton2 = (Button) findViewById(R.id.upbutton2);
-        upbutton3 = (Button) findViewById(R.id.upbutton3);
-        midbutton1 = (Button) findViewById(R.id.midbutton1);
-        midbutton2 = (Button) findViewById(R.id.midbutton2);
-        midbutton3 = (Button) findViewById(R.id.midbutton3);
-        bottombutton1 = (Button) findViewById(R.id.bottombutton1);
-        bottombutton2 = (Button) findViewById(R.id.bottombutton2);
-        bottombutton3 = (Button) findViewById(R.id.bottombutton3);
-        player = (TextView) findViewById(R.id.Player);
-        
-    }
+        public void initializewidgets(){
+            jogo = new Jogo();
+            upbutton1 = (Button) findViewById(R.id.upbutton1);
+            upbutton2 = (Button) findViewById(R.id.upbutton2);
+            upbutton3 = (Button) findViewById(R.id.upbutton3);
+            midbutton1 = (Button) findViewById(R.id.midbutton1);
+            midbutton2 = (Button) findViewById(R.id.midbutton2);
+            midbutton3 = (Button) findViewById(R.id.midbutton3);
+            bottombutton1 = (Button) findViewById(R.id.bottombutton1);
+            bottombutton2 = (Button) findViewById(R.id.bottombutton2);
+            bottombutton3 = (Button) findViewById(R.id.bottombutton3);
+            player = (TextView) findViewById(R.id.Player);
+
+        }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

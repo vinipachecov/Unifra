@@ -15,12 +15,15 @@ public class Matrix {
     Automaton [][] mat;
     int lins, cols;
     gameofLife view;
+    ConfigMatrix config;
     
     public Matrix(){
         
     }
     
-    public Matrix(Matrix mat){
+    public Matrix(Matrix mat, gameofLife view, ConfigMatrix configs){
+        this.config = configs;
+        this.view = view;
         this.lins = mat.getLins() ;
         this.cols = mat.getCols();        
         this.mat = new Automaton[this.lins][this.cols];
@@ -31,6 +34,42 @@ public class Matrix {
             }
             
         }
+    }
+    
+    public Matrix(Matrix mat, gameofLife view){
+        this.view = view;
+        this.lins = mat.getLins() ;
+        this.cols = mat.getCols();        
+        this.mat = new Automaton[this.lins][this.cols];
+        //setup matrix
+        for (int i = 0; i < lins; i++) {
+            for (int j = 0; j < cols; j++) {
+               this.mat[i][j] = new Automaton(lins, cols, false, 40 , 40 , 40 + (j * 40), 40 + (i * 40));
+            }
+            
+        }
+    }
+    
+    public Matrix(int lins,int cols, gameofLife view, ConfigMatrix configs) {
+        this.config = configs;
+        this.view = view;
+        this.lins = lins;
+        this.cols = cols;
+        this.mat = new Automaton[lins][cols];
+        //initialize automaton matrix
+        for (int i = 0; i < lins; i++) {
+            for (int j = 0; j < cols; j++) {
+                this.mat[i][j] = new Automaton(i,j,false, view, configs);
+                //this.mat[i][j] = new Automaton(lins, cols, false, 40 , 40 , 40 + (i * 40), 40 + (j * 40));
+            }            
+        }
+        //teste
+//        for (int i = 0; i < lins; i++) {
+//            for (int j = 0; j < cols; j++) {
+//                System.out.println("Celula i =" +i+" j ="+j+" estado =" + mat[i][j].getState() );                
+//            }            
+//        }                
+        
     }
     
     
@@ -83,9 +122,7 @@ public class Matrix {
     
     public int checkNeighbors(int i, int j){
         int n_neighborsAlive = 0;        
-        //check top and bottom neighbors
-        
-                
+        //check top and bottom neighbors                
         //top
         
         
@@ -128,8 +165,8 @@ public class Matrix {
         if(n_neighborsAlive > 2){
             novo = new Automaton(i, j, false,view);
         }
-        else if(n_neighborsAlive == 0){
-            novo = new Automaton(i, j, false,view);
+        else if(n_neighborsAlive == 0){            
+            novo = new Automaton(i, j, mat[i][j].getState(),view);
         }else
             novo = new Automaton(i, j, true,view);        
         
@@ -137,8 +174,8 @@ public class Matrix {
     }    
         
     
-    public Matrix newGenaration(){
-        Matrix nova = new Matrix(this);
+    public Matrix newGeneration(gameofLife view){
+        Matrix nova = new Matrix(this,view);
         int n_neighborsAlive = 0;                
         for (int i = 0; i < lins; i++) {
             for (int j = 0; j < cols; j++) {

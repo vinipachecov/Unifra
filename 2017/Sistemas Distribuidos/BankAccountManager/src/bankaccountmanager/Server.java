@@ -1,3 +1,5 @@
+package bankaccountmanager;
+
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,19 +17,21 @@ import java.util.ArrayList;
  *
  * @author root
  */
-public class Servidor extends javax.swing.JFrame {
+public class Server extends javax.swing.JFrame {
     ServerSocket server;
     ArrayList<Socket> clientList;
+    ArrayList<Account> accounts;
     /**
      * Creates new form Servidor
      */
-    public Servidor() {
+    public Server() {
         initComponents();
         clientList = new ArrayList<Socket>();
+        accounts = new ArrayList<Account>();
         
+        //add a test account        
         
-        
-        
+        accounts.add(new Account(9000000.00));        
     }
 
     /**
@@ -100,6 +104,9 @@ public class Servidor extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             server = new ServerSocket(Integer.parseInt(portaJTF.getText().toString()));
+            //create equation handler
+                        
+            
             logJTA.append("Server Started with Success" + '\n');            
         } catch (Exception e) {
         }
@@ -109,25 +116,87 @@ public class Servidor extends javax.swing.JFrame {
         new Thread(){
             public void run(){
                 try {            
+                    
+                    
                     //wait connection of a clinet
                     while(true){
-                        Socket client = server.accept();
+                        Socket client = server.accept();     
+                        
+                        //
+                        
                         //add client to our client list
                         logJTA.append("Cliente " + client.getInetAddress() + client.getPort() + "has connected" +  '\n');
                         clientList.add(client);
                         //Create a secondary thread to wait messages                 
                         new Thread(){
                             Socket myclient = client;
-                            public void run(){
+                            public void run(){//
                                 try {
+                                    
+                                    //Order
+                                    /*
+                                    1) Send operations types
+                                    2) Get operation Type
+                                    3) Send operation type to change client 
+                                    // behavior
+                                    4) Do the operation requested
+                                    5) Send result
+                                    */
+                                    
+                                    //first get what operation user needs
+                                    DataOutputStream output = new DataOutputStream(myclient.getOutputStream());
                                     DataInputStream inStream = new DataInputStream(myclient.getInputStream());
-                                    String messageReceived = inStream.readUTF();
-                                    logJTA.append("Cliente disse " + messageReceived + '\n');
-                                    for (Socket iclient : clientList) {
-                                        //if(iclient != myclient)
-                                        DataOutputStream out = new DataOutputStream(iclient.getOutputStream());
-                                        out.writeUTF(messageReceived);
-                                    }
+                                    //Send all operations types
+                                    String operacoes = "Personal Bank Account Manager"
+                                            + "Operations" + '\n' + '\n'
+                                            + "1 - Ammount Check \n"
+                                            + "2 - Withdraw  \n"
+                                            + "3 - Deposit \n";                                    
+                                    
+                                                                       
+                                  
+                                    
+                                    while(true){
+                                        try{
+                                            output.writeUTF(operacoes);
+                                            //get operation client want to do with 
+                                            //his account
+                                            Integer operation = Integer.parseInt(inStream.readUTF());
+                                            //Send client code back to 
+                                            // prepare client behavior
+                                            output.writeInt(operation);                                                
+                                            switch(operation){
+                                                case 1:               
+                                                    logJTA.append("Client" + 
+                                                            myclient.getInetAddress()
+                                                            + "Chooses Ammount Check" + '\n');
+                                                    output.writeDouble(accounts.get(0).ammountCheck());
+                                                    break;
+                                                case 2:                                                    
+                                                    logJTA.append("Client" + 
+                                                            myclient.getInetAddress()
+                                                            + "Chooses Withdraw" + '\n');
+                                                    output.writeUTF("Type How much"
+                                                            + "you want to draw: " + '\n');
+                                                    Double  minus = Double.parseDouble(inStream.readUTF());
+                                                    accounts.get(0).Withdraw(minus);
+                                                    break;
+                                                case 3:                                                     
+                                                    logJTA.append("Client" + 
+                                                            myclient.getInetAddress()
+                                                            + "Chooses Deposit" + '\n');
+                                                    output.writeUTF("Type how much are"
+                                                        + "you going to deposit?" + '\n');
+                                                    accounts.get(0).Deposit(Double.parseDouble(inStream.readUTF()));
+                                                     break;                                                     
+                                                default:
+                                                    output.write(operation);
+                                                    throw new Exception("Error: Operation not Found");
+                                            }
+                                        }catch(Exception e){
+                                            logJTA.append("Error: " +e.getMessage() );
+                                        }                                                                                                        
+                                    }                                    
                                 } catch (Exception e) {
                                     //case where client leaved
                                     e.printStackTrace();
@@ -166,20 +235,23 @@ public class Servidor extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Servidor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Servidor().setVisible(true);
+                new Server().setVisible(true);
             }
         });
     }
