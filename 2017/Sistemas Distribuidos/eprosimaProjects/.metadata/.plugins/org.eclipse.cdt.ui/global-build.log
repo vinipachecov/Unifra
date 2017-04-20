@@ -1,0 +1,584 @@
+17:42:25 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+makefile:45: recipe for target 'helloword-eprosima' failed
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:13: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:14: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+17:45:00 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:13: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:14: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+collect2: error: ld returned 1 exit status
+makefile:45: recipe for target 'helloword-eprosima' failed
+make: *** [helloword-eprosima] Error 1
+17:54:07 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:13: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:14: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+17:55:28 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:1364: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:1365: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+makefile:45: recipe for target 'helloword-eprosima' failed
+17:55:36 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:1364: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:1365: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+collect2: error: ld returned 1 exit status
+makefile:45: recipe for target 'helloword-eprosima' failed
+make: *** [helloword-eprosima] Error 1
+17:56:16 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:1364: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:1365: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+17:57:22 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+../src/helloword-eprosima.cpp:1100:11: error: redefinition of ‘class eprosima::_FastBuffer_iterator’
+     class _FastBuffer_iterator
+           ^~~~~~~~~~~~~~~~~~~~
+In file included from ../src/helloword-eprosima.cpp:6:0:
+/usr/include/fastcdr/FastBuffer.h:23:11: error: previous definition of ‘class eprosima::_FastBuffer_iterator’
+     class _FastBuffer_iterator
+           ^~~~~~~~~~~~~~~~~~~~
+../src/helloword-eprosima.cpp:1259:22: error: redefinition of ‘class eprosima::FastBuffer’
+     class Cdr_DllAPI FastBuffer
+                      ^~~~~~~~~~
+In file included from ../src/helloword-eprosima.cpp:6:0:
+/usr/include/fastcdr/FastBuffer.h:182:22: error: previous definition of ‘class eprosima::FastBuffer’
+     class Cdr_DllAPI FastBuffer
+                      ^~~~~~~~~~
+src/subdir.mk:18: recipe for target 'src/helloword-eprosima.o' failed
+make: *** [src/helloword-eprosima.o] Error 1
+17:59:15 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+../src/helloword-eprosima.cpp:24:11: error: redefinition of ‘class eprosima::_FastBuffer_iterator’
+     class _FastBuffer_iterator
+           ^~~~~~~~~~~~~~~~~~~~
+In file included from ../src/helloword-eprosima.cpp:6:0:
+/usr/include/fastcdr/FastBuffer.h:23:11: error: previous definition of ‘class eprosima::_FastBuffer_iterator’
+     class _FastBuffer_iterator
+           ^~~~~~~~~~~~~~~~~~~~
+../src/helloword-eprosima.cpp:183:22: error: redefinition of ‘class eprosima::FastBuffer’
+     class Cdr_DllAPI FastBuffer
+                      ^~~~~~~~~~
+In file included from ../src/helloword-eprosima.cpp:6:0:
+/usr/include/fastcdr/FastBuffer.h:182:22: error: previous definition of ‘class eprosima::FastBuffer’
+     class Cdr_DllAPI FastBuffer
+                      ^~~~~~~~~~
+make: *** [src/helloword-eprosima.o] Error 1
+src/subdir.mk:18: recipe for target 'src/helloword-eprosima.o' failed
+18:00:27 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+../src/helloword-eprosima.cpp:24:11: error: redefinition of ‘class eprosima::_FastBuffer_iterator’
+     class _FastBuffer_iterator
+           ^~~~~~~~~~~~~~~~~~~~
+In file included from ../src/helloword-eprosima.cpp:6:0:
+/usr/include/fastcdr/FastBuffer.h:23:11: error: previous definition of ‘class eprosima::_FastBuffer_iterator’
+     class _FastBuffer_iterator
+           ^~~~~~~~~~~~~~~~~~~~
+../src/helloword-eprosima.cpp:183:22: error: redefinition of ‘class eprosima::FastBuffer’
+     class Cdr_DllAPI FastBuffer
+                      ^~~~~~~~~~
+In file included from ../src/helloword-eprosima.cpp:6:0:
+/usr/include/fastcdr/FastBuffer.h:182:22: error: previous definition of ‘class eprosima::FastBuffer’
+     class Cdr_DllAPI FastBuffer
+                      ^~~~~~~~~~
+src/subdir.mk:18: recipe for target 'src/helloword-eprosima.o' failed
+make: *** [src/helloword-eprosima.o] Error 1
+18:01:18 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+../src/helloword-eprosima.cpp:24:11: error: redefinition of ‘class eprosima::_FastBuffer_iterator’
+     class _FastBuffer_iterator
+           ^~~~~~~~~~~~~~~~~~~~
+In file included from ../src/helloword-eprosima.cpp:6:0:
+/usr/include/fastcdr/FastBuffer.h:23:11: error: previous definition of ‘class eprosima::_FastBuffer_iterator’
+     class _FastBuffer_iterator
+           ^~~~~~~~~~~~~~~~~~~~
+../src/helloword-eprosima.cpp:183:22: error: redefinition of ‘class eprosima::FastBuffer’
+     class Cdr_DllAPI FastBuffer
+                      ^~~~~~~~~~
+In file included from ../src/helloword-eprosima.cpp:6:0:
+/usr/include/fastcdr/FastBuffer.h:182:22: error: previous definition of ‘class eprosima::FastBuffer’
+     class Cdr_DllAPI FastBuffer
+                      ^~~~~~~~~~
+src/subdir.mk:18: recipe for target 'src/helloword-eprosima.o' failed
+make: *** [src/helloword-eprosima.o] Error 1
+18:01:34 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+../src/helloword-eprosima.cpp:24:11: error: redefinition of ‘class eprosima::_FastBuffer_iterator’
+     class _FastBuffer_iterator
+           ^~~~~~~~~~~~~~~~~~~~
+In file included from ../src/helloword-eprosima.cpp:6:0:
+/usr/include/fastcdr/FastBuffer.h:23:11: error: previous definition of ‘class eprosima::_FastBuffer_iterator’
+     class _FastBuffer_iterator
+           ^~~~~~~~~~~~~~~~~~~~
+../src/helloword-eprosima.cpp:183:22: error: redefinition of ‘class eprosima::FastBuffer’
+     class Cdr_DllAPI FastBuffer
+                      ^~~~~~~~~~
+In file included from ../src/helloword-eprosima.cpp:6:0:
+/usr/include/fastcdr/FastBuffer.h:182:22: error: previous definition of ‘class eprosima::FastBuffer’
+     class Cdr_DllAPI FastBuffer
+                      ^~~~~~~~~~
+src/subdir.mk:18: recipe for target 'src/helloword-eprosima.o' failed
+make: *** [src/helloword-eprosima.o] Error 1
+18:01:47 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:1099: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:1100: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+collect2: error: ld returned 1 exit status
+makefile:45: recipe for target 'helloword-eprosima' failed
+make: *** [helloword-eprosima] Error 1
+18:08:20 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+../src/helloword-eprosima.cpp:5:17: error: ‘eprosima’ is not a namespace-name
+ using namespace eprosima;
+                 ^~~~~~~~
+../src/helloword-eprosima.cpp:5:25: error: expected namespace-name before ‘;’ token
+ using namespace eprosima;
+                         ^
+../src/helloword-eprosima.cpp: In function ‘int main()’:
+../src/helloword-eprosima.cpp:13:2: error: ‘eprosima’ has not been declared
+  eprosima::FastBuffer cdrBuffer;
+  ^~~~~~~~
+../src/helloword-eprosima.cpp:14:2: error: ‘eprosima’ has not been declared
+  eprosima::FastCdr cdr(cdrBuffer);
+  ^~~~~~~~
+src/subdir.mk:18: recipe for target 'src/helloword-eprosima.o' failed
+make: *** [src/helloword-eprosima.o] Error 1
+18:08:24 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+../src/helloword-eprosima.cpp:5:17: error: ‘eprosima’ is not a namespace-name
+ using namespace eprosima;
+                 ^~~~~~~~
+../src/helloword-eprosima.cpp:5:25: error: expected namespace-name before ‘;’ token
+ using namespace eprosima;
+                         ^
+../src/helloword-eprosima.cpp: In function ‘int main()’:
+../src/helloword-eprosima.cpp:13:2: error: ‘eprosima’ has not been declared
+  eprosima::FastBuffer cdrBuffer;
+  ^~~~~~~~
+../src/helloword-eprosima.cpp:14:2: error: ‘eprosima’ has not been declared
+  eprosima::FastCdr cdr(cdrBuffer);
+  ^~~~~~~~
+src/subdir.mk:18: recipe for target 'src/helloword-eprosima.o' failed
+make: *** [src/helloword-eprosima.o] Error 1
+18:08:39 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+../src/helloword-eprosima.cpp: In function ‘int main()’:
+../src/helloword-eprosima.cpp:13:2: error: ‘FastBuffer’ was not declared in this scope
+  FastBuffer cdrBuffer;
+  ^~~~~~~~~~
+../src/helloword-eprosima.cpp:14:2: error: ‘FastCdr’ was not declared in this scope
+  FastCdr cdr(cdrBuffer);
+  ^~~~~~~
+src/subdir.mk:18: recipe for target 'src/helloword-eprosima.o' failed
+make: *** [src/helloword-eprosima.o] Error 1
+18:08:56 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+../src/helloword-eprosima.cpp: In function ‘int main()’:
+../src/helloword-eprosima.cpp:13:2: error: ‘eprosimaFastBuffer’ was not declared in this scope
+  eprosimaFastBuffer cdrBuffer;
+  ^~~~~~~~~~~~~~~~~~
+../src/helloword-eprosima.cpp:14:2: error: ‘eprosima’ has not been declared
+  eprosima::FastCdr cdr(cdrBuffer);
+  ^~~~~~~~
+src/subdir.mk:18: recipe for target 'src/helloword-eprosima.o' failed
+make: *** [src/helloword-eprosima.o] Error 1
+18:09:08 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:17: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:18: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+collect2: error: ld returned 1 exit status
+makefile:45: recipe for target 'helloword-eprosima' failed
+make: *** [helloword-eprosima] Error 1
+18:10:48 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:21: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+makefile:45: recipe for target 'helloword-eprosima' failed
+18:11:11 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:21: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+collect2: error: ld returned 1 exit status
+makefile:45: recipe for target 'helloword-eprosima' failed
+make: *** [helloword-eprosima] Error 1
+18:49:41 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+makefile:45: recipe for target 'helloword-eprosima' failed
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:21: undefined reference to `eprosima::FastCdr::FastCdr(eprosima::FastBuffer&)'
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+18:50:01 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+makefile:45: recipe for target 'helloword-eprosima' failed
+18:58:43 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+18:58:54 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+collect2: error: ld returned 1 exit status
+makefile:45: recipe for target 'helloword-eprosima' failed
+make: *** [helloword-eprosima] Error 1
+18:58:58 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:21: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+makefile:45: recipe for target 'helloword-eprosima' failed
+18:59:01 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:21: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+18:59:03 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:21: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+makefile:45: recipe for target 'helloword-eprosima' failed
+18:59:05 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+19:00:30 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+collect2: error: ld returned 1 exit status
+makefile:45: recipe for target 'helloword-eprosima' failed
+make: *** [helloword-eprosima] Error 1
+19:00:32 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+makefile:45: recipe for target 'helloword-eprosima' failed
+19:00:34 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+19:00:35 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+19:00:37 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+collect2: error: ld returned 1 exit status
+makefile:45: recipe for target 'helloword-eprosima' failed
+make: *** [helloword-eprosima] Error 1
+19:00:39 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++ -L/usr/lib64 -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:21: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+makefile:45: recipe for target 'helloword-eprosima' failed
+19:02:24 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++  -o "helloword-eprosima"  ./src/helloword-eprosima.o   -l"/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.a" -l"/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.so"
+/usr/bin/ld: cannot find -l/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.a
+/usr/bin/ld: cannot find -l/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.so
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+19:02:34 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++  -o "helloword-eprosima"  ./src/helloword-eprosima.o   -l"/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.a" -l"/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.so"
+/usr/bin/ld: cannot find -l/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.a
+makefile:45: recipe for target 'helloword-eprosima' failed
+/usr/bin/ld: cannot find -l/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.so
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+19:02:58 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++  -o "helloword-eprosima"  ./src/helloword-eprosima.o   -l"/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.a" -l"/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.so"
+/usr/bin/ld: cannot find -l/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.a
+/usr/bin/ld: cannot find -l/home/vinipachecov/Unifra/2017/Sistemas\ Distribuidos/eprosimaProjects/helloword-eprosima/src/libdfb.so
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+19:03:23 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++  -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:21: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+collect2: error: ld returned 1 exit status
+makefile:45: recipe for target 'helloword-eprosima' failed
+make: *** [helloword-eprosima] Error 1
+19:13:36 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++  -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:21: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+19:13:49 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++  -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:21: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+makefile:45: recipe for target 'helloword-eprosima' failed
+19:13:59 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++  -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+19:14:08 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++  -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1

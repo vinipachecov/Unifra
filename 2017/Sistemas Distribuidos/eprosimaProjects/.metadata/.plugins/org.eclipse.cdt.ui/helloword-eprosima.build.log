@@ -1,0 +1,18 @@
+19:14:08 **** Incremental Build of configuration Debug for project helloword-eprosima ****
+make all 
+Building file: ../src/helloword-eprosima.cpp
+Invoking: GCC C++ Compiler
+g++ -I/usr/include/fastcdr -I/usr/include/dfb -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/helloword-eprosima.d" -MT"src/helloword-eprosima.o" -o "src/helloword-eprosima.o" "../src/helloword-eprosima.cpp"
+Finished building: ../src/helloword-eprosima.cpp
+ 
+Building target: helloword-eprosima
+Invoking: GCC C++ Linker
+g++  -o "helloword-eprosima"  ./src/helloword-eprosima.o   
+./src/helloword-eprosima.o: In function `main':
+/home/vinipachecov/Unifra/2017/Sistemas Distribuidos/eprosimaProjects/helloword-eprosima/Debug/../src/helloword-eprosima.cpp:20: undefined reference to `eprosima::FastBuffer::FastBuffer()'
+makefile:45: recipe for target 'helloword-eprosima' failed
+collect2: error: ld returned 1 exit status
+make: *** [helloword-eprosima] Error 1
+
+19:14:09 Build Finished (took 912ms)
+

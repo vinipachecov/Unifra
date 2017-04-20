@@ -1,0 +1,26 @@
+#include <iostream>
+using namespace std;
+
+
+#include <FastBuffer.h>
+#include <FastCdr.h>
+#include <dfb/CommonData.h>
+#include <dfb/TypecodeAPI.h>
+
+using namespace eprosima;
+using namespace DynamicFastBuffers;
+
+
+struct MyStructure {
+	string myString;
+	float myFloat;
+};
+
+int main() {
+	FastBuffer cdrBuffer;
+	FastCdr cdr(cdrBuffer);
+
+	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+	return 0;
+
+}

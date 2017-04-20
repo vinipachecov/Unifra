@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
     Jogo jogo;
 
 
+
     public void initializewidgets(){
         jogo = new Jogo();
         top1ImageView = (ImageView) findViewById(R.id.top1ImageView);

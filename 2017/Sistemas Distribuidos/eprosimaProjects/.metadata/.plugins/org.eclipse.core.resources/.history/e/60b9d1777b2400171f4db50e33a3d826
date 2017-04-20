@@ -1,0 +1,23 @@
+#include <iostream>
+using namespace std;
+
+
+#include <FastBuffer.h>
+#include <FastCdr.h>
+
+
+using namespace eprosima;
+
+struct MyStructure {
+	string myString;
+	float myFloat;
+};
+
+int main() {
+	eprosima::FastBuffer cdrBuffer;
+	eprosima::FastCdr cdr(cdrBuffer);
+
+	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+	return 0;
+
+}

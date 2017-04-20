@@ -1,0 +1,11 @@
+#include <iostream>
+#include "/usr/include/fastcdr/FastCdr.h"
+#include "/usr/include/fastcdr/FastBuffer.h"
+using namespace std;
+
+int main() {
+
+	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+	return 0;
+
+}
