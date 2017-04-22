@@ -1,15 +1,10 @@
 #include <iostream>
-using namespace std;
-
-
 #include "FastBuffer.h"
 #include "FastCdr.h"
 #include <dfb/CommonData.h>
 #include <dfb/TypecodeAPI.h>
 
-
-using namespace DynamicFastBuffers;
-
+using namespace std;
 
 struct MyStructure {
 	string myString;

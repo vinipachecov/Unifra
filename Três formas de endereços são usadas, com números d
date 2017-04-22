@@ -1,0 +1,47 @@
+Três formas de endereços são usadas, com números diferentes de bits usados por netids e hostids.Endereços Classe A, usados pelas maiores redes de transmissão, consistem em 0, seguido de um netid de 7 bits e um hostid de 24 bits. Endereços Classe B, usados por redes medianas, consistem em 10, seguido por um netid de 14 bits e um hostid de 16 bits. Endereços Classe C, usados pelas  redes menores, consistem em 110, seguido por um netid de 21 bits e um hostid de 8 bits.Há muitas restrições nos endereços para os usos especiais: 1111111 não está disponível no netid de uma Classe A e os hostids de 0 e 1 não estão disponíveis para o uso em nenhuma rede.Um computador na Internet tem ou um endereço Classe A, ou um Classe B, ou um Classe C. (Além dos endereços de Classe A,B e C, há também os endereços de Classe D, reservados para o uso em transmissão múltipla, quando vários computadores são endereçados ao mesmo tempo, que consistem em 1110 seguido de 28 bits, e os endereços de Classe E, reservados para o uso futuro, que consistem em 11110 seguido de 27 bits. Nem os endereços de Classe D nem os de Classe E são considerados endereços  de IP de um computador na Internet). A figura abaixo mostra os endereços IPv4. (Limitações no número de netids da Classe A e da Classe B tornaram os endereços  IPv4 inadequados; IPv6, uma nova  versão de IP, usa endereços de 128 para resolver este problema).
+
+
+
+
+Sim pois é preciso definir a qunatidade de endereços válidos para as máquinas. Um problema envolvendo princípio multiplicativo pois havia somente uma ou outra exceção
+o que não nos leva a usar arranjo por exemplo e utilizar uma quantidade menor de valores do nosso conjunto. Não é combinação pois a ordem é relevante para endereços.
+
+Endereços classe A:
+0 + 7 bits + 24 bits + 
+
+Endereços Classe B:
+ consistem em 10, seguido por um netid de 14 bits + hostid de 16 bits.
+
+
+Endereços Classe C:
+ consistem em 110+  netid de 21 bits + hostid de 8 bits
+
+
+ Sendo Xa , Xb e Xc os endereços da Classe A, B e C respectivamente, o total de endereços será Xa + Xb + Xc.
+
+ Encontrando Xa:
+
+ 2^7 -1 = 127 netids da classe A, pois o 1111111 não está disponível. 
+
+ Cada netid tem 2^24 -2 = 16 777 214 hostids. Hostids somente com 1s e 0s não contam. 
+
+ Logo Xa = 127 * 16 777 214 = 2 130 706 178.
+
+ Encontrando Xb e Xc:
+
+ netids na classe B = 2^14 = 16 384 
+ netids na classe C = 2^21 = 2 097 152
+
+ hostIds na classe B = 2^16 - 2 = 65 534
+ hostIds na classe C = 2^8 - 2 = 254
+
+ Logo :
+
+ Xb = 1 073 709 056 
+ e
+ Xc = 532 676 608
+
+
+ // -2 pois hostids somente com Os e 1s não estão disponíveis
+
+ Total de endereços IPV4 é  2 130 706 178 + 1 073 056 + 532 676 608 = 3 737 091 842.
