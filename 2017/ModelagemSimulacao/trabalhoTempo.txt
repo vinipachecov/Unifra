@@ -1,0 +1,14 @@
+
+
+Pegar todos os vizinhos : faces + diagonais ( superior e inferior ( esquerda e direita))
+estados:
+  - tempo bom - ensolarado
+  - tempo bom - levemente nublado
+  - nublado com vento
+  - nublado com chuvas esparsas
+  - chuva forte
+  - chuva
+  - chuva forte
+  - temporal
+
+  Célula deve guardar o número de gerações com o mesmo estados

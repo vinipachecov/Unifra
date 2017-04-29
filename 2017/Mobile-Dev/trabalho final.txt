@@ -1,0 +1,47 @@
+1. Introdução
+
+A turma deverá ser dividida em duplas ou trios, e cada grupo representará uma empresa de desenvolvimento de software para smartphones. As atividades a serem realizadas pelas empresas serão de:
+
+Analisar
+Projetar
+Implementar
+Testar
+Entregar o software
+A aplicação a ser desenvolvida deverá ser dividida em módulos, ou seja, cada membro será responsável por determinado(s) módulo(s) do sistema. O sistema a ser desenvolvido deverá ser negociado com o professor. Por exemplo, se um grupo fosse desenvolver um sistema para os cursos Sistemas de Informação e Ciência de Computação, o mesmo poderia ter os seguintes módulos:
+
+Agenda de Eventos
+Notícias do DA
+Oportunidades de Empregos
+Previsão do Tempo
+Cotações de Moedas
+2. Tarefas
+
+Desta forma, as seguintes tarefas devem ser obrigatoriamente realizadas:
+
+As empresa deverá escolher um líder (Analista de Sistemas), que será responsável de realizar o “contrato” com o contratante do software (no caso, o professor), ou seja, definindo a finalidade do sistema, seus módulos, realizar a coleta de requisitos, análise, etc.;
+O líder definirá as atividades de cada membro, ou seja, quem irá desenvolver qual(s) módulo(s) do sistema;
+O líder, juntamente com o grupo, deverá criar os padrões de projeto:
+Nomes de campos, classes, interfaces gráficas. O projeto deverá ser totalmente padronizado para a integração!
+4. Criar as regras de negócio de cada módulo independente da interface gráfica correspondente de maneira a minimizar os impactos de integração e flexibilizar a troca de informações. Por exemplo, é muito mais fácil editar uma classe Java responsável apenas pela cotação do dólar do que editar a classe inteira da interface gráfica.
+
+5. Elaborar a documentação de requisitos, contendo:
+
+Requisitos funcionais e não funcionais ( Vinícius)
+Diagrama de Casos de Uso com 3 descritivos mais importantes (Elizandro)
+Diagramas de sequência dos 3 descritivos mais importantes citados acima (Elizandro) 
+Diagrama de Classes
+Diagrama de Atividades
+Protótipo de Interfaces.(Vinícius)
+Portanto, cada integrante do grupo desenvolverá um módulo (seguindo o padrão definido), cria sua interface gráfica e suas classes com as regras de negócio, elaboram sua parte no projeto do sistema, testam, e no final integram em um projeto único. No final da integração, todos terão todas as classes do projeto desenvolvido em conjunto. Padronize tudo: a interface gráfica, cor, tamanho de fontes, nomes de variáveis, classes, etc.
+
+3. O que será avaliado:
+
+Divisão coerente das tarefas;
+Definição do sistema a ser desenvolvido;
+Criatividade na escolha do sistema;
+Busca/Pesquisa por novas funcionalidades não vistas em aula;
+Aproveitamento do tempo disponibilizado pelo professor em aula para realizar o trabalho;
+4. O que deverá ser entregue/apresentado na parte 1:
+
+Relatório contendo informações de projeto, documentação de requisitos, bem como a responsabilidade de cada aluno no projeto.
+Deverá ser feita uma apresentação do projeto da aplicação na data estabelecida abaixo, onde o líder deverá apresentar o propósito da aplicação desenvolvida, o projeto, suas características, bem como as responsabilidades passadas para cada aluno. Em seguida cada aluno deverá apresentar a sua parte desenvolvida no projeto da aplicação. Por fim, o líder deverá apresentar os protótipos de interface.

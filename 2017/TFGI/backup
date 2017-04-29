@@ -1,0 +1,163 @@
+
+
+
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+
+\usepackage{graphicx,url}
+
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+
+
+\sloppy
+
+\title{Aprendizado de Máquina utilizado para Previsão da Evasão no Ensino Superior}
+
+\author{Vinícius Pacheco Vieira\inst{1}, Mirkos Ortiz Martins\inst{1]}}
+
+
+\address{Curso de Ciência da Computação - Centro Universitário Franciscano (UNIFRA)\\
+\email{\{vinipachecov\}@gmail.com, mirkos@unifra.br}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  This meta-paper describes the style to be used in articles and short papers
+  for SBC conferences. For papers in English, you should add just an abstract
+  while for the papers in Portuguese, we also ask for an abstract in
+  Portuguese (``resumo''). In both cases, abstracts should not have more than
+  10 lines and must be in the first page of the paper.
+\end{abstract}
+
+\begin{resumo}
+  Este trabalho busca evidenciar a capacidade e a possibilidade de se utilizar técnicas de aprendizado de máquina para o auxílio do problema da evasão discente nas Instituições de Ensino Superior.(continuar)...
+\end{resumo}
+
+
+\section{Introdução}
+
+A Evasão escolar é um problema enfrentado em todas as Instituições de Ensino Superior (IES) seja na esfera pública federal ou privada.
+Enquanto os esforços são geralmente divididos no encontro de padrões e variáveis fundamentais a respeito da evasão discente ou no desenvolvimento de "cursos" e outras estratégias de resultado duvidoso, é preciso considerar e encarar o sucesso acadêmico de forma mais individualizada, mudando o foco de atenção além do viés das responsabilidades da instituição com o aluno e do aluno com a instituição, sendo o sucesso a grande chave para a retenção dos alunos.\par Diante desse cenário, surgiram estudos que embasam a eficácia da retenção nas IES em função do sucesso acadêmico, bem como uma nova área de pesquisa nesse segmento para criar soluções de software baseados em técnicas de aprendizado de máquina. O intuito destes estudos é de auxiliar na identificação e predição de grupos de riscos e disponibilizar melhores dados para que outros profissionais da educação estruturem seus planos de ação.\par
+Esse trabalho se insere no problema e tenta resolver através de algoritmos de aprendizado de máquina sem auxílio de implementações prontas como foi feito no trabalho de \cite{amorim2008tecnicas} ao utilizar o Weka, software neo-zelandês que possui um conjunto de algoritmos de aprendizado de máquina implementados em Java. Dessa forma o presente trabalho se diferencia já pelo aspecto mais básico que é o desenvolvimento do código e a implementação dos algoritmos em uma linguagem e não somente o processo de avaliação da performance das implementações.
+
+\section{Objetivos}
+
+Dentro do tema, o objetivo do presente trabalho é além de averiguar a validade de se utilizar redes neurais de arquitetura Multi-Layer-Perceptron e outros algoritmos de machine learning da Scikit-Learn(como complemento) para o problema de predição de evasão discente, é também avaliar a possibilidade do desenvolvimento de um sistema para auxiliar Instituições de Ensino Superior na retenção de alunos.
+
+\subsection{Objetivos Específicos}
+  \begin{itemize}
+    \item Fazer estudo sobre as técnicas de Machine Learning, principalmente Redes Neurais, para identificar a melhor abordagem para a classificação dos dados.
+    \item Construir um modelo para classificação da evasão de alunos no Ensino Superior.
+    \item Fazer uso da Linguagem Python juntamente da API do IBM-Watson para construção do modelo de classificação.
+    \item Como alternativa ao IBM-Watson será usada linguagem Python com o framework TensorFlow da Google como base para construção do modelo de classificação.
+    \item Fazer uso de dados objetivos dos alunos do Centro Universitário Franciscano como amostra para auxiliar no treinamento do modelo construído.
+    \item Testar os dados com um modelo similar na biblioteca scikit-learn com outros métodos de Machine Learning para verificar a significância dos resultados.
+    \item Verificar a possibilidade de uso da solução como um software de auxílio para Instituições de Ensino Superior na identificação de alunos propensos a evadirem.
+    \end{itemize}
+
+São elementos esperados a se atingir ao final deste trabalho:
+\begin{itemize}
+\item Blalbla bla bla bbblaablababa
+\item blalbalababa babalbalbalabab
+\item babalas basbasddfa basdas bas
+\item basfsdfasdfa dsfasdfaslçkha
+\item fadfa basf aserasfas safdasd
+\end{itemize}
+
+\section{Trabalhos Correlatos} \label{sec:firstpage}
+Com base nessa temática foram desenvolvidos trabalhos como \cite{dekker2009predicting}, \cite{zhang2010using},\cite{delen2010comparative} e \cite{martinho2013prediccao} com enfoques diferentes apesar de terem como cerne a questão da predição e compreensão da evasão discente. As soluções se utilizam de ténicas de aprendizado de máquina como redes neurais, random forests, regressão logística, maquinas de vetores de suporte e outros algoritmos. A relevância da área de da pelos altos valores de acurácia ou de outros qualificadores estatísticos.
+
+
+
+\section{Organização e Estratégia}
+O trabalho seguirá um workflow organizado para atingir as metas e objetivos do trabalho de forma
+eficiente e robusta. Para isso foi organizado um fluxograma com os passos a serem elaborados e seguidos:
+\newline
+
+\begin{figure}
+\includegraphics[width=.5\textwidth]{Flowchart0.png}
+\end{figure}
+
+
+\subsection{Coleta de Dados}
+Como o objetivo é a classificação de dados é necessário sempre haver uma base de dados. Dependendo da complexidade da aplicação ou o do que se pretende trabalhar não é obrigatório o uso de SGBD's ou de frameworks como o Hadoop para Big Data. Neste trabalho serão utilizados arquivos de spreedsheets ou de tabelas como .xls, mas também poderia ser utilizado arquivos de formato .csv (comma separated values).
+
+\subsection{}
+
+\section{Sections and Paragraphs}
+
+Section titles must be in boldface, 13pt, flush left. There should be an extra
+12 pt of space before each title. Section numbering is optional. The first
+paragraph of each section should not be indented, while the first lines of
+subsequent paragraphs should be indented by 1.27 cm.
+
+\subsection{Subsections}
+
+
+The subsection titles must be in boldface, 12pt, flush left.
+
+\section{Figures and Captions}\label{sec:figs}
+
+
+Figure and table captions should be centered if less than one line
+(Figure~\ref{fig:exampleFig1}), otherwise justified and indented by 0.8cm on
+both margins, as shown in Figure~\ref{fig:exampleFig2}. The caption font must
+be Helvetica, 10 point, boldface, with 6 points of space before and after each
+caption.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.5\textwidth]{fig1.jpg}
+\caption{A typical figure}
+\label{fig:exampleFig1}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.3\textwidth]{fig2.jpg}
+\caption{This figure is an example of a figure caption taking more than one
+  line and justified considering margins mentioned in Section~\ref{sec:figs}.}
+\label{fig:exampleFig2}
+\end{figure}
+
+In tables, try to avoid the use of colored or shaded backgrounds, and avoid
+thick, doubled, or unnecessary framing lines. When reporting empirical data,
+do not use more decimal digits than warranted by their precision and
+reproducibility. Table caption must be placed before the table (see Table 1)
+and the font used must also be Helvetica, 10 point, boldface, with 6 points of
+space before and after each caption.
+
+\begin{table}[ht]
+\centering
+\caption{Variables to be considered on the evaluation of interaction
+  techniques}
+\label{tab:exTable1}
+\includegraphics[width=.7\textwidth]{table.jpg}
+\end{table}
+
+\section{Images}
+
+All images and illustrations should be in black-and-white, or gray tones,
+excepting for the papers that will be electronically available (on CD-ROMs,
+internet, etc.). The image resolution on paper should be about 600 dpi for
+black-and-white images, and 150-300 dpi for grayscale images.  Do not include
+images with excessive resolution, as they may take hours to print, without any
+visible difference in the result.
+
+\section{References}
+
+Referencias
+
+The references must be listed using 12 point font size, with 6 points of space
+before each reference. The first line of each reference should not be
+indented, while the subsequent should be indented by 0.5 cm.
+
+\bibliographystyle{sbc}
+\bibliography{sbc-template}
+
+\end{document}

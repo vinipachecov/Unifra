@@ -1,0 +1,140 @@
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.Statement;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+
+
+public class Form1 extends javax.swing.JFrame {
+
+    public Connection c;
+
+    public Form1() {
+        initComponents();
+    }
+
+
+
+    public void conectar() {
+      try {
+        String url = "jdbc:mysql://localhost:8889/Aula03agenda?user=root&password=root";
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
+        System.out.println(url);
+        c = (Connection) DriverManager.getConnection(url);
+        System.out.println("Conectado!");
+       } catch (Exception e){
+         }
+    }
+
+    public void consultar() {
+      String query;
+         try {
+           query = "select * from Funcionario";
+           //confirmar/homologar a conexão com o banco de dados
+           Statement st = (Statement) c.createStatement();
+           //retorno da execução do comando SQL
+           ResultSet rs = st.executeQuery(query);
+           if (rs != null) { // Verifica se a query retornou algo
+              while (rs.next()) {
+                 // É possível referenciar a coluna pelo índice
+                 // System.out.println("Id: " + rs.getInt(1));
+                 jTextArea1.append("Id: " + rs.getString(1) + "\n");
+                 // Ou pelo nome
+                 jTextArea1.append("Nome: " + rs.getString("nome") + "\n");
+                 jTextArea1.append("E-mail: " + rs.getString("email") + "\n");
+                 jTextArea1.append("Cargo: " + rs.getString("cargo") + "\n");
+                 jTextArea1.append("\n");
+              }
+           }
+        } catch (Exception e) {}
+    }
+
+    public void listarFuncionariosNoCombo() {
+      String query;
+      try {
+        query = "select nome from Funcionario order by nome";
+        //confirmar/homologar a conexão com o banco de dados
+        Statement st = (Statement) c.createStatement();
+        //retorno da execução do comando SQL
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) { // Verifica se a query retornou algo
+           int linha = 0;
+           while (rs.next()) {
+              jComboBox1.insertItemAt(rs.getString("nome"), linha);
+              linha++;
+           }
+        }
+     } catch (Exception e) {}
+
+    }
+
+    public void consultar(String nomeCombo) {
+      String query;
+      try {
+        query = "select * from Funcionario where nome='"+ nomeCombo + "'";
+        //confirmar/homologar a conexão com o banco de dados
+        Statement st = (Statement) c.createStatement();
+        //retorno da execução do comando SQL
+        ResultSet rs = st.executeQuery(query);
+        if (rs != null) { // Verifica se a query retornou algo
+           int linha = 0;
+           int coluna = 0;
+           while (rs.next()) {
+              jTable1.setValueAt(rs.getString("id"), linha, coluna);
+              coluna++;
+              jTable1.setValueAt(rs.getString("nome"), linha, coluna);
+              coluna++;
+              jTable1.setValueAt(rs.getString("email"), linha, coluna);
+              coluna++;
+              jTable1.setValueAt(rs.getString("cargo"), linha, coluna);
+              linha++;
+              coluna = 0;
+           }
+        }
+     } catch (Exception e) {}
+    }
+
+
+    public void inserir() {
+         try {
+            String query = "INSERT INTO Funcionario (nome, email, cargo) "
+                    + "values ('Rodrigo', 'rodrigo@minotauro.br', 'Lutador')";
+            Statement st = (Statement) c.createStatement();
+            int resultado = st.executeUpdate(query);
+            System.out.println(resultado);
+         } catch (Exception e) {}
+    }
+
+    public void inserir2(String nome, String idade) {
+         try {
+            //String query = "INSERT INTO Funcionario (nome, idade) values ('"+nome+"',"+idade+")";
+            String query = "INSERT INTO Funcionario values ('"+nome+"',"+idade+")";
+            Statement st = (Statement) c.createStatement();
+            int resultado = st.executeUpdate(query);
+         } catch (Exception e) {}
+    }
+
+
+    public void alterar(int id, String nome, String email, String cargo) {
+        try {
+           String query = "UPDATE Funcionario SET nome='" + nome + "', "
+                   + "email='" + email + "', cargo='" + cargo + "'  "
+                   + "WHERE id=" + id;
+           Statement st = (Statement) c.createStatement();
+           int resultado = st.executeUpdate(query);
+           //System.out.println(id);
+           //System.out.println(nome);
+           //System.out.println(email);
+           //System.out.println(cargo);
+
+        } catch (Exception e){
+          }
+    }
+
+    public void excluir(int id) {
+       try {
+         String query = "DELETE FROM Funcionario WHERE id="+id;
+         Statement st = (Statement) c.createStatement();
+         int resultado = st.executeUpdate(query);
+       } catch (Exception e) {
+         }
+    }
