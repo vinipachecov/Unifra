@@ -1,6 +1,7 @@
-#include "FastBuffer.h"
-#include "FastCdr.h"
-
+#include <iostream>
+#include <FastBuffer>
+#include <dfb/CommonData.h>
+#include <dfb/TypecodeAPI.h>
 
 using namespace std;
 
@@ -13,6 +14,7 @@ int main() {
 
 	char buffer[500];
 	eprosima::FastBuffer fast(buffer,500);
+	cout << "!!!Hello World!!!" << endl;
 	return 0;
 
 }

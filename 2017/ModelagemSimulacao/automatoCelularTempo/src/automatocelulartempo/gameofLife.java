@@ -5,14 +5,7 @@
  */
 package automatocelulartempo;
 
-import java.awt.Color;
-import java.awt.ComponentOrientation;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Point;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 /**
  *
@@ -35,14 +28,24 @@ public class gameofLife extends javax.swing.JFrame {
         int dim = Integer.parseInt(JOptionPane.showInputDialog(null,
                 "Insira a dimensao da matriz"));        
         mat = new Matrix(dim,dim, this);                
-        mat.printStates();             
-        //JTextField test = new JTextField("UM TEXT FIELD");        
-        DesenhaMatriz(dim,dim);
+       // mat.printStates();                     
         
-//        Automaton autotest = new Automaton(100, 100, true, 50, 50, 30, 40);
-//        autotest.setPreferredSize(new Dimension(100,100));
+        Automaton auto1,auto2;
+        
+                
+        //layerpanel.add(tf,2);
+        layerpanel.remove(mapars);
+        
+//        layerpanel.add(auto1,2);
+//        layerpanel.add(auto2,0);
+        
+        DesenhaMatriz(dim,dim);
+        layerpanel.add(mapars);
+               
         //matrixpanel.add(texto);
         //matrixpanel.add(autotest);
+        //mapars.setVisible(false);
+        
         
         newGenerationButton.setEnabled(false);  
         
@@ -58,7 +61,7 @@ public class gameofLife extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuItem1 = new javax.swing.JMenuItem();
-        jToggleButton1 = new javax.swing.JToggleButton();
+        jButton1 = new javax.swing.JButton();
         rulesPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -68,17 +71,15 @@ public class gameofLife extends javax.swing.JFrame {
         contGeracaoLabel = new javax.swing.JLabel();
         newGenerationButton = new javax.swing.JToggleButton();
         newMatrix = new javax.swing.JButton();
+        layerpanel = new javax.swing.JLayeredPane();
         mapars = new javax.swing.JLabel();
 
         jMenuItem1.setText("jMenuItem1");
 
+        jButton1.setText("jButton1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(600, 600));
-        getContentPane().setLayout(null);
-
-        jToggleButton1.setText("jToggleButton1");
-        getContentPane().add(jToggleButton1);
-        jToggleButton1.setBounds(200, 350, 99, 31);
 
         jLabel3.setText("Regras");
 
@@ -129,12 +130,12 @@ public class gameofLife extends javax.swing.JFrame {
                         .addComponent(newGenerationButton)
                         .addGap(18, 18, 18)
                         .addComponent(newMatrix)))
-                .addContainerGap(452, Short.MAX_VALUE))
+                .addContainerGap(381, Short.MAX_VALUE))
         );
         rulesPanelLayout.setVerticalGroup(
             rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rulesPanelLayout.createSequentialGroup()
-                .addContainerGap(30, Short.MAX_VALUE)
+                .addContainerGap(33, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
@@ -151,12 +152,52 @@ public class gameofLife extends javax.swing.JFrame {
                     .addComponent(newMatrix)))
         );
 
-        getContentPane().add(rulesPanel);
-        rulesPanel.setBounds(12, 753, 895, 193);
+        layerpanel.setBackground(new java.awt.Color(215, 220, 225));
+        layerpanel.setForeground(new java.awt.Color(220, 220, 220));
 
         mapars.setIcon(new javax.swing.ImageIcon("/home/vinipachecov/Repos/Unifra/2017/ModelagemSimulacao/mapars.png")); // NOI18N
-        getContentPane().add(mapars);
-        mapars.setBounds(12, 12, 932, 735);
+
+        layerpanel.setLayer(mapars, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout layerpanelLayout = new javax.swing.GroupLayout(layerpanel);
+        layerpanel.setLayout(layerpanelLayout);
+        layerpanelLayout.setHorizontalGroup(
+            layerpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(layerpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layerpanelLayout.createSequentialGroup()
+                    .addComponent(mapars, javax.swing.GroupLayout.PREFERRED_SIZE, 908, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 72, Short.MAX_VALUE)))
+        );
+        layerpanelLayout.setVerticalGroup(
+            layerpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 711, Short.MAX_VALUE)
+            .addGroup(layerpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(mapars, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 711, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(layerpanel)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(rulesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 156, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(layerpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rulesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -257,9 +298,14 @@ public class gameofLife extends javax.swing.JFrame {
 //    
     public void DesenhaMatriz(int lins, int cols){        
         // blocos de 40x40                
+//        for (int i = 0; i < lins; i++) {
+//            for (int j = 0; j < cols; j++) {                                
+//                this.add(mat.getCell(i, j));                
+//            }            
+//        }
         for (int i = 0; i < lins; i++) {
             for (int j = 0; j < cols; j++) {                                
-                this.add(mat.getCell(i, j));                
+                layerpanel.add(mat.getCell(i, j), 2);                
             }            
         }
     }
@@ -300,13 +346,14 @@ public class gameofLife extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel contGeracaoLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JLayeredPane layerpanel;
     private javax.swing.JLabel mapars;
     private javax.swing.JToggleButton newGenerationButton;
     private javax.swing.JButton newMatrix;

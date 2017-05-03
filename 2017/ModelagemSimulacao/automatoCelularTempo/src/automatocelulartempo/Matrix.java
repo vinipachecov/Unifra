@@ -84,7 +84,7 @@ public class Matrix {
         for (int i = 0; i < lins; i++) {
             for (int j = 0; j < cols; j++) {
                // this.mat[i][j] = new Automaton(i,j,false, view);
-                this.mat[i][j] = new Automaton(lins, cols, false, 40 , 40 , 100 + (i * 40), 40 + (j * 40));
+                this.mat[i][j] = new Automaton(lins, cols, false, 20 , 20 , 0 + (i * 22), 0 + (j * 22));
             }            
         }
         //teste

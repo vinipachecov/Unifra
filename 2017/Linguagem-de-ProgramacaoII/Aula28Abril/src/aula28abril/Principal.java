@@ -236,8 +236,6 @@ public class Principal extends javax.swing.JFrame {
            //get properties of the table ( columns etc..)
            ResultSetMetaData rsmd = rs.getMetaData();           
            columnCount = rsmd.getColumnCount();           
-           
-            System.out.println("valor do columncount= " + columnCount);
             
            
            if (rs != null) { // Verifica se a query retornou algo
@@ -245,8 +243,7 @@ public class Principal extends javax.swing.JFrame {
                   
                   //do it with a while for plenty of values
                   for (int i = 1; i <= columnCount; i++) {
-                      valores.add(rs.getString(i));  
-                      System.out.println(valores);
+                      valores.add(rs.getString(i));                       
                   }
                   
                                      
@@ -290,6 +287,7 @@ public class Principal extends javax.swing.JFrame {
             Statement st = (Statement) c.createStatement();
             int resultado = st.executeUpdate(query);
             System.out.println(resultado);
+            consultar();
          } catch (Exception e) {}   
     }
     
@@ -300,6 +298,7 @@ public class Principal extends javax.swing.JFrame {
                    + "WHERE id=" + id;
            Statement st = (Statement) c.createStatement();
            int resultado = st.executeUpdate(query);
+           consultar();
         } catch (Exception e){}   
     }
     
@@ -308,13 +307,14 @@ public class Principal extends javax.swing.JFrame {
          String query = "DELETE FROM Funcionario WHERE id="+id;
          Statement st = (Statement) c.createStatement();
          int resultado = st.executeUpdate(query);
+         consultar();
        } catch (Exception e) {}
     }
     
     
     public void updateTable(){
-        model.getDataVector().removeAllElements();
-        model.fireTableDataChanged();
+        //for defaultTableModel
+        model.setRowCount(0);
     }
     
     public static void main(String args[]) {

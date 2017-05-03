@@ -14,12 +14,15 @@ import java.awt.Graphics2D;
 import java.awt.TextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 /**
  *
  * @author root
  */
-public class Automaton extends TextField{
+public class Automaton extends JPanel{
     private gameofLife view;
     private int lin,col;
     private boolean vivo;
@@ -35,22 +38,35 @@ public class Automaton extends TextField{
         if(vivo){
             this.setBackground(Color.black);
         }else
-            this.setBackground(Color.white);
+            this.setBackground(Color.white);        
         initTextField(height, width, x, y);
-       
+       this.setBackground(new Color(0f,0f,1f,0.1f));
     }
    
     public Automaton(int lin, int col, boolean estado,
             int height, int width,  int x, int y){        
         this.lin = lin;
         this.col = col;
-        vivo = estado;
-        if(vivo){
-            this.setBackground(Color.black);
-        }else
-            this.setBackground(Color.white);
+        
+//        vivo = estado;
+//        if(vivo){
+//            this.setBackground(Color.black);
+//        }else
+//            this.setBackground(Color.white);
+        //test de cor
         initTextField(height, width, x, y);
+        this.setBackground(new Color(0f,0f,1f,0.1f));
        
+    }
+    
+    public Automaton(int height, int width, int x, int y){
+        //this.setBackground(new Color(0f,0f,0.2f,0.1f));
+        this.setBackground(new Color(0f,0f,1f,0.1f));        
+        
+        this.setSize(width, height);
+        this.setPreferredSize(new Dimension(width,height));        
+        
+        this.setLocation(x, y);                      
     }
     
     public Automaton(int lin, int col, boolean estado, gameofLife view, ConfigMatrix configs){
@@ -64,6 +80,7 @@ public class Automaton extends TextField{
         }else
             this.setBackground(Color.white);
         initTextField(20, 40,20 +(col*40) ,40 + (lin*40) );        
+        this.setBackground(new Color(0f,0f,1f,0.1f));
     }
     
     
@@ -73,7 +90,8 @@ public class Automaton extends TextField{
         this.col = col;
         vivo = estado;
         updateColor();
-        initTextField(40, 40,40 +(col*40) ,40 + (lin*40) );        
+        initTextField(40, 40,40 +(col*40) ,40 + (lin*40) );  
+        this.setBackground(new Color(0f,0f,1f,0.1f));
     }
     
     public void updateColor(){
@@ -86,8 +104,7 @@ public class Automaton extends TextField{
     public void initTextField(int height, int width, int x, int y){        
         this.setSize(width, height);
         this.setPreferredSize(new Dimension(width,height));        
-        this.setLocation(x, y);              
-        this.setEditable(false);        
+        this.setLocation(x, y);                      
         this.addMouseListener(new MouseAdapter() {
                 @Override
             public void mouseClicked(MouseEvent evt){
