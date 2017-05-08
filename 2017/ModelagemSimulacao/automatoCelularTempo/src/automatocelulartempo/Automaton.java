@@ -5,32 +5,31 @@
  */
 package automatocelulartempo;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.TextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
 
 /**
  *
  * @author root
  */
 public class Automaton extends JPanel{
-    private gameofLife view;
+    private View view;
     private int lin,col;
     private boolean vivo;
+    private Tempo tempoAtual;
     MouseAdapter listener;
     private ConfigMatrix config;
+    private Integer dias;
+    int n_neighborsChuva = 0;
+    int n_neighborsSol = 0;
+    int n_neighborsNublado = 0;
     
     public Automaton(ConfigMatrix configs, int lin, int col, boolean estado,
-            int height, int width,  int x, int y){        
+            int height, int width,  int x, int y, Estados tipo){        
+        this.dias = 0;
         config = configs;
         this.lin = lin;
         this.col = col;
@@ -40,13 +39,20 @@ public class Automaton extends JPanel{
         }else
             this.setBackground(Color.white);        
         initTextField(height, width, x, y);
-       this.setBackground(new Color(0f,0f,1f,0.1f));
+        this.setBackground(new Color(0f,0f,1f,0.1f));
+        this.tempoAtual = new Tempo();
+        this.tempoAtual.setTempo(tipo);
     }
    
+    
+    //método de instanciação inicial
     public Automaton(int lin, int col, boolean estado,
             int height, int width,  int x, int y){        
         this.lin = lin;
-        this.col = col;
+        this.col = col;        
+        this.tempoAtual = new Tempo();
+        tempoAtual.randomTempo();
+               
         
 //        vivo = estado;
 //        if(vivo){
@@ -55,8 +61,9 @@ public class Automaton extends JPanel{
 //            this.setBackground(Color.white);
         //test de cor
         initTextField(height, width, x, y);
-        this.setBackground(new Color(0f,0f,1f,0.1f));
-       
+        this.dias = 0;
+        initColor(); 
+        
     }
     
     public Automaton(int height, int width, int x, int y){
@@ -67,31 +74,32 @@ public class Automaton extends JPanel{
         this.setPreferredSize(new Dimension(width,height));        
         
         this.setLocation(x, y);                      
+        initColor();
     }
     
-    public Automaton(int lin, int col, boolean estado, gameofLife view, ConfigMatrix configs){
+    public Automaton(int lin, int col, boolean estado, View view, ConfigMatrix configs){
         this.config = configs;
         this.view = view;
         this.lin = lin;
         this.col = col;
         vivo = estado;
-        if(vivo){
-            this.setBackground(Color.black);
-        }else
-            this.setBackground(Color.white);
-        initTextField(20, 40,20 +(col*40) ,40 + (lin*40) );        
-        this.setBackground(new Color(0f,0f,1f,0.1f));
+//        if(vivo){
+//            this.setBackground(Color.black);
+//        }else
+//            this.setBackground(Color.white);
+//        initTextField(20, 40,20 +(col*40) ,40 + (lin*40) );        
+        initColor();
     }
     
     
-    public Automaton(int lin, int col, boolean estado, gameofLife view){
+    public Automaton(int lin, int col, boolean estado, View view){
         this.view = view;
         this.lin = lin;
         this.col = col;
         vivo = estado;
         updateColor();
         initTextField(40, 40,40 +(col*40) ,40 + (lin*40) );  
-        this.setBackground(new Color(0f,0f,1f,0.1f));
+        initColor();
     }
     
     public void updateColor(){
@@ -110,11 +118,11 @@ public class Automaton extends JPanel{
             public void mouseClicked(MouseEvent evt){
                     //System.out.println("Celula i=" + lin + " j =" + col);                    
                     //view.newGenerationInserted(lin,col);
-                    if(!vivo){
-                        vivo = true;
-                    }else
-                        vivo = false;                    
-                    updateColor();
+//                    if(!vivo){
+//                        vivo = true;
+//                    }else
+//                        vivo = false;                    
+//                    updateColor();
                     config.updateMatrix();
             }                               
         });
@@ -129,6 +137,23 @@ public class Automaton extends JPanel{
         return this.vivo;        
     }
     
+    public Estados getTempo(){
+        return tempoAtual.getTempo();        
+    }
+    
+   public void setTempo(Estados novo){
+       this.tempoAtual.setTempo(novo);
+       this.dias = 0;
+   }
+    
+   public Integer contDays(){
+       return this.dias;
+   }
+   
+   public void incDays(){
+       this.dias++;
+   }
+   
     public int getLin(){
         return lin;
     }
@@ -150,5 +175,29 @@ public class Automaton extends JPanel{
     Exemplo a11
     A (l,c) = a(l-1,c), a(l-1,c), a(l,c-1), a(l,c+1)
     */
+    
+    public void initColor(){
+        switch(tempoAtual.getTempo()){
+            case CHUVA:
+                //Azul
+                this.setBackground(new Color(0f,0f,1f,0.1f));
+                break;
+            case SOL:
+                //Amarelo
+                this.setBackground(new Color(1f,1f,0f,0.3f));
+                break;
+            case NUBLADO:
+                //Cinza
+                this.setBackground(new Color(1f,01f,1f,0.5f));
+                break;                
+        }
+        
+    }
+    
+    public void updatevizinho(int n_neighborsChuva, int n_neighborsSol, int n_neighborsNublado){
+        this.n_neighborsChuva = n_neighborsChuva;
+        this.n_neighborsNublado = n_neighborsNublado;
+        this.n_neighborsSol = n_neighborsSol;
+    }
     
 }

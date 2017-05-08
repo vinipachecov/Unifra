@@ -11,12 +11,12 @@ package automatocelulartempo;
  */
 public class ConfigMatrix extends javax.swing.JFrame {
     Matrix mat;
-    gameofLife view;
+    View view;
     /**
      * Creates new form ConfigMatrix
      */
     
-    public ConfigMatrix(int dim, gameofLife view) {
+    public ConfigMatrix(int dim, View view) {
         
         initComponents();
         this.setTitle("Configurar Matriz do Inicial");        

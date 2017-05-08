@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.vinipachecov.aula0505.MainActivity">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_gravity="center"
+        android:src="@drawable/si_unifra"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/linearLayout"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/linearLayout"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toRightOf="@+id/linearLayout">
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonJava1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="java1Click"
+        android:text="Animação Java 1"
+        app:layout_constraintRight_toLeftOf="@+id/buttonJava2"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/buttonJava2"
+        tools:layout_constraintBaseline_creator="1"
+        android:layout_marginRight="8dp" />
+
+    <Button
+        android:id="@+id/buttonJava2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="java2Click"
+        android:text="Animação Java 2"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSlide"
+        android:layout_marginEnd="34dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="14dp"
+        android:layout_marginRight="34dp" />
+
+    <Button
+        android:id="@+id/buttonPiscar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="piscarClick"
+        android:text="Piscar"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/buttonZoom"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintLeft_toLeftOf="@+id/buttonJava1" />
+
+    <Button
+        android:id="@+id/buttonMover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="moverClick"
+        android:text="Mover"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/buttonGirar"
+        app:layout_constraintRight_toRightOf="@+id/buttonGirar"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="22dp"
+        app:layout_constraintLeft_toLeftOf="@+id/buttonGirar" />
+
+    <Button
+        android:id="@+id/buttonSlide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="slideClick"
+        android:text="Slide"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/buttonFade"
+        app:layout_constraintRight_toRightOf="@+id/buttonJava2"
+        android:layout_marginBottom="22dp" />
+
+    <Button
+        android:id="@+id/buttonZoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="zoomClick"
+        android:text="Zoom"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="@+id/buttonPiscar"
+        app:layout_constraintBaseline_toBaselineOf="@+id/buttonGirar"
+        tools:layout_constraintBaseline_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/buttonPiscar" />
+
+    <Button
+        android:id="@+id/buttonGirar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="girarClick"
+        android:text="Girar"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="115dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <Button
+        android:id="@+id/buttonFade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="fadeClick"
+        android:text="Fade"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="@+id/buttonSlide"
+        app:layout_constraintBaseline_toBaselineOf="@+id/buttonGirar"
+        tools:layout_constraintBaseline_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/buttonSlide" />
+
+</android.support.constraint.ConstraintLayout>
