@@ -180,15 +180,15 @@ public class Automaton extends JPanel{
         switch(tempoAtual.getTempo()){
             case CHUVA:
                 //Azul
-                this.setBackground(new Color(0f,0f,1f,0.1f));
+                this.setBackground(new Color(0f,0f,1f,0.35f));
                 break;
             case SOL:
                 //Amarelo
-                this.setBackground(new Color(1f,1f,0f,0.3f));
+                this.setBackground(new Color(1f,1f,0f,0.4f));
                 break;
             case NUBLADO:
                 //Cinza
-                this.setBackground(new Color(1f,01f,1f,0.5f));
+                this.setBackground(new Color(0.7f,0.7f,0.7f,0.5f));
                 break;                
         }
         

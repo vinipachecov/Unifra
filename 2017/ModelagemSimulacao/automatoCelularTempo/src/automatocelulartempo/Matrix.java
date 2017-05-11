@@ -201,27 +201,15 @@ public class Matrix {
         }
 
         
-        System.out.println("Celula i = " + i + " j = " + j);
-        System.out.println("Numeros de vizinhos com chuva = "+n_neighborsChuva);
-         System.out.println("Numeros de vizinhos com nublado = "+n_neighborsNublado);
-          System.out.println("Numeros de vizinhos com sol = "+n_neighborsSol);
+//        System.out.println("Celula i = " + i + " j = " + j);
+//        System.out.println("Numeros de vizinhos com chuva = "+n_neighborsChuva);
+//         System.out.println("Numeros de vizinhos com nublado = "+n_neighborsNublado);
+//          System.out.println("Numeros de vizinhos com sol = "+n_neighborsSol);
           
          this.mEstados.matrix[i][j].updatevizinho(n_neighborsChuva, n_neighborsSol, n_neighborsNublado);
     }
     
-//    public Automaton newCell(int i, int j, int n_neighborsAlive){
-//        //verifica estados da vizinhanca e aplica regra        
-//        Automaton novo;
-//        if(n_neighborsAlive > 2){
-//            novo = new Automaton(i, j, false,view);
-//        }
-//        else if(n_neighborsAlive == 0){            
-//            novo = new Automaton(i, j, mat[i][j].getState(),view);
-//        }else
-//            novo = new Automaton(i, j, true,view);        
-//        
-//        return novo;        
-//    }    
+
     
     public void newCell(int i, int j){
         boolean mudoutempo = false;
@@ -284,7 +272,7 @@ public class Matrix {
                 newCell(i, j);
             }
         }          
-        this.printStates();        
+        //this.printStates();        
        
     }
     

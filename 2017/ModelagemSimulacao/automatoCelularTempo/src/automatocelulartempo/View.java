@@ -13,9 +13,8 @@ import javax.swing.JOptionPane;
  */
 public class View extends javax.swing.JFrame {    
     Matrix mat;
-    public int cont_geracao;
+    public int cont_dias;
     private MatrixImagePanel matrixpanel;  
-    public MatrixEstados test;
     public int dim;
     /**
      * Creates new form gameofLife
@@ -24,15 +23,14 @@ public class View extends javax.swing.JFrame {
         this.setTitle("Game of Life");
         initComponents();
         
-        cont_geracao = 0;
-        contGeracaoLabel.setText("Geração: " + cont_geracao);
+        cont_dias = 0;        
      
 //        int dim = Integer.parseInt(JOptionPane.showInputDialog(null,
 //                "Insira a dimensao da matriz"));        
         dim = 42;
         mat = new Matrix(dim,dim, this);       
         
-        mat.printStates();
+        
                         
         
         layerpanel.remove(mapars);
@@ -57,14 +55,17 @@ public class View extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jButton1 = new javax.swing.JButton();
         rulesPanel = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         contGeracaoLabel = new javax.swing.JLabel();
         newGenerationButton = new javax.swing.JToggleButton();
-        newMatrix = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
         layerpanel = new javax.swing.JLayeredPane();
         mapars = new javax.swing.JLabel();
 
@@ -75,75 +76,88 @@ public class View extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(600, 600));
 
-        jLabel3.setText("Regras");
+        jLabel2.setText("Se o estado for nublado e tiver 4 ou mais vizinhos nublados, muda para chuva.");
 
-        jLabel2.setText("Se uma célula não tiver vizinhos vivos, ela mantêm o estado.");
+        jLabel1.setText("Se o estado for Sol e tiver 4 ou mais vizinhos nublados,  muda para nublado.");
 
-        jLabel1.setText("Se uma célula tiver um vizinho vivo, ela nasce ou segue viva.");
+        jLabel4.setText("Se o estado for Sol e tiver 5 ou mais vizinhos com chuva, muda para chuva.");
 
-        jLabel4.setText("Se uma célula tiver dois vizinho vivo, ela nasce ou segue viva.");
+        contGeracaoLabel.setText("Dia");
 
-        jLabel5.setText("S.e uma célula tiver dois ou mais vizinhos vivo, ela morre por superpopulação");
-
-        contGeracaoLabel.setText("Geração");
-
-        newGenerationButton.setText("Nova Geração");
+        newGenerationButton.setText("Próximo Dia");
         newGenerationButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 newGenerationButtonMouseClicked(evt);
             }
         });
 
-        newMatrix.setText("Configurar Matriz");
-        newMatrix.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                newMatrixMouseClicked(evt);
-            }
-        });
-        newMatrix.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newMatrixActionPerformed(evt);
-            }
-        });
+        jLabel6.setText("Regras de Vizinhança");
+
+        jLabel3.setText("Regras");
+
+        jLabel7.setText("Regras de contagem de dias");
+
+        jLabel8.setText("Se o estado for nublado por mais de um dia, o tempo muda para chuva.");
+
+        jLabel9.setText("Se o estado for Sol por mais de 2 dias, ele vira nublado.");
+
+        jLabel10.setText("Se o estado for chuva, no próximo dia será Sol.");
 
         javax.swing.GroupLayout rulesPanelLayout = new javax.swing.GroupLayout(rulesPanel);
         rulesPanel.setLayout(rulesPanelLayout);
         rulesPanelLayout.setHorizontalGroup(
             rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rulesPanelLayout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
+                .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel4))
+                .addContainerGap())
             .addGroup(rulesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5)
                     .addGroup(rulesPanelLayout.createSequentialGroup()
-                        .addComponent(contGeracaoLabel)
-                        .addGap(71, 71, 71)
-                        .addComponent(newGenerationButton)
                         .addGap(18, 18, 18)
-                        .addComponent(newMatrix)))
-                .addContainerGap(381, Short.MAX_VALUE))
+                        .addComponent(contGeracaoLabel)
+                        .addGap(53, 53, 53)
+                        .addComponent(newGenerationButton))
+                    .addComponent(jLabel3)
+                    .addGroup(rulesPanelLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         rulesPanelLayout.setVerticalGroup(
             rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rulesPanelLayout.createSequentialGroup()
-                .addContainerGap(33, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel8)
+                .addGap(7, 7, 7)
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
-                .addGap(23, 23, 23)
+                .addGap(45, 45, 45)
                 .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(contGeracaoLabel)
-                    .addComponent(newGenerationButton)
-                    .addComponent(newMatrix)))
+                    .addComponent(newGenerationButton)))
         );
 
         layerpanel.setBackground(new java.awt.Color(215, 220, 225));
@@ -157,17 +171,19 @@ public class View extends javax.swing.JFrame {
         layerpanel.setLayout(layerpanelLayout);
         layerpanelLayout.setHorizontalGroup(
             layerpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 908, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
             .addGroup(layerpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layerpanelLayout.createSequentialGroup()
-                    .addComponent(mapars, javax.swing.GroupLayout.PREFERRED_SIZE, 908, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(mapars, javax.swing.GroupLayout.PREFERRED_SIZE, 928, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 20, Short.MAX_VALUE)))
         );
         layerpanelLayout.setVerticalGroup(
             layerpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 711, Short.MAX_VALUE)
+            .addGap(0, 769, Short.MAX_VALUE)
             .addGroup(layerpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(mapars, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 711, Short.MAX_VALUE))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layerpanelLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(mapars, javax.swing.GroupLayout.PREFERRED_SIZE, 769, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -175,20 +191,19 @@ public class View extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(layerpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rulesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addComponent(layerpanel, javax.swing.GroupLayout.PREFERRED_SIZE, 926, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(rulesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(layerpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rulesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(326, 326, 326))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(layerpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -198,8 +213,7 @@ public class View extends javax.swing.JFrame {
         // TODO add your handling code here:
         //        
         //update matrix (remove older to replace for the newer)
-      this.mat.newGeneration();      
-      mat.printStates();
+      this.mat.newGeneration();            
       this.newGenerationButton.setSelected(false);
       
       
@@ -209,21 +223,10 @@ public class View extends javax.swing.JFrame {
         //DesenhaMatriz(dim,dim);
         //layerpanel.add(mapars);
         this.repaint();        
-        contGeracaoLabel.setText("Geração " + ++cont_geracao);
+        contGeracaoLabel.setText(++cont_dias +"° Dia" );
         
         
     }//GEN-LAST:event_newGenerationButtonMouseClicked
-
-    private void newMatrixMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newMatrixMouseClicked
-        // TODO add your handling code here:
-        removeMatrix();
-        
-        
-    }//GEN-LAST:event_newMatrixMouseClicked
-
-    private void newMatrixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMatrixActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_newMatrixActionPerformed
 
     /**
      * @param args the command line arguments
@@ -350,15 +353,18 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JLabel contGeracaoLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JLayeredPane layerpanel;
     private javax.swing.JLabel mapars;
     private javax.swing.JToggleButton newGenerationButton;
-    private javax.swing.JButton newMatrix;
     private javax.swing.JPanel rulesPanel;
     // End of variables declaration//GEN-END:variables
 }
