@@ -5,6 +5,7 @@
  */
 package automatocelulartempo;
 
+import java.awt.Color;
 import javax.swing.JOptionPane;
 
 /**
@@ -16,6 +17,7 @@ public class View extends javax.swing.JFrame {
     public int cont_dias;
     private MatrixImagePanel matrixpanel;  
     public int dim;
+    public Timer t;
     /**
      * Creates new form gameofLife
      */
@@ -38,8 +40,11 @@ public class View extends javax.swing.JFrame {
         DesenhaMatriz(dim,dim);
         layerpanel.add(mapars);
         
-        
-        
+        //legenda sol
+        estadoSol.setBackground(new Color(1f,1f,0f,0.4f));
+        estadoChuva.setBackground(new Color(0f,0f,1f,0.35f));
+        estadoNublado.setBackground(new Color(0.7f,0.7f,0.7f,0.5f));      
+        new Timer(this);                
         
     }
 
@@ -58,16 +63,22 @@ public class View extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        contGeracaoLabel = new javax.swing.JLabel();
-        newGenerationButton = new javax.swing.JToggleButton();
         jLabel6 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
+        estadoSol = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        estadoChuva = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        estadoNublado = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
         layerpanel = new javax.swing.JLayeredPane();
         mapars = new javax.swing.JLabel();
+        contGeracaoLabel = new javax.swing.JLabel();
+        newGenerationButton = new javax.swing.JToggleButton();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -82,15 +93,6 @@ public class View extends javax.swing.JFrame {
 
         jLabel4.setText("Se o estado for Sol e tiver 5 ou mais vizinhos com chuva, muda para chuva.");
 
-        contGeracaoLabel.setText("Dia");
-
-        newGenerationButton.setText("Próximo Dia");
-        newGenerationButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                newGenerationButtonMouseClicked(evt);
-            }
-        });
-
         jLabel6.setText("Regras de Vizinhança");
 
         jLabel3.setText("Regras");
@@ -103,35 +105,92 @@ public class View extends javax.swing.JFrame {
 
         jLabel10.setText("Se o estado for chuva, no próximo dia será Sol.");
 
+        estadoSol.setToolTipText("");
+
+        javax.swing.GroupLayout estadoSolLayout = new javax.swing.GroupLayout(estadoSol);
+        estadoSol.setLayout(estadoSolLayout);
+        estadoSolLayout.setHorizontalGroup(
+            estadoSolLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 95, Short.MAX_VALUE)
+        );
+        estadoSolLayout.setVerticalGroup(
+            estadoSolLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 89, Short.MAX_VALUE)
+        );
+
+        jLabel5.setText("Sol");
+
+        estadoChuva.setToolTipText("");
+
+        javax.swing.GroupLayout estadoChuvaLayout = new javax.swing.GroupLayout(estadoChuva);
+        estadoChuva.setLayout(estadoChuvaLayout);
+        estadoChuvaLayout.setHorizontalGroup(
+            estadoChuvaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 89, Short.MAX_VALUE)
+        );
+        estadoChuvaLayout.setVerticalGroup(
+            estadoChuvaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jLabel11.setText("Chuva");
+
+        estadoNublado.setToolTipText("");
+
+        javax.swing.GroupLayout estadoNubladoLayout = new javax.swing.GroupLayout(estadoNublado);
+        estadoNublado.setLayout(estadoNubladoLayout);
+        estadoNubladoLayout.setHorizontalGroup(
+            estadoNubladoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 95, Short.MAX_VALUE)
+        );
+        estadoNubladoLayout.setVerticalGroup(
+            estadoNubladoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 89, Short.MAX_VALUE)
+        );
+
+        jLabel12.setText("Nublado");
+
         javax.swing.GroupLayout rulesPanelLayout = new javax.swing.GroupLayout(rulesPanel);
         rulesPanel.setLayout(rulesPanelLayout);
         rulesPanelLayout.setHorizontalGroup(
             rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rulesPanelLayout.createSequentialGroup()
-                .addContainerGap(22, Short.MAX_VALUE)
-                .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel4))
-                .addContainerGap())
             .addGroup(rulesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(rulesPanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(contGeracaoLabel)
-                        .addGap(53, 53, 53)
-                        .addComponent(newGenerationButton))
-                    .addComponent(jLabel3)
-                    .addGroup(rulesPanelLayout.createSequentialGroup()
-                        .addGap(12, 12, 12)
                         .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel10))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rulesPanelLayout.createSequentialGroup()
+                                .addGap(0, 10, Short.MAX_VALUE)
+                                .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel4)))
+                            .addGroup(rulesPanelLayout.createSequentialGroup()
+                                .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addGroup(rulesPanelLayout.createSequentialGroup()
+                                        .addGap(12, 12, 12)
+                                        .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel8)
+                                            .addComponent(jLabel7)
+                                            .addComponent(jLabel9)
+                                            .addComponent(jLabel10))))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .addGroup(rulesPanelLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(estadoSol, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(estadoNublado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12))
+                        .addGap(14, 14, 14)
+                        .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel11)
+                            .addComponent(estadoChuva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         rulesPanelLayout.setVerticalGroup(
             rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -146,7 +205,7 @@ public class View extends javax.swing.JFrame {
                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addGap(38, 38, 38)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
@@ -154,10 +213,18 @@ public class View extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
-                .addGap(45, 45, 45)
-                .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(contGeracaoLabel)
-                    .addComponent(newGenerationButton)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
+                .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel12)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(rulesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(estadoChuva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(estadoNublado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(estadoSol, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(92, 92, 92))
         );
 
         layerpanel.setBackground(new java.awt.Color(215, 220, 225));
@@ -186,24 +253,45 @@ public class View extends javax.swing.JFrame {
                     .addComponent(mapars, javax.swing.GroupLayout.PREFERRED_SIZE, 769, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
+        contGeracaoLabel.setText("Dia");
+
+        newGenerationButton.setText("Próximo Dia");
+        newGenerationButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                newGenerationButtonMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(layerpanel, javax.swing.GroupLayout.PREFERRED_SIZE, 926, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                .addComponent(rulesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                        .addComponent(rulesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addComponent(contGeracaoLabel)
+                        .addGap(43, 43, 43)
+                        .addComponent(newGenerationButton)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rulesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(326, 326, 326))
-            .addGroup(layout.createSequentialGroup()
                 .addComponent(layerpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(rulesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(contGeracaoLabel)
+                    .addComponent(newGenerationButton))
+                .addGap(191, 191, 191))
         );
 
         pack();
@@ -215,15 +303,10 @@ public class View extends javax.swing.JFrame {
         //update matrix (remove older to replace for the newer)
       this.mat.newGeneration();            
       this.newGenerationButton.setSelected(false);
-      
-      
-//      
-        //layerpanel.remove(mapars);
-//    
-        //DesenhaMatriz(dim,dim);
-        //layerpanel.add(mapars);
-        this.repaint();        
-        contGeracaoLabel.setText(++cont_dias +"° Dia" );
+
+
+      this.repaint();        
+      contGeracaoLabel.setText(++cont_dias +"° Dia" );
         
         
     }//GEN-LAST:event_newGenerationButtonMouseClicked
@@ -231,64 +314,15 @@ public class View extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-//    
-//    public void setMatrix(Matrix newMat){
-//        removeMatrix();   
-//        mat = newMat;
-//        newGenerationButton.setEnabled(true);
-//        //disableClick();             
-//        DesenhaMatriz(mat.getLins(), mat.getCols());
-//        mat.printStates();
-//    }
-//    
+
+    public void mudaGeracao(){
+        this.mat.newGeneration();            
+      this.newGenerationButton.setSelected(false);      
+       this.repaint();        
+        contGeracaoLabel.setText(++cont_dias +"° Dia" );
+    }
     
-    
-//    public void newGeneration(){
-//          if(mat != null){
-//            for (int i = 0; i < mat.getLins(); i++) {
-//                for (int j = 0; j < mat.getCols(); j++) {
-//                    //this.remove(mat.getCell(i, j));
-//                    painelMatrix.remove(mat.getCell(i,j));
-//                }                
-//            }
-//        }        
-//        mat = mat.newGeneration(this);
-//        DesenhaMatriz(mat.getLins(), mat.getCols());
-//        newGenerationButton.setSelected(false);
-//        cont_geracao++;
-//        contGeracaoLabel.setText("Geração: " + cont_geracao);        
-//    }
-    
-//     public void newGenerationInserted(int i , int j){
-//         
-//         
-//        //remove cells from GUI
-//        for (int k = 0; k < mat.getLins(); k++) {
-//            for (int l = 0; l < mat.getCols(); l++) {                
-//                painelMatrix.remove(mat.getCell(i,j));
-//            }                
-//        }
-//
-//        //check if clicked block has to change it's state
-//        // if it's alive keep alive
-//        // if it's dead switch to FrankenAlive         
-////        
-//        if(!mat.mat[i][j].getState()){
-//            System.out.println("Modificou o i = " + i + " j = " + j );
-//            mat.mat[i][j] = new Automaton(i,j,!mat.mat[i][j].getState(),this);
-//            System.out.println("Nova matriz com o automato clicado alterado");    
-//            mat.printStates();
-//        }
-//                    
-//        mat = mat.newGeneration(this);
-//                
-//        DesenhaMatriz(mat.getLins(), mat.getCols());
-//        this.repaint();
-//        newGenerationButton.setSelected(false);
-//        cont_geracao++;
-//        contGeracaoLabel.setText("Geração: " + cont_geracao);        
-//    }
-//     
+
     public void removeMatrix(){
         for (int k = 0; k < mat.getLins(); k++) {
             for (int l = 0; l < mat.getCols(); l++) {                
@@ -298,12 +332,7 @@ public class View extends javax.swing.JFrame {
     }
 //    
     public void DesenhaMatriz(int lins, int cols){        
-        // blocos de 40x40                
-//        for (int i = 0; i < lins; i++) {
-//            for (int j = 0; j < cols; j++) {                                
-//                this.add(mat.getCell(i, j));                
-//            }            
-//        }
+
         for (int i = 0; i < lins; i++) {
             for (int j = 0; j < cols; j++) {                                
                 layerpanel.add(mat.getCell(i, j), 2);                
@@ -351,12 +380,18 @@ public class View extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel contGeracaoLabel;
+    private javax.swing.JPanel estadoChuva;
+    private javax.swing.JPanel estadoNublado;
+    private javax.swing.JPanel estadoSol;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;

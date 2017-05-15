@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">internationalisation</string>
     <string name="txt_nome"> Nom</string>
     <string name="txt_endereco"> Addresse</string>
     <string name="txt_enviar"> Envoyer</string>

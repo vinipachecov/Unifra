@@ -89,7 +89,7 @@ public class Matrix {
         for (int i = 0; i < lins; i++) {
             for (int j = 0; j < cols; j++) {
                // this.mat[i][j] = new Automaton(i,j,false, view);               
-                this.mat[i][j] = new Automaton(i, j, false, 20 , 20 , 0 + (j * 22), 0 + (i * 22));
+                this.mat[i][j] = new Automaton(i, j, false, 10 , 10 , 0 + (j * 22), 0 + (i * 22));
             }            
         }
         //teste
@@ -222,7 +222,7 @@ public class Matrix {
             mudoutempo = true;
         }
         
-        if(mEstados.matrix[i][j].getTempo() == Estados.CHUVA && this.mat[i][j].contDays() > 0){
+        if(mEstados.matrix[i][j].getTempo() == Estados.CHUVA && this.mat[i][j].contDays() > 1){
             this.mat[i][j].setTempo(Estados.SOL);
             mudoutempo = true;
         }

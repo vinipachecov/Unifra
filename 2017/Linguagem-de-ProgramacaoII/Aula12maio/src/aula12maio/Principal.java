@@ -1,4 +1,4 @@
-package aula28abril;
+package aula12maio;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
-
+/*
+Criar uma tela de login e logar consultando no banco do colega********
+*/
 public class Principal extends javax.swing.JFrame {
     
     public Connection c;
@@ -94,7 +96,7 @@ public class Principal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Nome", "Email", "Cargo"
+                "ID", "Nome", "Senha"
             }
         ));
         jScrollPane1.setViewportView(tabelaBanco);
@@ -205,7 +207,7 @@ public class Principal extends javax.swing.JFrame {
    
     public void conectar() {
       try {
-        String url = "jdbc:mysql://localhost:3306/Aula03agenda?user=root&password=";   
+        String url = "jdbc:mysql://172.25.1.16:3306/Forum?user=root&password=usrlab";   
         //String url = "localhost:3306/Aula03agenda?user=root&password=root";   
         Class.forName("com.mysql.jdbc.Driver").newInstance();
         System.out.println(url);
@@ -224,24 +226,28 @@ public class Principal extends javax.swing.JFrame {
         String column;        
         int columnCount;
         updateTable();
-        ArrayList<String> valores = new ArrayList<String>();
+        ArrayList<String> valores = new ArrayList<String>();        
         try {   
              
-           query = "select * from Funcionario";
+           query = "select * from usuario";
+            
            //confirmar/homologar a conexão com o banco de dados
            Statement st = (Statement) c.createStatement();
+           
            //retorno da execução do comando SQL
-           ResultSet rs = st.executeQuery(query);   
+           ResultSet rs = st.executeQuery(query);              
            //get properties of the table ( columns etc..)
-           ResultSetMetaData rsmd = rs.getMetaData();           
+           ResultSetMetaData rsmd = rs.getMetaData();             
            columnCount = rsmd.getColumnCount();           
             
-           
+            
            if (rs != null) { // Verifica se a query retornou algo
               while (rs.next()) {
                   
                   //do it with a while for plenty of values
                   for (int i = 1; i <= columnCount; i++) {
+                      System.out.println(rs.getString(i));
+                              
                       valores.add(rs.getString(i));                       
                   }
                   
@@ -338,6 +344,7 @@ public class Principal extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
