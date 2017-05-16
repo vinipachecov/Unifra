@@ -199,6 +199,7 @@
         android:id="@+id/nacionalidadeSpinner"
         android:background="@color/corfundoTexto"
         android:hint = "@string/Nacionalidade"
+
         android:textColor="@color/CorUnderline"
         android:textColorHint="@color/corTexto"
         android:layout_width="0dp"
