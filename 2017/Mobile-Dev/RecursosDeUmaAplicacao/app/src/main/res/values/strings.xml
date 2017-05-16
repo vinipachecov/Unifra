@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Recursos De Uma Aplicacao</string>
+    <string name="Login">Nome do seu usuario</string>
+    <string name="NomeCompleto">João da Silva</string>
+    <string name="Senha">********</string>
+    <string name="RepitaSenha">********</string>
+    <string name="Nacionalidade">Sua Nacionalidade</string>
+    <string name="Email">meuemail@email.com</string>
+    <string name="CadastrarButton">Cadastrar</string>
+</resources>
