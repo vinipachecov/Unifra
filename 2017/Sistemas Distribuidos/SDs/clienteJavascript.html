@@ -1,0 +1,45 @@
+<html>
+
+<body>
+
+<!-- requisição com POST -->
+
+<script>
+var xmlHttp = new XMLHttpRequest();
+xmlHttp.open( "POST", "http://localhost/SDs/servidor.php", true ); // false for synchronous request
+xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xmlHttp.send("parametro1=2&parametro2=6");
+xmlHttp.addEventListener("readystatechange", processRequest, false);
+
+function processRequest(e) {
+    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+        var response = xmlHttp.responseText;
+        alert(response);
+    }
+}
+
+</script>
+
+<!--  Requisição via GET-->
+<!-- <script type="text/javascript">
+
+var xmlHttp = new XMLHttpRequest();
+xmlHttp.open( "GET", "http://localhost/SDs/servidor.php?parametro1=100&parametro2=60", true ); // false for synchronous request
+
+xmlHttp.send();
+xmlHttp.addEventListener("readystatechange", processRequest, false);
+
+function processRequest(e) {
+    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+        var response = xmlHttp.responseText;
+        alert(response);
+    }
+}
+
+</script> -->
+
+</script>
+
+<body>
+
+</html>
