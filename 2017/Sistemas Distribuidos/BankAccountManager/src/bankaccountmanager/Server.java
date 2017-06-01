@@ -109,21 +109,15 @@ public class Server extends javax.swing.JFrame {
             
             logJTA.append("Server Started with Success" + '\n');            
         } catch (Exception e) {
-        }
-        
-        
+        }                
         //Creation of a inline thread to wait clients (so it doesn't block the main thread (graphic interface*))
         new Thread(){
             public void run(){
-                try {            
-                    
-                    
+                try {                                
                     //wait connection of a clinet
                     while(true){
-                        Socket client = server.accept();     
-                        
-                        //
-                        
+                        Socket client = server.accept();                             
+                        //                        
                         //add client to our client list
                         logJTA.append("Cliente " + client.getInetAddress() + client.getPort() + "has connected" +  '\n');
                         clientList.add(client);

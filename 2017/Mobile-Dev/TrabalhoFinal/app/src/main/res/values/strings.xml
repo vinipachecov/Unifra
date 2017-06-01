@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">TrabalhoFinal</string>
+    <string name="moodleName">Moodle</string>
+    <string name="gradeIcon">Notas</string>
+    <string name="bills">Boletos</string>
 </resources>
