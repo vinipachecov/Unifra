@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.vinipachecov.secondscreenbeveragepreferences.SecondScreen">
+
+    <TextView
+        android:id="@+id/NometextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome"
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="43dp"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="39dp" />
+
+    <TextView
+        android:id="@+id/telefoneTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Telefone"
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/NometextView"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="39dp" />
+
+    <TextView
+        android:id="@+id/sexotextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sexo"
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="26dp"
+        app:layout_constraintTop_toBottomOf="@+id/telefoneTextView"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="39dp" />
+
+    <ListView
+        android:id="@+id/bebidas"
+        android:layout_width="378dp"
+        android:layout_height="187dp"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginTop="41dp"
+        app:layout_constraintTop_toBottomOf="@+id/sexotextView"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp" />
+
+</android.support.constraint.ConstraintLayout>

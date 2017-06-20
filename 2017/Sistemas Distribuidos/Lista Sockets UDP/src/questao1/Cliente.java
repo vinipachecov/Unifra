@@ -1,8 +1,8 @@
 package questao1;
 
 
-import lista.sockets.udp.*;
-import com.sun.glass.events.KeyEvent;
+
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

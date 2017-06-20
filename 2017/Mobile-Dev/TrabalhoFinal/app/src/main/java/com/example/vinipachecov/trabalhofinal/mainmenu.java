@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 public class mainmenu extends AppCompatActivity {
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,7 +15,17 @@ public class mainmenu extends AppCompatActivity {
     }
 
     public void openMoodle(View v){
-        Intent intent = new Intent(this, MoodleList.class);
+        intent = new Intent(this, MoodleList.class);
+        startActivity(intent);
+    }
+
+    public void abrirNotas(View v){
+        intent = new Intent(this, Notas.class);
+        startActivity(intent);
+    }
+
+    public void abrirBoleto(View v){
+        intent = new Intent(this, Boletos.class);
         startActivity(intent);
     }
 }

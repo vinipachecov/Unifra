@@ -20,6 +20,7 @@ public class Multicast{
     String ipAddress;
     InetAddress grupo;
     JTextArea chat;
+    
     JList<String> listaClientes;
     int lineCount;
     private DefaultListModel listModel;    

@@ -3,4 +3,6 @@
     <string name="moodleName">Moodle</string>
     <string name="gradeIcon">Notas</string>
     <string name="bills">Boletos</string>
+    <string name="Tópicos">Tópicos</string>
+    <string name="Conteúdo">Conteúdo</string>
 </resources>

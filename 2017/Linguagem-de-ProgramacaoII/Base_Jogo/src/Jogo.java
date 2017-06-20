@@ -1,4 +1,3 @@
-
 import java.awt.event.KeyEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,18 +17,19 @@ import javax.swing.JOptionPane;
  */
 public class Jogo extends javax.swing.JFrame{
 
-    int portaLocal = 0;
-    String IPRemoto = "";
-    int portaRemota=0;
+    int portaPlayer1 = 0;
+    String ipPlayer2 = "";
+    int portaPlayer2=0;
     /**
      * Creates new form Jogo
      */
     public Jogo() {
         initComponents();
         
-        portaLocal = Integer.parseInt(JOptionPane.showInputDialog("Digite o número da sua porta"));
-        IPRemoto = JOptionPane.showInputDialog("Digite o número IP do adversário");
-        portaRemota = Integer.parseInt(JOptionPane.showInputDialog("Digite o número da porta do adversário"));
+        portaPlayer1 = Integer.parseInt(JOptionPane.showInputDialog("Digite o número da sua porta"));
+        //ipPlayer2 = JOptionPane.showInputDialog("Digite o número IP do adversário");
+        ipPlayer2 = "127.0.0.1";
+        portaPlayer2 = Integer.parseInt(JOptionPane.showInputDialog("Digite o número da porta do adversário"));
         
         Thread thread = new Thread() {  
            @Override
@@ -50,11 +50,22 @@ public class Jogo extends javax.swing.JFrame{
           */
        
     }
-    
-    
+        
     public void inicializaServidor(){      
         try{ 
-             ServerSocket servidor = new ServerSocket(portaLocal);
+             ServerSocket servidor = new ServerSocket(portaPlayer1);
+         // ServerSocket servidor = new ServerSocket(Integer.parseInt(this.jTFPortaLocal.getText()));
+          while (true) {
+             Socket s = servidor.accept();         
+             DataInputStream entrada = new DataInputStream(s.getInputStream()); 
+             String posicaoX = entrada.readUTF();            
+             DataOutputStream saida = new DataOutputStream(s.getOutputStream());
+             saida.writeUTF("");           
+             jPanel1.setLocation(Integer.parseInt(posicaoX), jPanel1.getY());
+          } 
+       } catch(Exception e){}
+        try{ 
+             ServerSocket servidor = new ServerSocket(portaPlayer2);
          // ServerSocket servidor = new ServerSocket(Integer.parseInt(this.jTFPortaLocal.getText()));
           while (true) {
              Socket s = servidor.accept();         
@@ -67,34 +78,18 @@ public class Jogo extends javax.swing.JFrame{
        } catch(Exception e){}
     }
         
-    public void moverDireita(int valor) { 
+    public void move(int valor) { 
         try{
           // Socket s = new Socket(this.jTFIPremoto.getText(), Integer.parseInt(this.jTFPortaRemota.getText())); 
-           Socket s = new Socket(IPRemoto, portaRemota); 
+           Socket s = new Socket(ipPlayer2, portaPlayer2); 
            DataOutputStream saida = new DataOutputStream(s.getOutputStream()); 
-           saida.writeUTF(valor+"");                 
+           saida.writeUTF(Integer.toString(valor));                 
            DataInputStream entrada = new DataInputStream(s.getInputStream()); 
            String MsgRecebida = entrada.readUTF();    
-            System.out.println(valor);
+            System.out.println("Mensagem recebida " + MsgRecebida);
      } catch(Exception e){
        }
     }
-    
-     public void moverEsquerda(int valor) { 
-        try{
-           Socket s = new Socket(IPRemoto, portaRemota); 
-           DataOutputStream saida = new DataOutputStream(s.getOutputStream()); 
-           saida.writeUTF(valor+"");                 
-           DataInputStream entrada = new DataInputStream(s.getInputStream()); 
-           String MsgRecebida = entrada.readUTF();    
-            System.out.println(valor);
-     } catch(Exception e){
-       }
-    }
-    
-    
-    
-    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
@@ -159,14 +154,26 @@ public class Jogo extends javax.swing.JFrame{
             //alterar na minha tela:
             jPanel1.setLocation(jPanel1.getX() + 5, jPanel1.getY());
             //enviar a posicvao ao adversário
-            moverDireita(jPanel1.getX() + 5);
+            move(jPanel1.getX() + 5);
         }
         
         else if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
             //alterar na minha tela:
             jPanel1.setLocation(jPanel1.getX() - 5, jPanel1.getY());
             //enviar a posicvao ao adversário
-             moverEsquerda(jPanel1.getX() - 5);
+             move(jPanel1.getX() - 5);
+        }
+        else if (evt.getKeyCode() == KeyEvent.VK_UP) {
+            //alterar na minha tela:
+            jPanel1.setLocation(jPanel1.getX(), jPanel1.getY() - 5);
+            //enviar a posicvao ao adversário
+             move(jPanel1.getY() + 5);            
+        }
+        else if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
+            //alterar na minha tela:
+            jPanel1.setLocation(jPanel1.getX(), jPanel1.getY() + 5);
+            //enviar a posicvao ao adversário
+             move(jPanel1.getY() - 5);
         }
     }                               
 

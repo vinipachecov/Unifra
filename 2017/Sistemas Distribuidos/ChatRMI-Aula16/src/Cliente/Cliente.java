@@ -26,8 +26,7 @@ public class Cliente extends javax.swing.JFrame {
             //toda mensagem recebida do servidor é adicionada
             //ao textArea do chat
             jTAChat.append(mensagem+"\n");
-        }
-        
+        }        
     }
     
     
@@ -158,8 +157,7 @@ public class Cliente extends javax.swing.JFrame {
     public void enviaMensagem() {
         try {
             String mensagem = jTFNick.getText()+" disse: "+jTFMensagem.getText();
-            chat.enviaMensagem(mensagem);
-            
+            chat.enviaMensagem(mensagem);            
             jTFMensagem.setText("");
         } catch (RemoteException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
