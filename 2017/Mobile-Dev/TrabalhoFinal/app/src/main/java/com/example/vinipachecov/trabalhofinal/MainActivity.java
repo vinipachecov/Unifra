@@ -36,8 +36,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.CookieStore;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -65,27 +71,26 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-//
-//    public void fazGet(String url){
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//
-//// Request a string response from the provided URL.
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-//                new com.android.volley.Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        // Display the first 500 characters of the response string.
-//                        Log.d("Resposta", response);
-//                    }
-//                }, new com.android.volley.Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                System.out.println("deu pau");
-//            }
-//        });
-//// Add the request to the RequestQueue.
-//        queue.add(stringRequest);
-//    }
+    public void fazGet(String url) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+// Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        Log.d("Resposta", response);
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("deu pau");
+            }
+        });
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
 
     // HTTP GET request
     private void sendGet() throws Exception {
@@ -122,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendPost() throws Exception {
         String urlParameters = "Login=2016011370&Senha=Cardalb1";
-        byte[] postData = urlParameters.getBytes( "UTF-8");
+        byte[] postData = urlParameters.getBytes("UTF-8");
         int postDataLength = postData.length;
         String url = "https://wwww.unifra.br/Agenda";
         URL obj = new URL(url);
@@ -135,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         con.setRequestProperty("charset", "utf-8");
-        con.setRequestProperty("Content-Length", Integer.toString(postDataLength ));
+        con.setRequestProperty("Content-Length", Integer.toString(postDataLength));
 
         con.setRequestProperty("User-Agent", USER_AGENT);
 
@@ -173,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void Pst(){
+    public void Pst() {
         try {
             URL url = new URL("http://wwww.unifra.br/Agenda");
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
@@ -203,63 +208,52 @@ public class MainActivity extends AppCompatActivity {
             os.close();
 
             conn.connect();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
 
+//-------------------------
+    CookieManager manager;
+    public void fazPost() {
+        manager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
+        CookieHandler.setDefault(manager);
 
 
-    public void fazPost(){
         RequestQueue queue = Volley.newRequestQueue(this);
-        final String url ="http://wwww.unifra.br/Agenda";
+        final String url = "http://wwww.unifra.br/Agenda";
 
-// Request a string response from the provided URL.
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-//                new com.android.volley.Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        // Display the first 500 characters of the response string.
-//                        System.out.println("Response is: "+ response.substring(0,500));
-//                    }
-//                }, new com.android.volley.Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                System.out.println("deu pau");
-//            }
-//        });
-//// Add the request to the RequestQueue.
-//        queue.add(stringRequest);
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new com.android.volley.Response.Listener<String>()
-                {
+                new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
-                        //Log.i("Resposta: ", "Passou" );
-                        //Log.d("Response", response);
+                        Log.i("Resposta: ", "Passou");
+                        Log.d("Response", response);
                         Document doc = Jsoup.parse(response);
                         System.out.println("DOC: " + doc.head().getElementsByTag("script"));
-                        System.out.println("nova url = " + url + response.substring(44,106));
-                        String novaurl =  url + response.substring(44,106);
+                        System.out.println("nova url = " + url + response.substring(44, 106));
+                        String novaurl = url + response.substring(44, 106);
+                        Log.d("URIS", manager.getCookieStore().getURIs().toString());
+
+                        Log.d("COOKIE", manager.getCookieStore().getCookies().toString());
                         //fazGet(novaurl);
-                        //fazGet("http://wwww.unifra.br/Agenda");//                        .
+                        //fazGet("http://wwww.unifra.br/Agenda");//
+                        fazPost2(novaurl);
                     }
                 },
-                new com.android.volley.Response.ErrorListener()
-                {
+                new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error
-                        Log.d("Error.Response",error.toString());
+                        Log.d("Error.Response", error.toString());
                     }
                 }
         ) {
             @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  params = new HashMap<String, String>();
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("Login", "2016011370");
                 params.put("Senha", "Cardalb1");
 
@@ -270,80 +264,71 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void fazPost2(String novaURL) {
+        /*manager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
+        CookieHandler.setDefault(manager);*/
+        final String url = novaURL;
+        RequestQueue queue = Volley.newRequestQueue(this);
 
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.i("Resposta: ", "Passou");
+                        Log.d("Response", response);
+                        Document doc = Jsoup.parse(response);
+                        System.out.println("DOC: " + doc.head().getElementsByTag("script"));
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Login", "2016011370");
+                params.put("Senha", "Cardalb1");
 
-
-
-
+                return params;
+            }
+        };
+        queue.add(postRequest);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loginscreen);
 
-        EditText login = (EditText)findViewById(R.id.loginTextField);
-        EditText password = (EditText)findViewById(R.id.passwordTextFIeld);
+        EditText login = (EditText) findViewById(R.id.loginTextField);
+        EditText password = (EditText) findViewById(R.id.passwordTextFIeld);
 //
-        new AsyncTask<Void,Void,String>(){
+        new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... params) {
                 try {
-                    //Pst();
+
                     System.out.println("começando a thread");
-                    sendPost();
-                    //sendGet();
-                }catch (Exception e){
+                    fazPost();
+                } catch (Exception e) {
+                }
+                return null;
             }
-            return null;
-        }
 
 
         }.execute();
 
-        //fazPost();
+
+    }
 
 
-
-//           final MediaType JSON
-//                    = MediaType.parse("application/json; charset=utf-8");
-
-        //tarefa asíncrona com okHttp
-//        new AsyncTask<Void,Void, String>(){
-//
-//            @Override
-//            protected String doInBackground(Void... params) {
-//                OkHttpClient client = new OkHttpClient();
-//                RequestBody requestBody = new MultipartBody.Builder()
-//                        .setType(MultipartBody.FORM)
-//                        .addFormDataPart("Login", "2016011370")
-//                        .addFormDataPart("Senha", "Cardalb1")
-//                        .build();
-//
-//                okhttp3.Request request = new okhttp3.Request.Builder()
-//                        .url("http://wwww.unifra.br/Agenda")
-//                        .header("User-Agent", USER_AGENT)
-//                        .method("POST", RequestBody.create(null, new byte[0]))
-//                        .post(requestBody)
-//                        .build();
-//                try {
-//                    Response response = client.newCall(request).execute();
-//                    //System.out.println(response.body().string());
-//                    Log.d(TAG, "doInBackground() body: " + "párams" + response.body().string()  );
-//                    Log.d(TAG, "doInBackground() response: " + "párams" + response.toString()  );//
-//                    return  response.body().string();
-//                }catch (Exception e){
-//
-//                }
-//                return null;
-//
-//            }
-//        }.execute();
-
-
-        }
-
-
-    public void Login(View v){
+    public void Login(View v) {
         Intent intent = new Intent(this, mainmenu.class);
         startActivity(intent);
     }

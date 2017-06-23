@@ -1,0 +1,13 @@
+Baixar - Jogar no navegador
+
+
+Exercício 1 
+https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/vinipachecov/Unifra/tree/master/2017/Mobile-Dev/LoginWithSecondScreen
+
+Exercício 2
+
+https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/vinipachecov/Unifra/tree/master/2017/Mobile-Dev/SecondScreenBeveragePreferences
+
+Exercício 3
+
+https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/vinipachecov/Unifra/tree/master/2017/Mobile-Dev/FakeTinder
