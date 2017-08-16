@@ -1,0 +1,12 @@
+Gerência de Integração
+
+
+TAP
+
+  Equipe
+  Data
+  Escopo ()
+  Cronograma
+  Custo
+  Condção de
+  Riscos

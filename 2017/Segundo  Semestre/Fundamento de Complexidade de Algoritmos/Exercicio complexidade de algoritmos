@@ -1,0 +1,15 @@
+Exercício Complexidade de Algoritmos
+
+1. Determine, apara cada linha de código, o número de instruções
+
+a) x = função(a) + função(b);
+
+3
+
+b) printf("A soma de %d e %d vale %d \n", a, b, soma(a,b));
+
+6
+
+c) vetor[x] = vertor[x] + vetorB[x];
+
+3
