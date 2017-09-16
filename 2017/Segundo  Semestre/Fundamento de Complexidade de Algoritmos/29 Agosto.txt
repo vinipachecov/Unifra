@@ -1,0 +1,143 @@
+d)
+
+do {
+--
+--
+  do {
+  --
+  --
+  --
+    while(){
+    --
+    --      2n
+    }
+  }while(); -> (1 + N) * (3 + 2N)
+--
+}while(); (1 + N) * (2 + (2N² + 5N + 6))
+
+2N³ + 7N² + 11N + 6
+
+e)
+
+while(){
+  while(){
+
+  }
+}
+
+N(3 + 3N + 3)
+N(3N + 6)
+3N² + 6N
+
+Exercícios: Considerando que todos os laços eecutam o mesmo número de repetições
+e cada linha representa uma instrução, calcular o total de instruções
+
+a) while(){
+  --
+  --
+  while(){
+  --
+  --
+  --
+  }
+}
+N * (2 + 3N) = 2N + 3N^2
+
+
+b)
+while(){
+--
+--
+--
+}
+while(){
+--
+--
+}
+3N + 2N
+
+c)
+do {
+  while(){
+  --
+  --
+  --
+  }
+  --
+  --
+}while();
+(1 + n) * (3N + 2)
+3N + 2 + 3N² + 2N
+3N² + 5N + 2
+
+
+f)
+
+do{
+--
+--
+  do{
+    --
+    --
+    --
+  }while(); - > (1 + N) * 3 = 3 + 3N
+  do{
+    --
+    --
+    --
+  }while(); 3 + 3N
+}while(); - > (1 + N) * ( 2 + 6 + 6N)
+
+(1 + N) * ( 8 + 6N) = 8 + 6N +  8N + 6N²
+8 + 14N + 6N²
+
+G)
+
+while(){
+  --
+  --
+}
+--
+--
+while(){  -> N * (2 + 3N) = 2N + 3N²
+  --
+  --
+  while(){   -> 3N
+    --
+    --
+    --
+
+  }
+}
+-- 1
+
+2N + 2 + 2N + 3N² + 1
+
+3N² + 4N + 3
+
+
+
+
+
+
+for(x=0; x < tam; x++){
+  --
+  --
+  --
+}
+
+fórmula 1 * [ini] + n *[incremento] + n * bloco
+
+
+exercício
+
+for(i = 0, j =0, k = 0; i<tam; i++,j++,k--){
+--
+--
+--
+--
+--
+}
+
+1 * 3 + n *[3] + n * [5]
+3 + 3n + 5n = 3 + 8n

@@ -1,0 +1,1 @@
+O resultado é um banco temporal de transação ou evolutivo, pois as compras tem um timestamp referente a data de compra ( transação).

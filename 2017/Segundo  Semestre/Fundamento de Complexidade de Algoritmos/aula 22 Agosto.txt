@@ -1,0 +1,28 @@
+Cálculo de primitivas
+
+  Levantamento do custo, em instruções de atribuição, para que um algoritmo resolva um problema.
+      -> Identificcar as atribuições
+      -> Identificar os laços
+  Determina-se o polinômio para o cálculo do custo computacional.
+
+  Código bubbleSort(int [] vetorA){
+    int aux = 0; // 1
+    int size = vetorA.length, temp; //1
+    int indice = 0, flag = 0; // 2
+    //-- 4
+    while(flag != 1 && aux < size){
+      while(indice < size){
+        if(vetorA[indice] > vetorA[indice + 1]){
+          temp = vetorA[indice+1];
+          VetorA[indice +1 ] = vetorA[indice];
+          vetorA[indice] = temp;
+        }
+      }
+    }
+  }
+
+
+Complexidade =  3n²+ 4
+
+Como posso saber quantas vezes um trecho específico do código (if)
+será executado sendo que ele depende de uma condição?

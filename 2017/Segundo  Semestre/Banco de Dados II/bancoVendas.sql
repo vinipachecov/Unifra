@@ -8,6 +8,9 @@ telefone D_TELEFONE,
 email D_EMAIL,
 CPF D_CPF,
 datanasc D_DATA);
+
+INSERT	INTO CLIENTE(NOME,NUMEROVENDAS,TELEFONE,EMAIL,CPF,DATANASC)
+('Milton Friedman',5000,'5599201920','mfried@gmail.com','49203920392','07-10-1980')
 		
 INSERT	INTO CLIENTE(NOME,NUMEROVENDAS,TELEFONE,EMAIL,CPF,DATANASC)
 VALUES
@@ -102,8 +105,7 @@ END
 SET term ;^
 
 -----------------------------------------------
--- Compra
--- Mudar o codigofornecedor para D_INTEIRO 
+-- Compra 
 -- e ON DELETE CASCADE
 
 CREATE TABLE Compra(
@@ -113,9 +115,12 @@ numeroinf D_INTEIRO,
 subtotal D_DECIMAL,
 desconto D_DECIMAL,
 total D_DECIMAL,
-codigofornecedor D_PK,
+codigofornecedor D_INTEIRO,
 FOREIGN KEY(codigofornecedor) REFERENCES fornecedor(codigo)
 ON UPDATE CASCADE ON DELETE SET null);
+
+
+
 
 INSERT INTO COMPRA (DATACOMPRA, NUMEROINF,SUBTOTAL,DESCONTO,TOTAL,CODIGOFORNECEDOR)
 VALUES
@@ -197,8 +202,8 @@ SET term ;^
 
 -- Produto
 CREATE TABLE Produto(
-codigo D_PK PRIMARY KEY,
-codtipo D_PK,
+codigo D_INTEIRO PRIMARY KEY,
+codtipo D_INTEIRO,
 codmarca D_PK,
 nome D_NOME NOT NULL,
 quantidademinima D_INTEIRO NOT NULL,
@@ -229,15 +234,15 @@ SET term ;^
 
 -- Item Venda
 CREATE TABLE itemvenda(
-codproduto D_PK,
-codvenda D_PK,
+codproduto D_INTEIRO,
+codvenda D_INTEIRO,
 valorunitario D_DECIMAL,
 quantidade D_INTEIRO NOT NULL,
 total D_DECIMAL,
 FOREIGN KEY(codproduto) REFERENCES PRODUTO(codigo)
-ON UPDATE CASCADE ON DELETE SET NULL,
+ON UPDATE CASCADE ON DELETE CASCADE,
 FOREIGN KEY(codvenda) REFERENCES VENDA(codigo)
-ON UPDATE CASCADE ON DELETE SET NULL,
+ON UPDATE CASCADE ON DELETE CASCADE,
 PRIMARY KEY(codproduto,codvenda)
 );
 
@@ -253,20 +258,23 @@ total D_DECIMAL,
 valorunitario D_DECIMAL,
 quantidade D_INTEIRO NOT NULL,
 FOREIGN KEY(codproduto) REFERENCES PRODUTO(codigo)
-ON UPDATE CASCADE ON DELETE SET NULL,
+ON UPDATE CASCADE ON DELETE CASCADE,
 FOREIGN KEY(codcompra) REFERENCES COMPRA(codigo)
-ON UPDATE CASCADE ON DELETE SET NULL,
+ON UPDATE CASCADE ON DELETE CASCADE,
 PRIMARY KEY(codproduto,codcompra)
 );
 
 -----------------------------------------------
 -- Historico Estoque
 
+
+DROP TABLE HISTORICOESTOQUE;
+
 CREATE TABLE historicoestoque(
 codigo D_PK PRIMARY KEY,
-codproduto D_PK,
-codvenda D_PK,
-codcompra D_PK,
+codproduto D_INTEIRO,
+codvenda D_INTEIRO,
+codcompra D_INTEIRO,
 valorunitario D_DECIMAL,
 total D_DECIMAL NOT NULL,
 quantidade D_DECIMAL NOT NULL,
@@ -276,3 +284,13 @@ FOREIGN KEY(codvenda) REFERENCES VENDA(codigo)
 ON UPDATE CASCADE ON DELETE SET NULL,
 FOREIGN KEY(codcompra) REFERENCES COMPRA(codigo)
 ON UPDATE CASCADE ON DELETE SET NULL);
+
+CREATE generator g_inc_historico;
+
+SET term ^;
+CREATE TRIGGER g_inc_historico FOR HISTORICOESTOQUE
+active BEFORE INSERT POSITION 5
+AS BEGIN
+	NEW.codigo=gen_id(g_inc_historico,1);
+END 
+SET term ;^

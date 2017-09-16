@@ -1,0 +1,51 @@
+Aula dia 04 de Setembro
+
+Gerência de Custos
+
+  Tipos de Custos
+
+    - Custo Incorrido (sunk Cost)
+
+    - Custo Periódicos (recurring Cost)
+
+    - Não Periódicos ( Non recurring Cost)
+
+
+  Custo Indireto
+    -
+  Custo Direto
+    -
+  Custo Fixo
+    - Salários, aluguel, se for um plano de preço X: telefone, internet são custos fixos
+  Custo Variável
+    -
+
+    Cp(Custo proposto) = Ce(Custo existente) (Sp(capacidade proposta) / Se (capacidade existente))^N
+
+    Um ediício de 80 mil metros quadrados, custou R$48m². Quanto custa o metro quadrado
+    de um edifício similar, com 120.000m² sabendo que N = 0.85
+
+  Cp = 48 * (  120000 / 80.0000 )^0.85
+
+  Cp = 48 * 1,41
+
+  Cp = 67.68
+
+  Equação paramétrica
+
+  Y = B + delta*X
+
+  - Também não é válida para os projetos de desenvolvimento de software
+
+  Estimativa Bottom-Up
+
+  A ABC tecnologia, composta por um sócio, dois programadores (CLT), e um estagiário
+  está iniciando um novo projeto de desenvolvimento de software. Sabendo que
+
+  * a empresa não possui sede própria
+  * O projeto irá consumir 100% do tempo da equipe por 6 meses
+  * 1 Estagiário e dois funcionários
+  * A empresa trabalha sobre o lucro presumido
+
+
+  (Aluguel * 6) + ( 12*(salários + impostos e obrigações trabalhistas)) + (6 * valor de estágio)+ 20% custo total(dividendos)
