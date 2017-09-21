@@ -49,6 +49,7 @@ BEGIN
 	SET C.TOTAL = :TOTALCOMPRA	
 	WHERE C.CODIGO = NEW.CODCOMPRA;
 	
+	
 	UPDATE COMPRA C
 	SET C.SUBTOTAL = :TOTALCOMPRA - ( :TOTALCOMPRA * C.DESCONTO)
 	WHERE C.CODIGO = NEW.CODCOMPRA;
@@ -72,6 +73,38 @@ SELECT * FROM COMPRA;
 --3 - Criar triggers para calcular o valor total do produto após inserir/atualizar um item da venda (caso a venda 
 --não tenha sido finalizada). Calcular o subtotal e total da venda.
 --Que impeça a inclusão, alteração ou exclusão de um item da compra caso a compra tenha sido finalizada.
+
+CREATE EXCEPTION E_COMPRA_FINALIZADA 'Compra finalizada, não é possível alterar.';
+
+CREATE OR ALTER TRIGGER T_TOTALCOMPRA FOR ITEMCOMPRA
+ACTIVE AFTER INSERT OR UPDATE POSITION 5
+AS
+	DECLARE VARIABLE TOTALCOMPRA D_DECIMAL;
+	DECLARE VARIABLE FINALIZADA D_FINALIZADA;
+BEGIN 
+	SELECT C.CODIGO  
+	FROM COMPRA C 
+	WHERE C.CODIGO = NEW.CODCOMPRA
+	INTO :FINALIZADA;
+	
+	IF(( :FINALIZADA = 'N'))THEN
+	BEGIN
+		SELECT SUM(IT.TOTAL)
+		FROM ITEMCOMPRA IT
+		INNER JOIN COMPRA C ON IT.CODCOMPRA = C.CODIGO
+		INTO :TOTALCOMPRA;
+	
+		UPDATE COMPRA C
+		SET C.TOTAL = :TOTALCOMPRA	
+		WHERE C.CODIGO = NEW.CODCOMPRA;	
+		
+		UPDATE COMPRA C
+		SET C.SUBTOTAL = :TOTALCOMPRA - ( :TOTALCOMPRA * C.DESCONTO)
+		WHERE C.CODIGO = NEW.CODCOMPRA;
+	END	
+	IF((:FINALIZADA = 'S'))THEN
+		EXCEPTION E_COMPRA_FINALIZADA;
+END
 
 --4 - Criar uma Visão que mostre a data da venda, numero da NF, subtotal, desconto, total e o nome do cliente 
 --para as vendas do ano de 2017
