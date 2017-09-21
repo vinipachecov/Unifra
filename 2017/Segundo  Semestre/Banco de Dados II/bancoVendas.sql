@@ -10,15 +10,29 @@ CPF D_CPF,
 datanasc D_DATA);
 
 INSERT	INTO CLIENTE(NOME,NUMEROVENDAS,TELEFONE,EMAIL,CPF,DATANASC)
+VALUES
 ('Milton Friedman',5000,'5599201920','mfried@gmail.com','49203920392','07-10-1980')
 		
 INSERT	INTO CLIENTE(NOME,NUMEROVENDAS,TELEFONE,EMAIL,CPF,DATANASC)
 VALUES
-('Milton Friedman',5000,'5599201920','mfried@gmail.com','49203920392','07-10-1980'),
-('Rodrigo Saraiva',1000,'5599302810','joao@gmail.com','20192039201','12-10-1970'),
-('Joao da Silva',25,'5532219029','joao@gmail.com','92018293019','10-20-1955'),
+('Milton Friedman',5000,'5599201920','mfried@gmail.com','49203920392','07-10-1980')
+
+INSERT	INTO CLIENTE(NOME,NUMEROVENDAS,TELEFONE,EMAIL,CPF,DATANASC)
+VALUES
+('Rodrigo Saraiva',1000,'5599302810','joao@gmail.com','20192039201','12-10-1970')
+
+INSERT	INTO CLIENTE(NOME,NUMEROVENDAS,TELEFONE,EMAIL,CPF,DATANASC)
+VALUES
+('Joao da Silva',25,'5532219029','joao@gmail.com','92018293019','10-20-1955')
+
+INSERT	INTO CLIENTE(NOME,NUMEROVENDAS,TELEFONE,EMAIL,CPF,DATANASC)
+VALUES
 ('Roberto Jucá',45,'5530261019','juca@gmail.com','39481038292','6-20-1970'),
+
+INSERT	INTO CLIENTE(NOME,NUMEROVENDAS,TELEFONE,EMAIL,CPF,DATANASC)
+VALUES
 ('Leandro Narlock',100,'5533209120','lnarlock@gmail.com','91029382910','5-20-1964');
+
 SELECT * FROM CLIENTE;
 
 -- generator Cliente
@@ -40,7 +54,7 @@ SET term ;^
 CREATE TABLE venda(
 Codigo D_PK PRIMARY KEY,
 datavenda D_DATA,
-numeroNF D_INTEIRO,
+numeroNF D_NOTA_FISCAL,
 subtotal D_DECIMAL,
 desconto D_DECIMAL,
 total D_DECIMAL,
@@ -49,9 +63,13 @@ FOREIGN KEY (codcliente) REFERENCES CLIENTE(codigo)
 ON UPDATE CASCADE ON DELETE SET NULL
 );
 
+DROP TABLE VENDA;
+
 SELECT * FROM VENDA;
 
 ALTER TABLE venda add numeronf char(14);
+
+ALTER TABLE VENDA ADD FINALIZADA D_FINALIZADA                   
 
 
 -- generator Venda
@@ -82,11 +100,26 @@ numerocompras D_INTEIRO);
 
 INSERT INTO FORNECEDOR (razaosocial, EMAIL, CNPJ, TELEFONE, NOMEFANTASIA,NUMEROCOMPRAS)
 VALUES
-('Fornecedor 1', 'forn1@gmail.com', '29102938102920', '5533201920','Nome fantasia 1', 100)
-('Fornecedor 2', 'forn2@gmail.com', '29102938102921', '5533201921','Nome fantasia 2', 200)
-('Fornecedor 3', 'forn3@gmail.com', '29102938102922', '5533201922','Nome fantasia 3', 300)
-('Fornecedor 4', 'forn4@gmail.com', '29102938102923', '5533201923','Nome fantasia 4', 400)
-('Fornecedor 5', 'forn5@gmail.com', '29102938102924', '5533201924','Nome fantasia 5', 500)
+('Fornecedor 1', 'forn1@gmail.com', '29102938102920', '5533201920','Nome fantasia 1', 100);
+
+INSERT INTO FORNECEDOR (razaosocial, EMAIL, CNPJ, TELEFONE, NOMEFANTASIA,NUMEROCOMPRAS)
+VALUES
+('Fornecedor 2', 'forn2@gmail.com', '29102938102921', '5533201921','Nome fantasia 2', 200);
+
+INSERT INTO FORNECEDOR (razaosocial, EMAIL, CNPJ, TELEFONE, NOMEFANTASIA,NUMEROCOMPRAS)
+VALUES
+('Fornecedor 3', 'forn3@gmail.com', '29102938102922', '5533201922','Nome fantasia 3', 300);
+
+INSERT INTO FORNECEDOR (razaosocial, EMAIL, CNPJ, TELEFONE, NOMEFANTASIA,NUMEROCOMPRAS)
+VALUES
+('Fornecedor 4', 'forn4@gmail.com', '29102938102923', '5533201923','Nome fantasia 4', 400);
+
+INSERT INTO FORNECEDOR (razaosocial, EMAIL, CNPJ, TELEFONE, NOMEFANTASIA,NUMEROCOMPRAS)
+VALUES
+('Fornecedor 5', 'forn5@gmail.com', '29102938102924', '5533201924','Nome fantasia 5', 500);
+
+INSERT INTO FORNECEDOR (razaosocial, EMAIL, CNPJ, TELEFONE, NOMEFANTASIA,NUMEROCOMPRAS)
+VALUES
 ('Fornecedor 6', 'forn6@gmail.com', '29102938102925', '5533201925','Nome fantasia 6', 600);
 
 
