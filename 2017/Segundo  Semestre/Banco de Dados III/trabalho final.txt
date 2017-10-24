@@ -1,0 +1,8 @@
+Trabalho final de Banco III
+
+comparação MongoDB vs PostreSQL
+
+	(1) Pegar valores de uma API
+	(2) Popular bancos e calcular tempo de resposta e outros meta dados da query
+	(3) Fazer alguma pesquisa mais complexa com os dados inseridos
+	(4) Relatar feeling de desenvolvimento para ambas aplicações 
