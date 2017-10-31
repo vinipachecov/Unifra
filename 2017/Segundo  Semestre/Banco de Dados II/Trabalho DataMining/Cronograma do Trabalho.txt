@@ -1,0 +1,10 @@
+1.Visão Geral.
+2. Regras de associação
+3. Classificação
+4. Agrupamento
+5. Problemas da Mineração de Dados
+6. Aplicações
+7. Algoritmos mais usados
+8. Ferramentas
+a. Exemplos
+
