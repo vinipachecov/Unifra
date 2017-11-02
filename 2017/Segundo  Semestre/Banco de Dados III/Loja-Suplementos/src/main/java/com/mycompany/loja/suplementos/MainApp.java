@@ -1,32 +1,33 @@
 package com.mycompany.loja.suplementos;
 
+import java.sql.Connection;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 
 public class MainApp extends Application {
     
-    private Stage thestage;
     private Parent root;    
     
     Scene loginscreen, mainscene;
 
     @Override
     public void start(Stage stage) throws Exception {
-        thestage = stage;
-        root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+        FXMLLoader screen = new FXMLLoader(getClass().getResource("/fxml/LoginScreen.fxml"));
+        
+        Connection db = null;
+        LoginController lc = new LoginController(db);
+        
+        screen.setController(lc);
+        
+        root = screen.load();
         
         loginscreen = new Scene(root);
-        loginscreen.getStylesheets().add("/styles/Styles.css");
-
-
-        
+        loginscreen.getStylesheets().add("/styles/Styles.css");        
         stage.setTitle("Loja de Suplementos");
         stage.setScene(loginscreen);
         stage.show();

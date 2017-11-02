@@ -1,0 +1,27 @@
+Features a fazer
+
+
+-- Tabelas
+
+-- Adicionar coluna tipoUsuario na tabela Usuario 
+
+-- BASICO
+
+- Adicionar usuário Admin/Vendedor
+- Remover usuário Vendedor
+- Adicionar venda
+- Adicionar Produto
+- Adicionar Tipo
+- Adicionar Fornecedor
+- Adicionar Compra
+- Ver histórico
+
+- PESQUISAS
+
+- Vendas do ano
+- Compras do ano
+- Pesquisa de Venda, Compra e Produtos
+- Pesquisa da Porcentagem de venda de produto
+- Porcentagem de compra de um produto
+- Porcentagem de participação de um produto nas compras e nas vendas em um período
+- Lucro do semestre, trimestre, e ano

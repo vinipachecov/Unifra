@@ -5,30 +5,46 @@
  */
 package com.mycompany.loja.suplementos;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.sql.Connection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import supportClasses.User;
+import supportClasses.userType;
 
 /**
  * FXML Controller class
  *
  * @author vinicius
  */
-public class PrincipalController implements Initializable {
+public class PrincipalController extends ControllerModel {
 
     /**
      * Initializes the controller class.
      */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
     @FXML
-    private void Hello(ActionEvent event){        
-        System.out.println("Hello From second screen ");
+    public MenuBar menuBar;
+    @FXML
+    public MenuItem addUserMenuItem;
+
+    public PrincipalController(Connection db, User current) {
+        super(db, current);
     }
-    
+
+
+    @FXML
+    public void addUserMenu(ActionEvent event) {
+        if (getUserType() == userType.admin) {
+            AddUserController controller = new AddUserController(connection, this.currentUser);
+            CreateModal(event, menuBar, "/fxml/AddUser.fxml", controller, "Add a User");
+            controller.init();
+        } else {
+            sendAlert("Erro de Acesso",
+                    "Acesso não Permitido",
+                    "Você não tem acesso a essa função. Tente como Administrador",
+                    Alert.AlertType.ERROR);
+        }
+    }
 }
