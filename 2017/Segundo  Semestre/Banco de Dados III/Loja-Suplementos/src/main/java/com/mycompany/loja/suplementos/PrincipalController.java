@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.stage.Stage;
 import supportClasses.User;
 import supportClasses.userType;
 
@@ -28,18 +29,27 @@ public class PrincipalController extends ControllerModel {
     public MenuBar menuBar;
     @FXML
     public MenuItem addUserMenuItem;
+    
+    public Stage dialog;
 
     public PrincipalController(Connection db, User current) {
         super(db, current);
     }
 
 
+    
+    @FXML
+    public void Logout(ActionEvent event){
+        LoginController lc = new LoginController(null);
+        ChangeScreen(menuBar, "/fxml/LoginScreen.fxml", lc, "Loja de Suplementos");
+    }
+    
     @FXML
     public void addUserMenu(ActionEvent event) {
         if (getUserType() == userType.admin) {
             AddUserController controller = new AddUserController(connection, this.currentUser);
-            CreateModal(event, menuBar, "/fxml/AddUser.fxml", controller, "Add a User");
-            controller.init();
+            dialog = CreateModal(event, menuBar, "/fxml/AddUser.fxml", controller, "Add a User");
+            controller.init(dialog);
         } else {
             sendAlert("Erro de Acesso",
                     "Acesso não Permitido",
