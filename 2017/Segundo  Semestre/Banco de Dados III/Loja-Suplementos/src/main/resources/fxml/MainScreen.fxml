@@ -50,12 +50,12 @@
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#addBrands" text="Add new Brand" />
                   <MenuItem mnemonicParsing="false" text="Change a Brand Setting..." />
-                  <MenuItem mnemonicParsing="false" text="Search..." />
+                  <MenuItem mnemonicParsing="false" onAction="#searchBrands" text="Search..." />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Types">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Add new Product Type" />
+                  <MenuItem mnemonicParsing="false" onAction="#addTypes" text="Add new Product Type" />
                   <MenuItem mnemonicParsing="false" text="Change a Type Setting..." />
                   <MenuItem mnemonicParsing="false" text="Search..." />
                </items>

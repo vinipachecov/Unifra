@@ -17,17 +17,17 @@ import javafx.stage.Stage;
  *
  * @author vinicius
  */
-public class AddBrandController extends ControllerModel {
-
+public class AddTypeController extends ControllerModel {
+    
     @FXML
-    TextField brandTextField;
-
-    public Stage modal;
-
-    public AddBrandController(Connection db) {
+    public TextField  typeTextField;
+    
+    public Stage modal;    
+    
+    public AddTypeController(Connection db) {
         super(db);
     }
-
+    
     public void init(Stage dialog) {
         modal = dialog;
     }
@@ -37,35 +37,35 @@ public class AddBrandController extends ControllerModel {
         modal.close();
     }
 
-    public void addBrand(String brandString) {
+    public void addType(String typeString) {
         try {
             Statement st = this.connection.createStatement();
             st.executeUpdate(
-                    "insert into brands (name)"
-                    + " VALUES('" + brandString + "' )"
+                    "insert into types (name)"
+                    + " VALUES('" + typeString + "' )"
             );
             st.close();
-            sendAlert("Brand added with success!", "Brand Added", "A brand have been added!", Alert.AlertType.CONFIRMATION);
+            sendAlert("Product type added with success!", "Type Added", "A new type have been added!", Alert.AlertType.CONFIRMATION);
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage());
             return;
         }
     }
 
-    public boolean checkBrandExists(String brandString) {
-
+    public boolean checkTypeExists(String typeString) {
+        
         try {
             Statement st = this.connection.createStatement();
             ResultSet rs = st.executeQuery(
                     "select id "
-                    + " FROM brands "
-                    + " WHERE name = '" + brandString + "'"
+                    + " FROM types "
+                    + " WHERE name = '" + typeString + "'"
                     + " limit 1 ");
             if (rs.next()) {
-                System.out.println("There is already a brand with this name");
-                sendAlert("Error to add a Brand",
-                        "Brand exists.",
-                        "Brand already Exists! Choose a different brand name!",
+                System.out.println("There is already a type with this name");
+                sendAlert("Error to add a type",
+                        "Type exists.",
+                        "Type already Exists! Choose a different Type name!",
                         Alert.AlertType.ERROR);
                 return true;
             }
@@ -81,23 +81,23 @@ public class AddBrandController extends ControllerModel {
 
     @FXML
     public void checkForm() {
-        String brandString = null;
+        System.out.println("começou a verificar o form");
+        String typeString = null;
         try {
-            brandString = brandTextField.getText();            
+            typeString = typeTextField.getText();            
         } catch (Exception e) {
-            sendAlert("Error Adding Brand",
-                    "No Brand name", "Choose a Brand name.", Alert.AlertType.ERROR);
+            sendAlert("Error Adding new Type",
+                    "No Type name", "Choose a product type name.", Alert.AlertType.ERROR);
             return;
         }
         
-        if (brandTextField.getText().equals("")) {
-            sendAlert("Error Adding Brand",
-                    "No Brand name", "Fill all the fields! Choose a Brand name.", Alert.AlertType.ERROR);
+        if (typeString.equals("")) {
+            sendAlert("Error Adding new Type",
+                    "No Type name", "Fill all the fields! Choose a product type name.", Alert.AlertType.ERROR);
         } else {
-            if (!checkBrandExists(brandString)) {
-                addBrand(brandString);
+            if (!checkTypeExists(typeString)) {
+                addType(typeString);
             }
         }
-    }
-
+    }    
 }

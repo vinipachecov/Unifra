@@ -13,6 +13,11 @@ add column usertype varchar(14)
 
 select * from usuario;
 
+create table types(
+id serial primary key,
+name varchar(30)
+)
+
 
 create table brands(
 id serial primary key,
@@ -22,6 +27,7 @@ name varchar(30)
 select * from brands
 
 
+
 create table users(
 id serial primary key,
 username varchar(20),
@@ -29,7 +35,7 @@ password varchar(20),
 usertype varchar(20)
 )
 
-
+select * from types;
 
 insert into users(username,password,usertype)
 values('admin','admin','admin')

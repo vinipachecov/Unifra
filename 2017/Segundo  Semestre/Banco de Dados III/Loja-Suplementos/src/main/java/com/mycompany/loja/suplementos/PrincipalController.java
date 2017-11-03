@@ -35,6 +35,33 @@ public class PrincipalController extends ControllerModel {
     public PrincipalController(Connection db, User current) {
         super(db, current);
     }
+    
+    
+    @FXML 
+    public void searchBrands(ActionEvent event){
+        SearchBrandController searchController  = new SearchBrandController(connection);
+        dialog = CreateModal(event,menuBar, "/fxml/SearchBrand.fxml", searchController, "Searching Brands");
+        searchController.init(dialog);
+        
+    }
+    
+    @FXML 
+    public void addTypes(ActionEvent event){
+             if (getUserType() == userType.admin) {
+            AddTypeController addTypeController = new AddTypeController(this.connection);
+            dialog = CreateModal(event,menuBar,
+                    "/fxml/AddType.fxml",
+                    addTypeController,
+                    "Add a Product Type");
+            addTypeController.init(dialog);
+        } else {
+            sendAlert("Access error",
+                    "Attempt to access admin feature.",
+                    "You have no access to add Types. Ask the administrator.",
+                    Alert.AlertType.ERROR);
+        }
+    }
+    
 
     @FXML
     public void addBrands(ActionEvent event) {
