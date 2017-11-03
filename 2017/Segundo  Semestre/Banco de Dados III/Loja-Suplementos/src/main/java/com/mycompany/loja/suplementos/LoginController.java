@@ -98,7 +98,6 @@ public class LoginController extends ControllerModel {
                     e.getMessage(),
                     Alert.AlertType.ERROR);
             System.out.println(e.getMessage());
-
         }
         return false;
     }

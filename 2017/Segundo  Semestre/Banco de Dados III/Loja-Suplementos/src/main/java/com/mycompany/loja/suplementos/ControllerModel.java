@@ -75,16 +75,15 @@ public class ControllerModel {
     }
     
     @FXML
-    public void ChangeScreen(Button button, String FXMLFile, Class controller){
+    public void ChangeScreen(Button button, String FXMLFile, Object controller){
         Stage stage; 
         Parent root = null;
         stage=(Stage) button.getScene().getWindow();
            
         FXMLLoader mainscreenLoader = new FXMLLoader(getClass().getResource(FXMLFile));
-        
-        
+                
         mainscreenLoader.setController(controller);      
-                                
+        
         try {
             root = mainscreenLoader.load();
         } catch (IOException ex) {
@@ -99,31 +98,9 @@ public class ControllerModel {
     
     
     
-    @FXML
-    public void ChangeScreen(Button button,String FXMLFile, Object controller){
-        Stage stage; 
-        Parent root = null;        
-        stage = (Stage) button.getScene().getWindow();
-        //stage =  addUsuarioMenuItem.
-           //load up OTHER FXML document
-        FXMLLoader screenLoader = new FXMLLoader(getClass()
-                .getResource(FXMLFile));
-        
-        screenLoader.setController(controller);      
-        
-        try {
-            root = screenLoader.load();
-        } catch (IOException ex) {
-            Logger.getLogger(ControllerModel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        stage.setScene(new Scene(root));        
-        stage.show();       
-        
-    }
     
     @FXML
-    public void ChangeScreen(ActionEvent event, MenuBar menubar, String FXMLFile, Class controller, String Title){
+    public void ChangeScreen(MenuBar menubar, String FXMLFile, Object controller, String Title){
         Stage stage; 
         Parent root = null;
         stage=(Stage) menubar.getScene().getWindow();
@@ -146,7 +123,7 @@ public class ControllerModel {
     }    
     
     @FXML
-    public void CreateModal(ActionEvent event, MenuBar menubar, String FXMLFile, Object controller,String title){
+    public Stage CreateModal(ActionEvent event, MenuBar menubar, String FXMLFile, Object controller,String title){
         
         Stage stage = new Stage();
         Parent root = null;        
@@ -173,7 +150,8 @@ public class ControllerModel {
             (menubar.getScene().getWindow() 
         ));
         stage.setScene(new Scene(root));        
-        stage.show();       
+        stage.show();    
+        return stage;
     }
     
     public void sendAlert(String Title, String HeaderText, String ContentText, AlertType tipo){

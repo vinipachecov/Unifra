@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import supportClasses.User;
 import supportClasses.userType;
 
@@ -39,10 +40,12 @@ public class AddUserController extends ControllerModel {
 
     @FXML
     public ComboBox<userType> userTypeComboBox;
+    
+    public Stage dialog;
 
     public AddUserController(Connection connection, User current) {
         super(connection, current);
-
+        
     }
 
     /**
@@ -50,12 +53,13 @@ public class AddUserController extends ControllerModel {
      */
     @FXML
     public void Cancel(ActionEvent event) {
-
+        dialog.close();
     }
 
-    public void init() {
+    public void init(Stage modal) {
         userTypeComboBox.getItems().removeAll(userTypeComboBox.getItems());
         userTypeComboBox.getItems().addAll(userType.admin, userType.salesman);
+        dialog = modal;
     }
 
     public void addUser() {

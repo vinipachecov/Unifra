@@ -17,8 +17,7 @@
           <Menu mnemonicParsing="false" text="User">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#addUserMenu" text="Add User" />
-                  <MenuItem mnemonicParsing="false" text="Alter User" />
-                  <MenuItem mnemonicParsing="false" text="Logout" />
+                  <MenuItem mnemonicParsing="false" onAction="#Logout" text="Logout" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Sales orders">
