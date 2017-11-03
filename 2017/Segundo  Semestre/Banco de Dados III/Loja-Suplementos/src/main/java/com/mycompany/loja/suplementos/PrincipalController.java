@@ -35,21 +35,20 @@ public class PrincipalController extends ControllerModel {
     public PrincipalController(Connection db, User current) {
         super(db, current);
     }
-    
-    
-    @FXML 
-    public void searchBrands(ActionEvent event){
-        SearchBrandController searchController  = new SearchBrandController(connection);
-        dialog = CreateModal(event,menuBar, "/fxml/SearchBrand.fxml", searchController, "Searching Brands");
+
+    @FXML
+    public void searchBrands(ActionEvent event) {
+        SearchBrandController searchController = new SearchBrandController(connection);
+        dialog = CreateModal(event, menuBar, "/fxml/SearchBrand.fxml", searchController, "Searching Brands");
         searchController.init(dialog);
-        
+
     }
-    
-    @FXML 
-    public void addTypes(ActionEvent event){
-             if (getUserType() == userType.admin) {
+
+    @FXML
+    public void addTypes(ActionEvent event) {
+        if (getUserType() == userType.admin) {
             AddTypeController addTypeController = new AddTypeController(this.connection);
-            dialog = CreateModal(event,menuBar,
+            dialog = CreateModal(event, menuBar,
                     "/fxml/AddType.fxml",
                     addTypeController,
                     "Add a Product Type");
@@ -61,13 +60,20 @@ public class PrincipalController extends ControllerModel {
                     Alert.AlertType.ERROR);
         }
     }
-    
+
+    @FXML
+    public void searchTypes(ActionEvent event) {
+        SearchTypeController controller = new SearchTypeController(connection);
+        dialog = CreateModal(event, menuBar, "/fxml/SearchType.fxml", controller, "Searching Types");
+        controller.init(dialog);
+
+    }
 
     @FXML
     public void addBrands(ActionEvent event) {
         if (getUserType() == userType.admin) {
             AddBrandController brandController = new AddBrandController(this.connection);
-            dialog = CreateModal(event,menuBar,
+            dialog = CreateModal(event, menuBar,
                     "/fxml/AddBrand.fxml",
                     brandController,
                     "Add a Brand");

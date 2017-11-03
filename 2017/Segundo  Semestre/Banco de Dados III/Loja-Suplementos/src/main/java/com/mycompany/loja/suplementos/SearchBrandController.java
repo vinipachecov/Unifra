@@ -27,8 +27,6 @@ import supportClasses.Brand;
 public class SearchBrandController extends ControllerModel {
     
     
-    
-    
 
     @FXML
     public TextField brandSearchTextField;

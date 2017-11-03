@@ -57,7 +57,7 @@
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#addTypes" text="Add new Product Type" />
                   <MenuItem mnemonicParsing="false" text="Change a Type Setting..." />
-                  <MenuItem mnemonicParsing="false" text="Search..." />
+                  <MenuItem mnemonicParsing="false" onAction="#searchTypes" text="Search..." />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="History">

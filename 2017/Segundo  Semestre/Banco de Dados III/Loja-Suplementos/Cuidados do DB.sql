@@ -37,6 +37,10 @@ usertype varchar(20)
 
 select * from types;
 
+delete from types
+where id = 1;
+
+
 insert into users(username,password,usertype)
 values('admin','admin','admin')
 
