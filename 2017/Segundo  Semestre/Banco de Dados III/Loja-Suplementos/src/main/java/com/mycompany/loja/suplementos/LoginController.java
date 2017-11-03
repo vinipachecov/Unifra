@@ -72,7 +72,7 @@ public class LoginController extends ControllerModel {
             // Find user
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery("select * "
-                    + " FROM usuario "
+                    + " FROM users "
                     + " WHERE username = '" + username + "'"
                     + " AND password = '" + password + "'"
                     + " limit 1");

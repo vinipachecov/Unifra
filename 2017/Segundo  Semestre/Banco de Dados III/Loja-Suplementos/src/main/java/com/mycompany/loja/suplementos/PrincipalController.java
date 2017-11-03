@@ -29,21 +29,36 @@ public class PrincipalController extends ControllerModel {
     public MenuBar menuBar;
     @FXML
     public MenuItem addUserMenuItem;
-    
+
     public Stage dialog;
 
     public PrincipalController(Connection db, User current) {
         super(db, current);
     }
 
-
-    
     @FXML
-    public void Logout(ActionEvent event){
+    public void addBrands(ActionEvent event) {
+        if (getUserType() == userType.admin) {
+            AddBrandController brandController = new AddBrandController(this.connection);
+            dialog = CreateModal(event,menuBar,
+                    "/fxml/AddBrand.fxml",
+                    brandController,
+                    "Add a Brand");
+            brandController.init(dialog);
+        } else {
+            sendAlert("Access error",
+                    "Attempt to access admin feature.",
+                    "You have no access to add Brands. Ask the administrator.",
+                    Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    public void Logout(ActionEvent event) {
         LoginController lc = new LoginController(null);
         ChangeScreen(menuBar, "/fxml/LoginScreen.fxml", lc, "Loja de Suplementos");
     }
-    
+
     @FXML
     public void addUserMenu(ActionEvent event) {
         if (getUserType() == userType.admin) {
@@ -51,9 +66,9 @@ public class PrincipalController extends ControllerModel {
             dialog = CreateModal(event, menuBar, "/fxml/AddUser.fxml", controller, "Add a User");
             controller.init(dialog);
         } else {
-            sendAlert("Erro de Acesso",
-                    "Acesso não Permitido",
-                    "Você não tem acesso a essa função. Tente como Administrador",
+            sendAlert("Access Error",
+                    "Attempt to access admin feature.",
+                    "YOu are not allowed to add Users. Sign in as an administrator.",
                     Alert.AlertType.ERROR);
         }
     }

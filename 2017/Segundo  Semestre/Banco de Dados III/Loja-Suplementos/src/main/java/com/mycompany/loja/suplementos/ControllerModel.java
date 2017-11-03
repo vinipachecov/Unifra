@@ -107,7 +107,7 @@ public class ControllerModel {
            
         FXMLLoader mainscreenLoader = new FXMLLoader(getClass().getResource(FXMLFile));
         
-        mainscreenLoader.setController(controller);      
+        mainscreenLoader.setController(controller); 
                                 
         try {
             root = mainscreenLoader.load();

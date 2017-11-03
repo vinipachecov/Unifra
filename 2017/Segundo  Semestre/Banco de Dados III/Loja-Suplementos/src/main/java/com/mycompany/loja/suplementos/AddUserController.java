@@ -62,8 +62,7 @@ public class AddUserController extends ControllerModel {
         dialog = modal;
     }
 
-    public void addUser() {
-        System.out.println("adicionando usuario");
+    public void addUser() {        
         String usertype;
         // Get usertype
         try {
@@ -77,7 +76,7 @@ public class AddUserController extends ControllerModel {
         try {
             Statement st = this.connection.createStatement();
             st.executeUpdate(
-                    "insert into usuario (username,password,usertype)"
+                    "insert into users (username,password,usertype)"
                     + " VALUES('" + usernameTextField.getText() + "', '" + passwordField.getText() + "' , '" + usertype + "' )"
             );            
             st.close();
@@ -95,7 +94,7 @@ public class AddUserController extends ControllerModel {
             Statement st = this.connection.createStatement();
             ResultSet rs = st.executeQuery(
                     "select id "
-                    + " FROM usuario "
+                    + " FROM users "
                     + " WHERE username = '" + usernameTextField.getText() + "'"
                     + " limit 1 ");
             if (rs.next()) {
@@ -110,7 +109,7 @@ public class AddUserController extends ControllerModel {
             st.close();
 
         } catch (Exception e) {
-            System.out.println("Erro em usuario já existe :" + e.getMessage());
+            System.out.println("Error user already exists! :" + e.getMessage());
         }
 
         return false;
