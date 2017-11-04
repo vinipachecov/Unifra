@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <stylesheets>
+        <URL value="@/styles/Styles.css" />
+    </stylesheets>
+   <children>
+      <MenuBar fx:id="menuBar">
+        <menus>
+          <Menu mnemonicParsing="false" text="User">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#addUserMenu" text="Add User" />
+                  <MenuItem mnemonicParsing="false" onAction="#Logout" text="Logout" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Sales orders">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Add Sale Order" />
+                  <MenuItem mnemonicParsing="false" text="Search..." />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Purchase orders">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Add purchase order" />
+                  <MenuItem mnemonicParsing="false" text="Search..." />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Clients">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#addClient" text="Add Client" />
+                  <MenuItem mnemonicParsing="false" text="Change Client settings " />
+                  <MenuItem mnemonicParsing="false" onAction="#searchClients" text="Search..." />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Suppliers">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Add Supplier" />
+                  <MenuItem mnemonicParsing="false" text="Change Supplier settings " />
+                  <MenuItem mnemonicParsing="false" text="Search..." />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Products">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Add a Product" />
+                  <MenuItem mnemonicParsing="false" text="Change a Product" />
+                  <MenuItem mnemonicParsing="false" text="Pesquisar..." />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Brands">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#addBrands" text="Add new Brand" />
+                  <MenuItem mnemonicParsing="false" text="Change a Brand Setting..." />
+                  <MenuItem mnemonicParsing="false" onAction="#searchBrands" text="Search..." />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Types">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#addTypes" text="Add new Product Type" />
+                  <MenuItem mnemonicParsing="false" text="Change a Type Setting..." />
+                  <MenuItem mnemonicParsing="false" onAction="#searchTypes" text="Search..." />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="History">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Check History" />
+                  <MenuItem mnemonicParsing="false" text="Search..." />
+               </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+   </children>
+</AnchorPane>

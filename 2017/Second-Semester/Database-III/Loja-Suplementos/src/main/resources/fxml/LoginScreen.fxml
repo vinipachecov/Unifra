@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="211.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
+      <Button fx:id="loginButton" layoutX="236.0" layoutY="168.0" mnemonicParsing="false" onAction="#connectDBPostgre" prefHeight="29.0" prefWidth="80.0" text="Sign in" />
+      <TextField fx:id="usernameTextField" layoutX="80.0" layoutY="54.0" promptText="Digite o seu Usuario" />
+      <PasswordField fx:id="passwordField" layoutX="80.0" layoutY="125.0" promptText="Senha" />
+      <Label layoutX="80.0" layoutY="28.0" text="Username" />
+      <Label layoutX="80.0" layoutY="96.0" text="Password" />
+    </children>
+</AnchorPane>
