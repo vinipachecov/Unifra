@@ -60,10 +60,10 @@ values('admin','admin','admin')
 insert into usuario(username,password,usertype)
 values('admin','admin','admin')
 
-insert into client(name,numsales,email,telephone,govid,birthdate)
+insert into clients(name,numsales,email,telephone,govid,birthdate)
 values('vinicius',0,'vini@gmail.com','5532213615','12345678912','2010-02-20')
 
-select * from client;
+select * from clients;
 
 select exists(select from client where name ='vinicius' and email = 'vini@gmail.com' and govid ='12345678912')
 
