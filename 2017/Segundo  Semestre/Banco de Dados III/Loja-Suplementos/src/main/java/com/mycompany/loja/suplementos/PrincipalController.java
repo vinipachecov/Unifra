@@ -60,6 +60,34 @@ public class PrincipalController extends ControllerModel {
                     Alert.AlertType.ERROR);
         }
     }
+    
+     @FXML
+    public void searchClients(ActionEvent event) {
+        
+         if (getUserType() == userType.admin) {
+             SearchClientController searchController = new SearchClientController(connection);
+        dialog = CreateModal(event, menuBar, "/fxml/SearchClient.fxml", searchController, "Searching Clients");
+        searchController.init(dialog);            
+        } else {
+            sendAlert("Access error",
+                    "Attempt to access admin feature.",
+                    "You have no access to search Client data. Ask the administrator.",
+                    Alert.AlertType.ERROR);
+        }
+       
+
+    }
+
+    @FXML
+    public void addClient(ActionEvent event) {
+        AddClientController clientController = new AddClientController(this.connection);
+        dialog = CreateModal(event, menuBar,
+                "/fxml/AddClient.fxml",
+                clientController,
+                "Add new Client");
+        clientController.init(dialog);
+
+    }
 
     @FXML
     public void searchTypes(ActionEvent event) {
