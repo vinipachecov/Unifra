@@ -67,6 +67,8 @@ public class SearchClientController extends ControllerModel {
 
         data = FXCollections.observableArrayList();
 
+        
+        // the property name between "" has to be the same name of the attribute on the class
         nameColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("name"));
         numsalesColumn.setCellValueFactory(new PropertyValueFactory<Client, Integer>("numsales"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("email"));

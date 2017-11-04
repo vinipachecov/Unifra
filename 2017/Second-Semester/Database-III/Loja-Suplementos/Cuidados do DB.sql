@@ -47,6 +47,28 @@ password varchar(20),
 usertype varchar(20)
 )
 
+
+CREATE TABLE suppliers(
+id serial PRIMARY KEY,
+socialreason varchar(40),
+email varchar(40),
+cnpj varchar(11),
+telephone varchar(20),
+fantasyname varchar(40),
+numberpurchases int
+)
+
+alter table suppliers
+add column numberpurchases int
+
+insert into suppliers(socialreason, email, cnpj, telephone, fantasyname, numberpurchases)
+values('', '' ,' ',' ', '', 0)
+
+delete from suppliers
+where id = 2;
+
+select * from suppliers;
+
 select * from types;
 
 delete from types

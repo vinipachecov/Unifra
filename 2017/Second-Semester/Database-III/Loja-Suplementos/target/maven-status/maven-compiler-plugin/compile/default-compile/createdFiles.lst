@@ -1,5 +1,7 @@
 com/mycompany/loja/suplementos/AddBrandController.class
+com/mycompany/loja/suplementos/AddSupplierController.class
 com/mycompany/loja/suplementos/PrincipalController.class
+com/mycompany/loja/suplementos/SearchSupplierController.class
 supportClasses/userType.class
 supportClasses/User.class
 com/mycompany/loja/suplementos/AddTypeController.class
@@ -8,6 +10,7 @@ com/mycompany/loja/suplementos/SearchClientController.class
 com/mycompany/loja/suplementos/SearchTypeController.class
 com/mycompany/loja/suplementos/AddClientController.class
 com/mycompany/loja/suplementos/ControllerModel.class
+supportClasses/Supplier.class
 com/mycompany/loja/suplementos/SearchBrandController.class
 com/mycompany/loja/suplementos/AddUserController.class
 com/mycompany/loja/suplementos/MainApp.class

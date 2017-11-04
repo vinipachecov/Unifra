@@ -41,9 +41,9 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Suppliers">
               <items>
-                <MenuItem mnemonicParsing="false" text="Add Supplier" />
+                <MenuItem mnemonicParsing="false" onAction="#addSupplier" text="Add Supplier" />
                   <MenuItem mnemonicParsing="false" text="Change Supplier settings " />
-                  <MenuItem mnemonicParsing="false" text="Search..." />
+                  <MenuItem mnemonicParsing="false" onAction="#searchSupplier" text="Search..." />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Products">

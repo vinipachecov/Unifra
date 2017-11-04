@@ -39,12 +39,7 @@ public class ControllerModel {
     
     public ControllerModel(Connection db, User user){
         this.connection = db;
-        currentUser = user;   
-        System.out.println("current user " 
-                +currentUser.getUserType());
-        
-        System.out.println("user recebido " 
-                +currentUser.getUserType());
+        currentUser = user;           
     }
     
     public userType getUserType(){

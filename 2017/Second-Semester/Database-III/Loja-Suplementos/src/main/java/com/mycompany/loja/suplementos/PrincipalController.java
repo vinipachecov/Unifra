@@ -35,6 +35,40 @@ public class PrincipalController extends ControllerModel {
     public PrincipalController(Connection db, User current) {
         super(db, current);
     }
+    
+    @FXML
+    public void addSupplier(ActionEvent event){
+        if (getUserType() == userType.admin) {
+            AddSupplierController addSupplier = new AddSupplierController(this.connection);
+            dialog = CreateModal(event, menuBar,
+                    "/fxml/AddSupplier.fxml",
+                    addSupplier,
+                    "Add a Supplier");
+            addSupplier.init(dialog);
+        } else {
+            sendAlert("Access error",
+                    "Attempt to access admin feature.",
+                    "You have no access to add Suppliers. Sign in as an administrator.",
+                    Alert.AlertType.ERROR);
+        }
+    }
+    
+    @FXML
+    public void searchSupplier(ActionEvent event) {
+        
+         if (getUserType() == userType.admin) {
+             SearchSupplierController searchController = new SearchSupplierController(connection);
+        dialog = CreateModal(event, menuBar, "/fxml/SearchSupplier.fxml", searchController, "Searching Suppliers");
+        searchController.init(dialog);            
+        } else {
+            sendAlert("Access error",
+                    "Attempt to access admin feature.",
+                    "You have no access to search Suppliers data. Sign in as an administrator.",
+                    Alert.AlertType.ERROR);
+        }
+       
+
+    }
 
     @FXML
     public void searchBrands(ActionEvent event) {
@@ -56,12 +90,12 @@ public class PrincipalController extends ControllerModel {
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",
-                    "You have no access to add Types. Ask the administrator.",
+                    "You have no access to add Types. Sign in as an administrator.",
                     Alert.AlertType.ERROR);
         }
     }
     
-     @FXML
+    @FXML
     public void searchClients(ActionEvent event) {
         
          if (getUserType() == userType.admin) {
@@ -71,7 +105,7 @@ public class PrincipalController extends ControllerModel {
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",
-                    "You have no access to search Client data. Ask the administrator.",
+                    "You have no access to search Client data. Sign in as an administrator.",
                     Alert.AlertType.ERROR);
         }
        
@@ -109,7 +143,7 @@ public class PrincipalController extends ControllerModel {
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",
-                    "You have no access to add Brands. Ask the administrator.",
+                    "You have no access to add Brands. Sign in as an administrator.",
                     Alert.AlertType.ERROR);
         }
     }
