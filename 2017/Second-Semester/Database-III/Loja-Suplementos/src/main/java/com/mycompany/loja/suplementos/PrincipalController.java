@@ -35,9 +35,9 @@ public class PrincipalController extends ControllerModel {
     public PrincipalController(Connection db, User current) {
         super(db, current);
     }
-    
+
     @FXML
-    public void addSupplier(ActionEvent event){
+    public void addSupplier(ActionEvent event) {
         if (getUserType() == userType.admin) {
             AddSupplierController addSupplier = new AddSupplierController(this.connection);
             dialog = CreateModal(event, menuBar,
@@ -52,22 +52,27 @@ public class PrincipalController extends ControllerModel {
                     Alert.AlertType.ERROR);
         }
     }
-    
+
+    @FXML
+    public void searchProduct(ActionEvent event) {
+        SearchProductController searchController = new SearchProductController(connection);
+        dialog = CreateModal(event, menuBar, "/fxml/SearchProduct.fxml", searchController, "Searching Products");
+        searchController.init(dialog);
+    }
+
     @FXML
     public void searchSupplier(ActionEvent event) {
-        
-         if (getUserType() == userType.admin) {
-             SearchSupplierController searchController = new SearchSupplierController(connection);
-        dialog = CreateModal(event, menuBar, "/fxml/SearchSupplier.fxml", searchController, "Searching Suppliers");
-        searchController.init(dialog);            
+
+        if (getUserType() == userType.admin) {
+            SearchSupplierController searchController = new SearchSupplierController(connection);
+            dialog = CreateModal(event, menuBar, "/fxml/SearchSupplier.fxml", searchController, "Searching Suppliers");
+            searchController.init(dialog);
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",
                     "You have no access to search Suppliers data. Sign in as an administrator.",
                     Alert.AlertType.ERROR);
         }
-       
-
     }
 
     @FXML
@@ -76,6 +81,23 @@ public class PrincipalController extends ControllerModel {
         dialog = CreateModal(event, menuBar, "/fxml/SearchBrand.fxml", searchController, "Searching Brands");
         searchController.init(dialog);
 
+    }
+
+    @FXML
+    public void addProduct(ActionEvent event) {
+        if (getUserType() == userType.admin) {
+            AddProductController productController = new AddProductController(connection);
+            dialog = CreateModal(event, menuBar,
+                    "/fxml/AddProduct.fxml",
+                    productController,
+                    "Add a Product");
+            productController.init(dialog);
+        } else {
+            sendAlert("Access error",
+                    "Attempt to access admin feature.",
+                    "You have no access to add Products. Sign in as an administrator.",
+                    Alert.AlertType.ERROR);
+        }
     }
 
     @FXML
@@ -94,21 +116,20 @@ public class PrincipalController extends ControllerModel {
                     Alert.AlertType.ERROR);
         }
     }
-    
+
     @FXML
     public void searchClients(ActionEvent event) {
-        
-         if (getUserType() == userType.admin) {
-             SearchClientController searchController = new SearchClientController(connection);
-        dialog = CreateModal(event, menuBar, "/fxml/SearchClient.fxml", searchController, "Searching Clients");
-        searchController.init(dialog);            
+
+        if (getUserType() == userType.admin) {
+            SearchClientController searchController = new SearchClientController(connection);
+            dialog = CreateModal(event, menuBar, "/fxml/SearchClient.fxml", searchController, "Searching Clients");
+            searchController.init(dialog);
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",
                     "You have no access to search Client data. Sign in as an administrator.",
                     Alert.AlertType.ERROR);
         }
-       
 
     }
 

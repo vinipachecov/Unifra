@@ -24,6 +24,22 @@ id serial primary key,
 name varchar(30)
 )
 
+create table products(
+id serial primary key,
+name varchar(50),
+brandid integer references brands(id),
+typeid integer references types(id),
+minimumquantity integer,
+currentquantity integer,
+unitvalue decimal(15,2),
+unittype varchar(30)
+)
+
+drop table products;
+
+select * from products;
+
+
 select * from brands
 
 

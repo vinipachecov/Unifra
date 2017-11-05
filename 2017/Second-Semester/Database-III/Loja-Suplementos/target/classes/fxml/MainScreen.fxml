@@ -48,9 +48,9 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Products">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Add a Product" />
+                  <MenuItem mnemonicParsing="false" onAction="#addProduct" text="Add a Product" />
                   <MenuItem mnemonicParsing="false" text="Change a Product" />
-                  <MenuItem mnemonicParsing="false" text="Pesquisar..." />
+                  <MenuItem mnemonicParsing="false" onAction="#searchProduct" text="Search..." />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Brands">
