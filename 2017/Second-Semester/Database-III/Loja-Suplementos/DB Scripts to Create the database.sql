@@ -35,6 +35,33 @@ unitvalue decimal(15,2),
 unittype varchar(30)
 )
 
+create table sales(
+id serial primary key,
+saledate timestamp,
+fiscalnote char(9),
+subtotal float,
+total float,
+clientid int references clients(id),
+discout float,
+finalized char(1)
+)
+
+alter table sales
+add column  invoice char(9);
+
+select * from sales;
+
+drop table sales;
+
+create table saleitem(
+saleid int references sales(id),
+prodid int references products(id),
+unitvalue float,
+quantity integer,
+total float,
+primary key(saleid,prodid)
+)
+
 drop table products;
 
 select * from products;

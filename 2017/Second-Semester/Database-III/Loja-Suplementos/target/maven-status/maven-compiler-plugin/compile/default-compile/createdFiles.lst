@@ -8,6 +8,7 @@ com/mycompany/loja/suplementos/AddTypeController.class
 com/mycompany/loja/suplementos/LoginController.class
 com/mycompany/loja/suplementos/SearchClientController.class
 com/mycompany/loja/suplementos/SearchTypeController.class
+supportClasses/SaleItem.class
 com/mycompany/loja/suplementos/AddClientController.class
 com/mycompany/loja/suplementos/ControllerModel.class
 supportClasses/Supplier.class
@@ -16,8 +17,10 @@ com/mycompany/loja/suplementos/AddProductController.class
 com/mycompany/loja/suplementos/SearchBrandController.class
 com/mycompany/loja/suplementos/AddUserController.class
 com/mycompany/loja/suplementos/MainApp.class
+com/mycompany/loja/suplementos/AddSaleItemController.class
 supportClasses/Product.class
 com/mycompany/loja/suplementos/AddClientController$1.class
 supportClasses/Type.class
 supportClasses/Brand.class
 supportClasses/Client.class
+com/mycompany/loja/suplementos/AddSaleController.class

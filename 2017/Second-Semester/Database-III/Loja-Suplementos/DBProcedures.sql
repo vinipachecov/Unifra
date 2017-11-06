@@ -1,5 +1,81 @@
 -- Procedures
 
+--------------------------------------------------------------------
+--						ADD A SALE PROCEDURES
+
+-- GET CLIENTS
+CREATE or replace FUNCTION get_clients()
+RETURNS TABLE(name varchar(50)) AS $$
+BEGIN
+    RETURN QUERY select c.name
+				  FROM clients as c;
+END;            
+$$ LANGUAGE plpgsql;
+
+select * from get_clients();
+
+select * from sales;
+
+
+
+
+
+-- ADD A NEW SALE
+CREATE OR REPLACE FUNCTION add_sale(	
+	subtotal float,
+	total float,
+	clientname character varying,
+	discout float,
+	finalized char(1)
+) 
+    RETURNS void AS $$
+    declare 
+    	idclient integer;    	
+    BEGIN
+      	select c.id
+      	from clients c
+      	where c."name" = clientname
+      	into idclient;      	
+	    
+	    INSERT INTO sales(
+	   	saledate,		
+		subtotal,
+		total,
+		clientid,
+		discout,
+		finalized) 
+	    VALUES (
+	    current_timestamp,	    
+	    subtotal,
+	    total,
+	    idclient,
+	    discout,
+	    finalized
+		);
+    END;
+    $$ LANGUAGE plpgsql;
+    
+    -- Execute store procedure    
+DO $$ BEGIN
+    PERFORM add_sale(100.0,50.0,'vinicius',0.5, 'F');
+END $$;
+
+
+--RESTART SEQUENCES
+ALTER SEQUENCE sales_id_seq RESTART WITH 2
+
+select * from sales;
+
+CREATE or replace FUNCTION checkInvoiceIDAlreadyExists(iputFiscalNote character varying)
+RETURNS TABLE(id integer) AS $$
+BEGIN
+    RETURN QUERY select s.id 
+				  FROM sales as s
+				  where s.invoice = iputFiscalNote;
+END;            
+$$ LANGUAGE plpgsql;
+
+select * from checkInvoiceIDAlreadyExists('123456489');
 
 --------------------------------------------------------------------
 --						ADD A PRODUCT PROCEDURES
@@ -60,7 +136,6 @@ BEGIN
 END;            
 $$ LANGUAGE plpgsql;
 
-select * from get_a_product('SuperWhey')
 
 drop function get_products
 

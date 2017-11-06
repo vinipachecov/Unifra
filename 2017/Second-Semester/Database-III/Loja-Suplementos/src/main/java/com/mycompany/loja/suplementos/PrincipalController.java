@@ -31,10 +31,19 @@ public class PrincipalController extends ControllerModel {
     public MenuItem addUserMenuItem;
 
     public Stage dialog;
-
+    
+    public Stage currentStage;    
+    
+    
+    
     public PrincipalController(Connection db, User current) {
         super(db, current);
     }
+    
+    public void init(Stage stage){
+        this.currentStage = stage;
+    }
+
 
     @FXML
     public void addSupplier(ActionEvent event) {
@@ -51,6 +60,16 @@ public class PrincipalController extends ControllerModel {
                     "You have no access to add Suppliers. Sign in as an administrator.",
                     Alert.AlertType.ERROR);
         }
+    }
+    
+    @FXML
+    public void addSale(ActionEvent event) {        
+            AddSaleController saleController = new AddSaleController(this.connection);
+            ChangeScreen(menuBar,
+                    "/fxml/AddSale.fxml",
+                    saleController,
+                    "Add a Sale");
+            saleController.init(currentStage,this);                
     }
 
     @FXML

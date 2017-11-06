@@ -29,8 +29,9 @@ import supportClasses.userType;
  */
 public class ControllerModel {
     
-    Connection connection;
-    User currentUser;
+    public Connection connection;
+    public User currentUser;    
+    
     
     public ControllerModel(Connection db){
         this.connection = db;
@@ -70,7 +71,7 @@ public class ControllerModel {
     }
     
     @FXML
-    public void ChangeScreen(Button button, String FXMLFile, Object controller){
+    public Stage ChangeScreen(Button button, String FXMLFile, Object controller){
         Stage stage; 
         Parent root = null;
         stage=(Stage) button.getScene().getWindow();
@@ -88,14 +89,32 @@ public class ControllerModel {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();    
+        return stage;
+    }
+    
+    public void ChangeScreen(Stage previous, String FXMLFile, Object controller){        
+        Parent root = null;        
         
+        FXMLLoader mainscreenLoader = new FXMLLoader(getClass().getResource(FXMLFile));
+                
+        mainscreenLoader.setController(controller);      
+        
+        try {
+            root = mainscreenLoader.load();
+        } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }   
+               
+        Scene scene = new Scene(root);
+        previous.setScene(scene);
+        previous.show();          
     }
     
     
     
     
     @FXML
-    public void ChangeScreen(MenuBar menubar, String FXMLFile, Object controller, String Title){
+    public Stage ChangeScreen(MenuBar menubar, String FXMLFile, Object controller, String title){
         Stage stage; 
         Parent root = null;
         stage=(Stage) menubar.getScene().getWindow();
@@ -110,12 +129,13 @@ public class ControllerModel {
             Logger.getLogger(ControllerModel.class.getName()).log(Level.SEVERE, null, ex);
         }
                
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        stage.setTitle(title);
         
-        
+        stage.setScene(new Scene(root));        
+        stage.show();    
+        return stage;      
     }    
+    
     
     @FXML
     public Stage CreateModal(ActionEvent event, MenuBar menubar, String FXMLFile, Object controller,String title){
@@ -143,6 +163,38 @@ public class ControllerModel {
         //node inherit class of my previous screen
         stage.initOwner(
             (menubar.getScene().getWindow() 
+        ));
+        stage.setScene(new Scene(root));        
+        stage.show();    
+        return stage;
+    }
+    
+    @FXML
+    public Stage CreateModal(Button button, String FXMLFile, Object controller,String title){
+        
+        Stage stage = new Stage();
+        Parent root = null;        
+        //stage =  addUsuarioMenuItem.
+           //load up OTHER FXML document
+        FXMLLoader screenLoader = new FXMLLoader(getClass()
+                .getResource(FXMLFile));
+        
+        screenLoader.setController(controller);              
+        
+        try {
+            root = screenLoader.load();
+        } catch (IOException ex) {
+            Logger.getLogger(ControllerModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                                
+        stage.setTitle(title);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        
+        //Put the owner you want for your modal
+        // In this case I'm using menubar because it is a
+        //node inherit class of my previous screen
+        stage.initOwner(
+            (button.getScene().getWindow() 
         ));
         stage.setScene(new Scene(root));        
         stage.show();    

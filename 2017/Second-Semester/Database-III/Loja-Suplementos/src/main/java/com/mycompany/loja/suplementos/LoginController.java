@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import supportClasses.User;
 import supportClasses.userType;
 
@@ -81,8 +82,10 @@ public class LoginController extends ControllerModel {
                 User current = new User(username,
                         userType.ParseUserType(rs.getString("usertype").toString())
                 );
+                Stage stage;
                 PrincipalController controller = new PrincipalController(this.connection, current);
-                ChangeScreen(loginButton, "/fxml/MainScreen.fxml", controller);
+                stage = ChangeScreen(loginButton, "/fxml/MainScreen.fxml", controller);
+                controller.init(stage);
             } else {
                 sendAlert("Erro de Login",
                         "Erro ao efetuar Login",
