@@ -51,14 +51,14 @@ add column  invoice char(9);
 
 select * from sales;
 
-drop table sales;
+drop table saleitems;
 
-create table saleitem(
+create table saleitems(
 saleid int references sales(id),
 prodid int references products(id),
-unitvalue float,
+unitvalue decimal(15,2),
 quantity integer,
-total float,
+total decimal(15,2),
 primary key(saleid,prodid)
 )
 

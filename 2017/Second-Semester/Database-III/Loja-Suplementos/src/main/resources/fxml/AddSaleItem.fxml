@@ -17,8 +17,8 @@
       <Label layoutX="38.0" layoutY="32.0" text="Add a Product to Cart" />
       <Button layoutX="251.0" layoutY="362.0" mnemonicParsing="false" onAction="#cancel" prefHeight="29.0" prefWidth="95.0" text="Cancel" />
       <Button layoutX="353.0" layoutY="362.0" mnemonicParsing="false" onAction="#checkForm" prefHeight="29.0" prefWidth="95.0" text="Add Sale" />
-      <ComboBox fx:id="findProductComboBox" layoutX="39.0" layoutY="58.0" prefWidth="150.0" promptText="Find Product" />
-      <TextField fx:id="quantityTextField" layoutX="39.0" layoutY="148.0" />
+      <ComboBox fx:id="findProductComboBox" layoutX="39.0" layoutY="58.0" onAction="#getUnitValue" prefWidth="150.0" promptText="Find Product" />
+      <TextField fx:id="quantityTextField" layoutX="39.0" layoutY="148.0" onAction="#recalculateTotal" />
       <Label layoutX="43.0" layoutY="116.0" text="Quantity" />
       <Label layoutX="43.0" layoutY="202.0" text="UnitValue" />
       <TextField fx:id="unitValueTextField" layoutX="39.0" layoutY="234.0" />

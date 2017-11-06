@@ -3,6 +3,200 @@
 --------------------------------------------------------------------
 --						ADD A SALE PROCEDURES
 
+CREATE OR REPLACE FUNCTION add_saleitem(	
+	saleid_input int,
+	prodname_input character varying,
+	unitvalue_input decimal(15,2),
+	quantity_input integer,
+	total_input decimal(15,2)
+) 
+    RETURNS void AS $$
+    declare prodid integer;
+    BEGIN
+	    select p.id
+	    from products p
+	    where p."name" = prodname_input
+	    into prodid;
+	    
+	    INSERT INTO saleitems(
+	    saleid,
+		prodid ,
+		unitvalue,
+		quantity,
+		total
+	   	) 
+	    VALUES (
+	    saleid_input,
+		prodid,
+		unitvalue_input,
+		quantity_input,
+		total_input	   
+		);
+    END;
+$$ LANGUAGE plpgsql;
+
+drop function add_saleitem;
+
+select * from saleitems;
+
+DO $$ BEGIN
+    PERFORM add_saleitem(1,'Optimum Whey 900g - 100%',100,10,1000);
+END $$;
+
+   
+    
+-- DELETE A SALE AND SALE ITEMS OF IT
+CREATE or replace FUNCTION removeSale(currentsaleid integer)
+RETURNS void AS $$
+BEGIN    
+	delete 
+	from saleitems sa
+	where sa.saleid = currentsaleid;
+	
+	delete 
+	from sales sa
+	where sa.id = currentsaleid;
+END;            
+$$ LANGUAGE plpgsql;
+
+DO $$ BEGIN
+    PERFORM removeSale(1);
+END $$;
+    
+
+ -- FINISH THE SALE TO FURTHER GENERATE THE INVOICE
+CREATE or replace FUNCTION finishSale(saleid integer)
+RETURNS void AS $$
+BEGIN    
+	update sales 
+	set finalized = 'Y'
+	where id = saleid;
+END;            
+$$ LANGUAGE plpgsql;
+
+select * from sales;
+
+select * from saleitems;
+
+
+DO $$ BEGIN
+    PERFORM finishSale(3);
+END $$;
+
+-- set the invoice value
+CREATE or replace FUNCTION setInvoice(saleid integer,invoiceval character varying)
+RETURNS void AS $$
+BEGIN    
+	update sales 
+	set invoice = invoiceval
+	where id = saleid;
+END;            
+$$ LANGUAGE plpgsql;
+
+DO $$ BEGIN
+    PERFORM setInvoice(1,'');
+END $$;
+
+-- get a typename by a product name
+CREATE or replace FUNCTION get_a_typeby_product(prodname character varying)
+RETURNS TABLE(typename character varying) AS $$
+declare
+auxtypeid integer;
+BEGIN
+    select p.typeid
+	from products p
+	where p."name" = prodname
+	into auxtypeid;		
+	
+	RETURN QUERY select t.name
+				  FROM types as t
+				  where t.id = auxtypeid;
+END;            
+$$ LANGUAGE plpgsql;
+
+select * from get_a_typeby_product('Optimum Whey 900g - 100%')
+
+	
+	
+-- get a brand by a product name
+CREATE or replace FUNCTION get_a_brandby_product(prodname character varying)
+RETURNS TABLE(brandname character varying) AS $$
+declare
+auxbrandid integer;
+BEGIN
+    select p.brandid
+	from products p
+	where p."name" = prodname
+	into auxbrandid;		
+	
+	RETURN QUERY select b.name
+				  FROM brands as b
+				  where b.id = auxbrandid;
+END;            
+$$ LANGUAGE plpgsql;
+
+
+select * from get_a_brandby_product('Optimum Whey 900g - 100%')
+
+
+
+
+-- Get a Brand by product name
+
+DO $$ BEGIN
+    PERFORM get_brandandtype('Optimum Whey 900g - 100%');
+END $$;
+
+select * from get_brandandtype('Optimum Whey 900g - 100%') as f(bradname character varying, typename character varying);
+
+--CHECK ITEM EXISTS IN SALEITEMS
+
+CREATE OR REPLACE FUNCTION get_itemunitvalue(pname character varying)
+RETURNS decimal(15,2) AS $func$
+   SELECT  p.unitvalue iditem
+      FROM products p
+     WHERE p."name" = pname
+     limit 1;
+$func$ LANGUAGE sql;
+
+drop function get_itemunitvalue
+
+CREATE OR REPLACE FUNCTION func_test(in AAA date, OUT _result int)
+AS $$
+BEGIN
+   SELECT  INTO _result
+      FROM hist_line
+     WHERE AAA BETWEEN valid_from AND COALESCE(valid_to, '9999-12-31');
+   RETURN;
+END;
+$$ LANGUAGE plpgsql;
+
+
+select * from get_itemunitvalue('Optimum Whey 900g - 100%')
+
+
+CREATE or replace FUNCTION item_exists(currentsaleid integer,pname character varying)
+RETURNS TABLE(hasitem boolean) AS $$
+declare
+	idprod integer;
+BEGIN
+    select id
+    from products p
+    where p."name" = pname
+    into idprod;
+	
+	RETURN QUERY 
+    select exists(select from saleitems as si
+    				where si.saleid = currentsaleid and si.prodid = idprod );
+END;            
+$$ LANGUAGE plpgsql;
+
+drop function item_exists(currentsaleid integer,pname character varying)
+
+select * from products;
+
+select * from item_exists(1,'Optimum Whey 900g - 100%');
+
 -- GET CLIENTS
 CREATE or replace FUNCTION get_clients()
 RETURNS TABLE(name varchar(50)) AS $$
@@ -16,8 +210,14 @@ select * from get_clients();
 
 select * from sales;
 
-
-
+-- GET PRODUCTS
+CREATE or replace FUNCTION get_products()
+RETURNS TABLE(name varchar(50)) AS $$
+BEGIN
+    RETURN QUERY select p.name
+				  FROM products as p;
+END;            
+$$ LANGUAGE plpgsql;
 
 
 -- ADD A NEW SALE
@@ -62,7 +262,7 @@ END $$;
 
 
 --RESTART SEQUENCES
-ALTER SEQUENCE sales_id_seq RESTART WITH 2
+ALTER SEQUENCE sales_id_seq RESTART WITH 1
 
 select * from sales;
 
@@ -116,6 +316,8 @@ BEGIN
 				  limit 50;				  
 END;            
 $$ LANGUAGE plpgsql;
+
+select * from get_products();
 
 
 CREATE or replace FUNCTION get_a_product(pname varchar(50))

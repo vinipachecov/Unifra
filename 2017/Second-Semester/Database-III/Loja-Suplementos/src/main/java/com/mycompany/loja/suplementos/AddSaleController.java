@@ -8,6 +8,8 @@ package com.mycompany.loja.suplementos;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,7 +23,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import supportClasses.Product;
 import supportClasses.SaleItem;
 
 /**
@@ -29,17 +30,19 @@ import supportClasses.SaleItem;
  * @author vinicius
  */
 public class AddSaleController extends ControllerModel {
-    
+
     @FXML
     public Button addItemButton;
-    
+
     @FXML
     public Button backButton;
 
     @FXML
     public TextField discountTextField;
 
-    
+    @FXML
+    public Button addFinishSaleButton;
+
     @FXML
     public TableColumn<SaleItem, String> productNameColumn;
 
@@ -64,29 +67,28 @@ public class AddSaleController extends ControllerModel {
     public Label totalLabel;
 
     @FXML
-    public javafx.scene.control.TableView<Product> saleTable;
+    public javafx.scene.control.TableView<SaleItem> saleTable;
 
-    public ObservableList<Product> data;
+    public ObservableList<SaleItem> data;
 
     public Stage dialog;
     public Stage dialogAddItem;
 
     public boolean saleCreated = false;
-    
+
     public ImageView imageView;
-    
+
     private PrincipalController pc;
-    
+
     private Integer saleId;
 
     public AddSaleController(Connection db) {
         super(db);
     }
 
-    public void init(Stage modal, PrincipalController princpController) {        
-        
-        
-        pc = princpController;        
+    public void init(Stage modal, PrincipalController princpController) {
+
+        pc = princpController;
 
         dialog = modal;
 
@@ -99,31 +101,48 @@ public class AddSaleController extends ControllerModel {
         productTypeColumn.setCellValueFactory(new PropertyValueFactory<SaleItem, String>("typename"));
         totalProductPriceColumn.setCellValueFactory(new PropertyValueFactory<SaleItem, Float>("total"));
         productQuantityColumn.setCellValueFactory(new PropertyValueFactory<SaleItem, Integer>("quantity"));
-        
+
         ImageView im = new ImageView("file:leftarrow.png");
         im.setFitHeight(20);
         im.setFitWidth(20);
         backButton.setGraphic(im);
 
-        saleTable.setItems(data);        
-        
-        addItemButton.setDisable(true);        
+        saleTable.setItems(data);
+
+        addItemButton.setDisable(true);
 
     }
 
     @FXML
     public void cancel() {
         deleteSale();
-        ChangeScreen(dialog,"/fxml/MainScreen.fxml", pc);
-        
+        ChangeScreen(dialog, "/fxml/MainScreen.fxml", pc);
     }
-    
-    public void deleteSale(){
+
+    public void calculateSubtotalAndTotal() {
+        Float subtotal = (float) 0;
+        for (SaleItem item : saleTable.getItems()) {
+            subtotal += (totalProductPriceColumn.getCellObservableValue(item).getValue());
+        }
+        
+        subtotalLabel.setText(subtotal.toString());
+        
+        Float discount = Float.parseFloat(discountTextField.getText());
+        Float total = subtotal - (subtotal * discount);
+        totalLabel.setText(total.toString());        
+    }    
+
+    public void deleteSale() {
         try {
             Statement st = this.connection.createStatement();
-            st.executeUpdate("DELETE FROM sales where id = " + saleId);
-                    
+            st.executeUpdate(                    
+                    "DO $$ BEGIN\n" +
+                    "    PERFORM removeSale(" + saleId + ");\n" +
+                    "END $$;"
+            );
+
         } catch (Exception e) {
+            System.out.println("ERRO AO DELETAR SALE " + e.getMessage());
         }
     }
 
@@ -137,17 +156,15 @@ public class AddSaleController extends ControllerModel {
             }
         } catch (Exception e) {
         }
-        
-        
     }
 
     //Add item to this sale
     @FXML
     public void addItemSale() {
-        
+
         AddSaleItemController itemController = new AddSaleItemController(connection);
         dialogAddItem = CreateModal(backButton, "/fxml/AddSaleItem.fxml", itemController, "Add Product Item");
-        itemController.init(dialog);
+        itemController.init(dialogAddItem, saleId, saleTable, data, this);
 
     }
 
@@ -159,26 +176,28 @@ public class AddSaleController extends ControllerModel {
         try {
             Statement st = this.connection.createStatement();
             st.executeUpdate(
-                    "DO $$ BEGIN\n" +
-                    "PERFORM add_sale(0.0,0.0,"
-                            + "'" + clientComboBox.getValue() + "',"
-                            + "" + discount + ", 'F');\n" +
-                    "END $$;"
-            );                       
-            Statement st2 = this.connection.createStatement();            
+                    "DO $$ BEGIN\n"
+                    + "PERFORM add_sale(0.0,0.0,"
+                    + "'" + clientComboBox.getValue() + "',"
+                    + "" + discount + ", 'F');\n"
+                    + "END $$;"
+            );
+            Statement st2 = this.connection.createStatement();
             ResultSet rs = st2.executeQuery(""
                     + "select max(id) from sales");
-            if(rs.next()){
-                saleId = rs.getInt("max");                
+            if (rs.next()) {
+                saleId = rs.getInt("max");
             }
         } catch (Exception e) {
             System.out.println("ERROR " + e.getMessage());
         }
         addItemButton.setDisable(false);
+        saleCreated = true;
+        addFinishSaleButton.setText("Finish Sale");
     }
 
     // fake fiscal notes
-    public String generateFiscalNote() {
+    public String generateInvoice() {
         boolean newnumber = false;
 
         while (!newnumber) {
@@ -196,13 +215,37 @@ public class AddSaleController extends ControllerModel {
                 }
             } catch (Exception e) {
             }
-            
+
         }
         sendAlert(
                 "Error invoice generation",
-                "Error creating invoice.", 
+                "Error creating invoice.",
                 "Critical error on invoice", Alert.AlertType.ERROR);
         return "";
+    }
+
+    public void finishSale() {
+        try {
+            Statement st = this.connection.createStatement();
+            st.executeUpdate(
+                    "DO $$ BEGIN\n"
+                    + "    PERFORM finishSale(" + saleId + ");\n"
+                    + "END $$;"
+            );
+
+            String invoice = generateInvoice();
+
+            st = this.connection.createStatement();
+            st.executeUpdate(
+                    "DO $$ BEGIN\n"
+                    + "    PERFORM setInvoice(" + saleId + ",'" + invoice + "');\n"
+                    + "END $$;"
+            );
+
+        } catch (Exception e) {
+            System.out.println("Error generating invoice! " + e.getMessage());
+        }
+
     }
 
     @FXML
@@ -223,6 +266,8 @@ public class AddSaleController extends ControllerModel {
         } else {
             if (!saleCreated) {
                 createSale(discount);
+            } else {
+                finishSale();
             }
         }
     }
