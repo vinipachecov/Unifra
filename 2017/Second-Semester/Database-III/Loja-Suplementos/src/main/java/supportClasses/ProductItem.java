@@ -9,7 +9,7 @@ package supportClasses;
  *
  * @author vinicius
  */
-public class SaleItem {
+public class ProductItem {
     
     
     public String name;    
@@ -19,7 +19,7 @@ public class SaleItem {
     public Integer quantity;    
     public float total;
 
-    public SaleItem(String name, Float unitValue, String brandname, String typename, Integer quantity, float total) {
+    public ProductItem(String name, Float unitValue, String brandname, String typename, Integer quantity, float total) {
         this.name = name;
         this.unitValue = unitValue;
         this.brandname = brandname;

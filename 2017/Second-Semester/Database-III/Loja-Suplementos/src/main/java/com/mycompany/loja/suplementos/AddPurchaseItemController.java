@@ -27,14 +27,9 @@ import supportClasses.ProductItem;
  *
  * @author vinicius
  */
-public class AddSaleItemController extends ControllerModel {
+public class AddPurchaseItemController extends ControllerModel {
 
-    @FXML
-    public Button addUserButton;
-
-    @FXML
-    public Button cancelAddUserButton;
-
+    
     @FXML
     public TextField quantityTextField;
 
@@ -49,19 +44,19 @@ public class AddSaleItemController extends ControllerModel {
     @FXML
     public Label totalLabel;
     
-    public Integer saleID;
+    public Integer purchaseID;
 
     public Stage dialog;
 
-    public TableView saleTable;
+    public TableView purchaseTable;
     
-    public Label subtotalAddSaleScreen;
+    public Label subtotalAddPurchaseScreen;
     
-    public Label totalAddSaleScreen;
+    public Label totalAddPurchaseScreen;
     
-    public AddSaleController asic;    
+    public AddPurchaseController apc;    
 
-    public AddSaleItemController(Connection connection) {
+    public AddPurchaseItemController(Connection connection) {
         super(connection);
 
     }
@@ -75,14 +70,14 @@ public class AddSaleItemController extends ControllerModel {
     }
 
     public void init(Stage modal, Integer id, TableView saletable, ObservableList<ProductItem> listdata,
-            AddSaleController asic ) {
-        this.asic = asic;
-        this.subtotalAddSaleScreen = subtotalAddSaleScreen;
-        this.totalAddSaleScreen = totalAddSaleScreen;
+            AddPurchaseController apc ) {
+        this.apc = apc;
+        this.subtotalAddPurchaseScreen = subtotalAddPurchaseScreen;
+        this.totalAddPurchaseScreen = totalAddPurchaseScreen;
         this.auxdata = listdata;
-        saleTable = saletable;
+        purchaseTable = saletable;
         dialog = modal;
-        this.saleID = id;
+        this.purchaseID = id;
         getProducts();
     }
     
@@ -123,8 +118,8 @@ public class AddSaleItemController extends ControllerModel {
 
         
         auxdata.add(new ProductItem(itemname, unitvalue, brandname, typename, Quantity, total));
-        saleTable.setItems(auxdata);
-        asic.calculateSubtotalAndTotal();
+        purchaseTable.setItems(auxdata);
+        apc.calculateSubtotalAndTotal();
     }
 
     public void getProducts() {
@@ -172,17 +167,16 @@ public class AddSaleItemController extends ControllerModel {
 
         try {
             Statement st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n"
-                    + "    PERFORM add_saleitem("
-                    + "" + saleID + ","
+            st.executeUpdate("DO $$ BEGIN\n"
+                    + "    PERFORM add_purchaseitem("
+                    + "" + purchaseID + ","
                     + "'" + itemname + "',"
                     + "" + unitValue + "  ,"
                     + "" + Quantity + ", "
                     + "" + totalLabel.getText() + ");\n"
                     + "END $$;"
             );
-            sendAlert("SaleItem added with success!", "SaleItem Added", "A saleItem has been added!", Alert.AlertType.CONFIRMATION);
+            sendAlert("PurchaseItem added with success!", "PurchaseItem Added", "A PurchaseItem has been added!", Alert.AlertType.CONFIRMATION);
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage() + e.getLocalizedMessage());
             return;
@@ -195,8 +189,7 @@ public class AddSaleItemController extends ControllerModel {
 
         try {
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select * from item_exists(" + saleID + ","
+            ResultSet rs = st.executeQuery("select * from purchaseItem_exists(" + purchaseID + ","
                     + "'" + itemname + "');");
             rs.next();
             if (rs.getString("hasitem").equals("t")) {

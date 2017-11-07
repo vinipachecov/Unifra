@@ -1,5 +1,210 @@
 -- Procedures
 
+
+--------------------------------------------------------------------
+--						ADD A PURCHASE PROCEDURES
+-- GET CLIENTS
+CREATE or replace FUNCTION get_suppliers()
+RETURNS TABLE(name varchar(50)) AS $$
+BEGIN
+    RETURN QUERY select s.fantasyname
+				  FROM suppliers as s;
+END;            
+$$ LANGUAGE plpgsql;
+
+select * from get_suppliers();
+
+
+
+-- REMOVE PURCHASE
+CREATE or replace FUNCTION removePurchase(currentpurchaseid integer)
+RETURNS void AS $$
+BEGIN    
+	delete 
+	from purchaseitems pit
+	where pit.purchaseid = currentpurchaseid;
+	
+	delete 
+	from purchases p
+	where p.id = currentpurchaseid;
+END;            
+$$ LANGUAGE plpgsql;
+
+DO $$ BEGIN
+    PERFORM removePurchase(1);
+END $$;
+
+
+select * from purchases;
+
+select * from purchaseitems;
+
+CREATE OR REPLACE FUNCTION add_purchaseitem(	
+	purchaseid_input int,
+	prodname_input character varying,
+	unitvalue_input decimal(15,2),
+	quantity_input integer,
+	total_input decimal(15,2)
+) 
+    RETURNS void AS $$
+    declare prodid integer;
+    BEGIN
+	    select p.id
+	    from products p
+	    where p."name" = prodname_input
+	    into prodid;
+	    
+	    INSERT INTO purchaseitems(
+	    purchaseid,
+		prodid ,
+		unitvalue,
+		quantity,
+		total
+	   	) 
+	    VALUES (
+	    purchaseid_input,
+		prodid,
+		unitvalue_input,
+		quantity_input,
+		total_input	   
+		);
+    END;
+$$ LANGUAGE plpgsql;
+
+drop function add_saleitem;
+
+select * from purchaseitems;
+
+select * from purchases;
+
+DO $$ BEGIN
+    PERFORM add_purchaseitem(1,'Optimum Whey 900g - 100%',100,10,1000);
+END $$;
+
+
+
+CREATE OR REPLACE FUNCTION add_purchase(	
+	subtotal decimal(15,2),
+	total  decimal(15,2),
+	suppliername character varying,
+	discout  decimal(15,2),
+	finalized char(1)
+) 
+    RETURNS void AS $$
+    declare 
+    	idsupplier integer;    	
+    BEGIN
+      	select s.id
+      	from suppliers s
+      	where s.fantasyname = suppliername
+      	into idsupplier;      	
+	    
+	    INSERT INTO purchases(
+	   	purchasedate,		
+		subtotal,
+		total,
+		supplierid,
+		discout,
+		finalized) 
+	    VALUES (
+	    current_timestamp,	    
+	    subtotal,
+	    total,
+	    idsupplier,
+	    discout,
+	    finalized
+		);
+    END;
+    $$ LANGUAGE plpgsql;
+    
+    -- Execute store procedure    
+DO $$ BEGIN
+    PERFORM add_purchase(100.0,50.0,'batataDoceSales',0.5, 'F');
+END $$;
+
+select * from purchases;
+
+select * from suppliers;
+
+
+-- CHECK FOR INVOICE ID NOT USED YET
+CREATE or replace FUNCTION checkInvoicePurchaseAlreadyExists(inputInvoice character varying)
+RETURNS TABLE(id integer) AS $$
+BEGIN
+    RETURN QUERY select p.id 
+				  FROM purchases as p
+				  where p.invoice = inputInvoice;
+END;            
+$$ LANGUAGE plpgsql;
+
+update purchases
+set invoice = '123456789'
+where id = 1;
+
+select * from purchases;
+
+select * from checkInvoicePurchaseAlreadyExists('123456788');
+
+
+-- FINISH THE PURCHASE TO FURTHER GENERATE THE INVOICE
+CREATE or replace FUNCTION finishPurchase(purchaseid integer, input_subtotal decimal(15,2), input_total decimal(15,2))
+RETURNS void AS $$
+BEGIN    
+	update purchases 
+	set finalized = 'Y', subtotal = input_subtotal, total = input_total
+	where id = purchaseid;
+END;            
+$$ LANGUAGE plpgsql;
+
+select * from purchases;
+
+select * from purchase items;
+
+
+DO $$ BEGIN
+    PERFORM finishPurchase(5,1200,100);
+END $$;
+
+
+-- set the invoice value to purchase
+CREATE or replace FUNCTION setPurchaseInvoice(purchaseid integer,invoiceval character varying)
+RETURNS void AS $$
+BEGIN    
+	update purchases 
+	set invoice = invoiceval
+	where id = purchaseid;
+END;            
+$$ LANGUAGE plpgsql;
+
+DO $$ BEGIN
+    PERFORM setPurchaseInvoice(1,'123456788');
+END $$;
+
+-- CHECK IF PRODUCT HAS ALREADY BEEN ADDED
+CREATE or replace FUNCTION purchaseItem_exists(currentPurchaseID integer,pname character varying)
+RETURNS TABLE(hasitem boolean) AS $$
+declare
+	idprod integer;
+BEGIN
+    select id
+    from products p
+    where p."name" = pname
+    into idprod;
+	
+	RETURN QUERY 
+    select exists(select from purchaseitems as pit
+    				where pit.purchaseid = currentPurchaseID and pit.prodid = idprod );
+END;            
+$$ LANGUAGE plpgsql;
+
+drop function item_exists(currentsaleid integer,pname character varying)
+
+select * from products;
+
+
+
+select * from purchaseItem_exists(1,'Optimum Whey 900g - 100%');
+
 --------------------------------------------------------------------
 --						ADD A SALE PROCEDURES
 
@@ -65,11 +270,11 @@ END $$;
     
 
  -- FINISH THE SALE TO FURTHER GENERATE THE INVOICE
-CREATE or replace FUNCTION finishSale(saleid integer)
+CREATE or replace FUNCTION finishSale(saleid integer,  input_subtotal decimal(15,2), input_total decimal(15,2))
 RETURNS void AS $$
 BEGIN    
 	update sales 
-	set finalized = 'Y'
+	set finalized = 'Y',subtotal = input_subtotal, total = input_total
 	where id = saleid;
 END;            
 $$ LANGUAGE plpgsql;
@@ -80,7 +285,7 @@ select * from saleitems;
 
 
 DO $$ BEGIN
-    PERFORM finishSale(3);
+    PERFORM finishSale(1,2000,1500);
 END $$;
 
 -- set the invoice value
@@ -160,16 +365,6 @@ RETURNS decimal(15,2) AS $func$
 $func$ LANGUAGE sql;
 
 drop function get_itemunitvalue
-
-CREATE OR REPLACE FUNCTION func_test(in AAA date, OUT _result int)
-AS $$
-BEGIN
-   SELECT  INTO _result
-      FROM hist_line
-     WHERE AAA BETWEEN valid_from AND COALESCE(valid_to, '9999-12-31');
-   RETURN;
-END;
-$$ LANGUAGE plpgsql;
 
 
 select * from get_itemunitvalue('Optimum Whey 900g - 100%')
@@ -265,6 +460,8 @@ END $$;
 ALTER SEQUENCE sales_id_seq RESTART WITH 1
 
 select * from sales;
+
+select * from saleitems;
 
 CREATE or replace FUNCTION checkInvoiceIDAlreadyExists(iputFiscalNote character varying)
 RETURNS TABLE(id integer) AS $$

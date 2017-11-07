@@ -137,5 +137,28 @@ from client
 where name ='vinicius' and email = 'vini@.com' and govid ='12345678912'
 limit 1
 
+--------------------------------------------
+--					CREATE PURCHASE AND PURCHASE ITEMS
+
+create table purchases(
+id serial primary key,
+purchasedate timestamp,
+invoice char(9),
+subtotal decimal(15,2),
+total decimal(15,2),
+supplierid int references suppliers(id),
+discout decimal(15,2),
+finalized char(1) 
+)
+
+
+create table purchaseitems(
+purchaseid int references purchases(id),
+prodid int references products(id),
+unitvalue decimal(15,2),
+quantity integer,
+total decimal(15,2),
+primary key(purchaseid,prodid)
+)
 
 

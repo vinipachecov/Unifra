@@ -31,19 +31,16 @@ public class PrincipalController extends ControllerModel {
     public MenuItem addUserMenuItem;
 
     public Stage dialog;
-    
-    public Stage currentStage;    
-    
-    
-    
+
+    public Stage currentStage;
+
     public PrincipalController(Connection db, User current) {
         super(db, current);
     }
-    
-    public void init(Stage stage){
+
+    public void init(Stage stage) {
         this.currentStage = stage;
     }
-
 
     @FXML
     public void addSupplier(ActionEvent event) {
@@ -61,15 +58,25 @@ public class PrincipalController extends ControllerModel {
                     Alert.AlertType.ERROR);
         }
     }
-    
+
     @FXML
-    public void addSale(ActionEvent event) {        
-            AddSaleController saleController = new AddSaleController(this.connection);
-            ChangeScreen(menuBar,
-                    "/fxml/AddSale.fxml",
-                    saleController,
-                    "Add a Sale");
-            saleController.init(currentStage,this);                
+    public void addSale(ActionEvent event) {
+        AddSaleController saleController = new AddSaleController(this.connection);
+        ChangeScreen(menuBar,
+                "/fxml/AddSale.fxml",
+                saleController,
+                "Add a Sale");
+        saleController.init(currentStage, this);
+    }
+
+    @FXML
+    public void addṔurchase(ActionEvent event) {
+        AddPurchaseController purchaseController = new AddPurchaseController(this.connection);
+        ChangeScreen(menuBar,
+                "/fxml/AddPurchase.fxml",
+                purchaseController,
+                "Add a Purchase");
+        purchaseController.init(currentStage, this);
     }
 
     @FXML

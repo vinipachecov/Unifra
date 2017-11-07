@@ -29,7 +29,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Purchase orders">
             <items>
-              <MenuItem mnemonicParsing="false" text="Add purchase order" />
+              <MenuItem mnemonicParsing="false" onAction="#addṔurchase" text="Add purchase order" />
                   <MenuItem mnemonicParsing="false" text="Search..." />
             </items>
           </Menu>

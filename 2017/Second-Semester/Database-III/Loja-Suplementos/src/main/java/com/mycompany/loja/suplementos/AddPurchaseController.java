@@ -29,7 +29,7 @@ import supportClasses.ProductItem;
  *
  * @author vinicius
  */
-public class AddSaleController extends ControllerModel {
+public class AddPurchaseController extends ControllerModel {
 
     @FXML
     public Button addItemButton;
@@ -41,7 +41,7 @@ public class AddSaleController extends ControllerModel {
     public TextField discountTextField;
 
     @FXML
-    public Button addFinishSaleButton;
+    public Button addFinishPurchaseButton;
 
     @FXML
     public TableColumn<ProductItem, String> productNameColumn;
@@ -58,7 +58,7 @@ public class AddSaleController extends ControllerModel {
     public TableColumn<ProductItem, Integer> productQuantityColumn;
 
     @FXML
-    public ComboBox<String> clientComboBox;
+    public ComboBox<String> suppliersComboBox;
 
     @FXML
     public Label subtotalLabel;
@@ -67,22 +67,22 @@ public class AddSaleController extends ControllerModel {
     public Label totalLabel;
 
     @FXML
-    public javafx.scene.control.TableView<ProductItem> saleTable;
+    public javafx.scene.control.TableView<ProductItem> purchaseTable;
 
     public ObservableList<ProductItem> data;
 
     public Stage dialog;
     public Stage dialogAddItem;
 
-    public boolean saleCreated = false;
+    public boolean purchaseCreated = false;
 
     public ImageView imageView;
 
     private PrincipalController pc;
 
-    private Integer saleId;
+    private Integer purchaseId;
 
-    public AddSaleController(Connection db) {
+    public AddPurchaseController(Connection db) {
         super(db);
     }
 
@@ -94,7 +94,7 @@ public class AddSaleController extends ControllerModel {
 
         data = FXCollections.observableArrayList();
 
-        getComboBoxClients();
+        getComboBoxSuppliers();
 
         productNameColumn.setCellValueFactory(new PropertyValueFactory<ProductItem, String>("name"));
         productBrandColumn.setCellValueFactory(new PropertyValueFactory<ProductItem, String>("brandname"));
@@ -107,26 +107,26 @@ public class AddSaleController extends ControllerModel {
         im.setFitWidth(20);
         backButton.setGraphic(im);
 
-        saleTable.setItems(data);
+        purchaseTable.setItems(data);
 
         addItemButton.setDisable(true);
 
     }
-
+    
     @FXML
-    public void backToMainScreen() {
+    public void backToMainScreen(){
         ChangeScreen(dialog, "/fxml/MainScreen.fxml", pc);
     }
 
     @FXML
     public void cancel() {
-        deleteSale();
+        deletePurchase();
         ChangeScreen(dialog, "/fxml/MainScreen.fxml", pc);
     }
 
     public void calculateSubtotalAndTotal() {
         Float subtotal = (float) 0;
-        for (ProductItem item : saleTable.getItems()) {
+        for (ProductItem item : purchaseTable.getItems()) {
             subtotal += (totalProductPriceColumn.getCellObservableValue(item).getValue());
         }
 
@@ -137,27 +137,27 @@ public class AddSaleController extends ControllerModel {
         totalLabel.setText(total.toString());
     }
 
-    public void deleteSale() {
+    public void deletePurchase() {
         try {
             Statement st = this.connection.createStatement();
             st.executeUpdate(
                     "DO $$ BEGIN\n"
-                    + "    PERFORM removeSale(" + saleId + ");\n"
+                    + "    PERFORM removePurchase(" + purchaseId + ");\n"
                     + "END $$;"
             );
 
         } catch (Exception e) {
-            System.out.println("ERRO AO DELETAR SALE " + e.getMessage());
+            System.out.println("ERRO AO DELETAR PURCHASE " + e.getMessage());
         }
     }
 
-    public void getComboBoxClients() {
+    public void getComboBoxSuppliers() {
         try {
             Statement st = this.connection.createStatement();
             ResultSet rs = st.executeQuery(
-                    "select * from get_clients();");
+                    "select * from get_suppliers();");
             while (rs.next()) {
-                clientComboBox.getItems().add(rs.getString("name"));
+                suppliersComboBox.getItems().add(rs.getString("name"));
             }
         } catch (Exception e) {
         }
@@ -165,40 +165,39 @@ public class AddSaleController extends ControllerModel {
 
     //Add item to this sale
     @FXML
-    public void addItemSale() {
+    public void addItemPurchase() {
 
-        AddSaleItemController itemController = new AddSaleItemController(connection);
-        dialogAddItem = CreateModal(backButton, "/fxml/AddSaleItem.fxml", itemController, "Add Product Item");
-        itemController.init(dialogAddItem, saleId, saleTable, data, this);
+        AddPurchaseItemController itemController = new AddPurchaseItemController(connection);
+        dialogAddItem = CreateModal(backButton, "/fxml/AddPurchaseItem.fxml", itemController, "Add Product Item");
+        itemController.init(dialogAddItem, purchaseId, purchaseTable, data, this);
 
     }
 
     @FXML
-    public void createSale(String discount) {
+    public void createPurchase(String discount) {
         //Create a sale but it is not finished 
         //so the salesman can add products to this sale and then 
         // generate its invoice
         try {
             Statement st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n"
-                    + "PERFORM add_sale(0.0,0.0,"
-                    + "'" + clientComboBox.getValue() + "',"
+            st.executeUpdate("DO $$ BEGIN\n"
+                    + "PERFORM add_purchase(0.0,0.0,"
+                    + "'" + suppliersComboBox.getValue() + "',"
                     + "" + discount + ", 'F');\n"
                     + "END $$;"
             );
             Statement st2 = this.connection.createStatement();
             ResultSet rs = st2.executeQuery(""
-                    + "select max(id) from sales");
+                    + "select max(id) from purchases");
             if (rs.next()) {
-                saleId = rs.getInt("max");
+                purchaseId = rs.getInt("max");
             }
         } catch (Exception e) {
             System.out.println("ERROR " + e.getMessage());
         }
         addItemButton.setDisable(false);
-        saleCreated = true;
-        addFinishSaleButton.setText("Finish Sale");
+        purchaseCreated = true;
+        addFinishPurchaseButton.setText("Finish Purchase");
     }
 
     // fake fiscal notes
@@ -206,17 +205,17 @@ public class AddSaleController extends ControllerModel {
         boolean newnumber = false;
 
         while (!newnumber) {
-            String FN = Integer.toString(ThreadLocalRandom.current().nextInt(100000000, 999999999 + 1));
+            String invoice = Integer.toString(ThreadLocalRandom.current().nextInt(100000000, 999999999 + 1));
 
             //verify if there is already a sale with the generated fiscal note        
             try {
                 Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery("select * from checkInvoiceIDAlreadyExists('" + FN + "');");
+                ResultSet rs = st.executeQuery("select * from checkInvoicePurchaseAlreadyExists('" + invoice + "');");
 
                 if (rs.next()) {
 
                 } else {
-                    return FN;
+                    return invoice;
                 }
             } catch (Exception e) {
             }
@@ -229,54 +228,64 @@ public class AddSaleController extends ControllerModel {
         return "";
     }
 
-    public void finishSale() {
+    public void finishPurchase() {
         try {
+            Float subtotal = Float.parseFloat(subtotalLabel.getText());
+            Float total = Float.parseFloat(totalLabel.getText());
+            
+            Statement st = this.connection.createStatement();
+            st.executeUpdate(
+                    "DO $$ BEGIN\n" +
+                    "PERFORM finishPurchase("
+                            + "" + purchaseId + ","
+                            + "" + subtotal +  ","
+                            + "" + total +");\n" +
+                    "END $$;"
+            );
+        }catch (Exception e){
+            System.out.println("ERROR FINISHING PURCHASE " + e.getMessage());
+        }
+
+        try {
+            String invoice = generateInvoice();
+            
             Statement st = this.connection.createStatement();
             st.executeUpdate(
                     "DO $$ BEGIN\n"
-                    + "    PERFORM finishSale(" + saleId + ", "
-                    + subtotalLabel.getText() + " , "
-                    + "" + totalLabel.getText() + ");\n"
+                    + "    PERFORM setPurchaseInvoice(" + purchaseId + ",'" + invoice + "');\n"
                     + "END $$;"
             );
-
-            String invoice = generateInvoice();
-
-            st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n"
-                    + "    PERFORM setInvoice(" + saleId + ",'" + invoice + "');\n"
-                    + "END $$;"
-            );
-
-        } catch (Exception e) {
+            
+        } 
+        catch (Exception e) {
             System.out.println("Error generating invoice! " + e.getMessage());
         }
         sendAlert("Success",
-                "Sale Added",
-                "Sale added with success!", Alert.AlertType.CONFIRMATION);
+                "Purchase Added",
+                "Purchase added with success!", Alert.AlertType.CONFIRMATION);
     }
 
     @FXML
     public void checkForm() {
-        System.out.println("começou a verificar o form");
         String discount = null;
         try {
             discount = discountTextField.getText();
         } catch (Exception e) {
-            sendAlert("Error Adding new Type",
-                    "No Type name", "Choose a product type name.", Alert.AlertType.ERROR);
+            sendAlert("Error Adding new Purchase",
+                    "Form Error", "Error getting discount value.", Alert.AlertType.ERROR);
             return;
         }
 
         if (discount.equals("")) {
-            sendAlert("Error Adding new Type",
-                    "No Type name", "Fill all the fields! Choose a product type name.", Alert.AlertType.ERROR);
+            sendAlert("Error Adding new Purchase",
+                    "Discount value is empty",
+                    "Fill all the fields! Set a discountvalue.",
+                    Alert.AlertType.ERROR);
         } else {
-            if (!saleCreated) {
-                createSale(discount);
+            if (!purchaseCreated) {
+                createPurchase(discount);
             } else {
-                finishSale();
+                finishPurchase();
             }
         }
     }
