@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import supportClasses.databaseType;
 
 /**
  * FXML Controller class
@@ -53,13 +54,17 @@ public class AddProductController extends ControllerModel {
     public ComboBox<String> brandComboBox;
 
     public Stage dialog;
-    
+
     public ArrayList<String> brandsList;
-    public ArrayList<String> typesList;    
-    
+    public ArrayList<String> typesList;
+
     public AddProductController(Connection connection) {
         super(connection);
 
+    }
+
+    AddProductController(Connection connection, databaseType dbType) {
+        super(connection, dbType);
     }
 
     /**
@@ -71,29 +76,41 @@ public class AddProductController extends ControllerModel {
     }
 
     public void getBrands() {
-        try {
-            Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery("Select name from get_brands()");
-            while (rs.next()) {               
-                brandComboBox.getItems().add(rs.getString("name"));
-            }
-        } catch (Exception e) {
+
+        switch (this.dbType) {
+            case mongodb:
+                break;
+            default:
+                try {
+                    Statement st = this.connection.createStatement();
+                    ResultSet rs = st.executeQuery("Select name from getbrands");
+                    while (rs.next()) {
+                        brandComboBox.getItems().add(rs.getString("name"));
+                    }
+                } catch (Exception e) {
+                }
+                break;
         }
     }
 
     public void getTypes() {
-        try {
-            Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery("Select name from get_types()");
-            while (rs.next()) {                
-                typeComboBox.getItems().add(rs.getString("name"));
-            }
-        } catch (Exception e) {
+        switch (this.dbType) {
+            case mongodb:
+                break;
+            default:
+                try {
+                    Statement st = this.connection.createStatement();
+                    ResultSet rs = st.executeQuery("Select name from gettypes");
+                    while (rs.next()) {
+                        typeComboBox.getItems().add(rs.getString("name"));
+                    }
+                } catch (Exception e) {
+                }
+                break;
         }
-
     }
 
-    public void init(Stage modal) {        
+    public void init(Stage modal) {
         brandComboBox.getItems().removeAll(brandComboBox.getItems());
         getBrands();
         getTypes();
@@ -101,55 +118,107 @@ public class AddProductController extends ControllerModel {
     }
 
     public void addProduct(String name, String brandname, String typename,
-            Integer minimumQ, Integer currentQ, Float unitvalue, String unittype) {   
-        try {
-            Statement st = this.connection.createStatement();
-        ResultSet rs = st.executeQuery(
-                "DO $$ BEGIN\n" +
-            "    PERFORM add_product("
-                        + "'" + name +"',"
-                        + "'" + brandname + "',"
-                        + "'" + typename + "', " +minimumQ + ","
-                        + "" + currentQ + "," + unitvalue + ","
-                                + "'" + unittype + "');\n" +
-                        
-            "END $$;"
-        );
-        st.close();
-        } catch (Exception e) {
-        }        
-        sendAlert("Product Added!",
-                "Success!", 
-                "Success adding a product!",
-                Alert.AlertType.CONFIRMATION);
+            Integer minimumQ, Integer currentQ, Float unitvalue, String unittype) {
+
+        switch (this.dbType) {
+            case firebird:
+                try {
+                    System.out.println("COMEÇOU A ADICIONAR");
+                    Statement st = this.connection.createStatement();
+                    st.executeUpdate(
+                            "EXECUTE PROCEDURE SP_ADDPRODUCT("
+                            + "'" + name + "',"
+                            + " '" + brandname + "',"
+                            + " '" + typename + "',"
+                            + " " + minimumQ + ","
+                            + " " + currentQ + ","
+                            + " " + unitvalue + ","
+                            + " '" + unittype + "');"
+                    );
+                    st.close();
+                } catch (Exception e) {
+                    System.out.println("ERROR " + e.getMessage());
+                }
+                sendAlert("Product Added!",
+                        "Success!",
+                        "Success adding a product!",
+                        Alert.AlertType.CONFIRMATION);
+                break;
+            case postgres:
+                try {
+                    Statement st = this.connection.createStatement();
+                    ResultSet rs = st.executeQuery(
+                            "DO $$ BEGIN\n"
+                            + "    PERFORM add_product("
+                            + "'" + name + "',"
+                            + "'" + brandname + "',"
+                            + "'" + typename + "', " + minimumQ + ","
+                            + "" + currentQ + "," + unitvalue + ","
+                            + "'" + unittype + "');\n"
+                            + "END $$;"
+                    );
+                    st.close();
+                } catch (Exception e) {
+                }
+                sendAlert("Product Added!",
+                        "Success!",
+                        "Success adding a product!",
+                        Alert.AlertType.CONFIRMATION);
+                break;
+
+        }
+
     }
 
-    public boolean productAlreadyExists(String productname) {
+    public boolean productAlreadyExists(String productname, String brandname) {
 
-        
-        try {
-            Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery("select hasproduct from product_exists('" + productname + "')");
-            rs.next();            
-            if (rs.getString("hasproduct").equals("t")) {
-                sendAlert("Error to add a Product",
-                        "Product exists.",
-                        "Product already Exists! Choose a different product name!",
-                        Alert.AlertType.ERROR);
-                return true;
-            }
-            rs.close();
-            st.close();
+        switch (this.dbType) {
+            case postgres:
+                try {
+                    Statement st = this.connection.createStatement();
+                    ResultSet rs = st.executeQuery(
+                            "select hasproduct from product_exists('" + productname + "' ,"
+                                    + " '" + brandname + "')"
+                    );
+                    rs.next();
+                    if (rs.getString("hasproduct").equals("t")) {
+                        sendAlert("Error to add a Product",
+                                "Product exists.",
+                                "Product already Exists! Choose a different product name!",
+                                Alert.AlertType.ERROR);
+                        return true;
+                    }
+                    rs.close();
+                    st.close();
 
-        } catch (Exception e) {
-            System.out.println("Error product already exists! :" + e.getMessage());
+                } catch (Exception e) {
+                    System.out.println("Error product already exists! :" + e.getMessage());
+                }
+                break;
+            case firebird:
+                try {
+                    Statement st = this.connection.createStatement();
+                    st.executeUpdate(
+                            "EXECUTE PROCEDURE hasproduct('" + productname +"', "
+                                    + "'" + brandname + "')");     
+                    System.out.println("PRODUTO DIFERENTE YES!");
+                    // no similar product in the database
+                    return false;                    
+                } catch (Exception e) {
+                    sendAlert("Error to add a Product",
+                                "Product exists in the database.",
+                                "Product already Exists! Choose a different product name!",
+                                Alert.AlertType.ERROR);
+                    System.out.println("Error product already exists! :" + e.getMessage());
+                    return true;
+                }                
         }
 
         return false;
     }
 
     @FXML
-    public void checkForm() {        
+    public void checkForm() {
         String name = nameTextField.getText();
         String brandname = brandComboBox.getValue();
         String typename = typeComboBox.getValue();
@@ -157,17 +226,16 @@ public class AddProductController extends ControllerModel {
         Integer currentQ = Integer.parseInt(currentQuantityTextField.getText());
         Float unitvalue = Float.parseFloat(unitValueTextField.getText());
         String unittype = unitTextField.getText();
-        
 
-        if (name.equals("") && brandname.equals("") || typename.equals("") ||
-                minimumQ.equals(null) || currentQ.equals(null) || 
-                unitvalue.equals(null) || unittype.equals("")) {
+        if (name.equals("") && brandname.equals("") || typename.equals("")
+                || minimumQ.equals(null) || currentQ.equals(null)
+                || unitvalue.equals(null) || unittype.equals("")) {
             sendAlert("Error to add a Product",
                     "Form Error",
                     "Fill all the fields", Alert.AlertType.ERROR);
         } else {
-            if (!productAlreadyExists(name)) {
-                addProduct(name, brandname, typename, minimumQ, currentQ, unitvalue, unittype);
+            if (!productAlreadyExists(name,brandname)) {
+               addProduct(name, brandname, typename, minimumQ, currentQ, unitvalue, unittype);
             }
         }
     }

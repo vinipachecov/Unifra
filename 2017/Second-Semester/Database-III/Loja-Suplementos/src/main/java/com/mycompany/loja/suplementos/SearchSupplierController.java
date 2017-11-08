@@ -106,7 +106,7 @@ public class SearchSupplierController extends ControllerModel {
             try {
                 Statement st = this.connection.createStatement();
                 ResultSet rs = st.executeQuery(
-                        "select * "
+                        "select first 50 * "
                         + " FROM suppliers "
                         + " limit 50"
                 );

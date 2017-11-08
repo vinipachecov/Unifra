@@ -19,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import supportClasses.Brand;
 import supportClasses.Type;
+import supportClasses.databaseType;
 
 /**
  *
@@ -46,6 +47,10 @@ public class SearchTypeController extends ControllerModel {
         super(db);
     }
 
+    SearchTypeController(Connection connection, databaseType dbType) {
+        super(connection, dbType);
+    }
+
     public void init(Stage modal) {
 
         dialog = modal;
@@ -64,6 +69,7 @@ public class SearchTypeController extends ControllerModel {
 
         data.clear();
 
+        
         String typeSearchString = null;
         try {
             typeSearchString = typeSearchTextField.getText();
@@ -76,7 +82,47 @@ public class SearchTypeController extends ControllerModel {
                     "No Type name to search.", "Pick a type name to search.", Alert.AlertType.ERROR);
         }
 
-        // if no type name, find all
+        switch(this.dbType){
+            case firebird:
+                       // if no type name, find all
+        if (typeSearchString.equals("")) {
+            try {
+                Statement st = this.connection.createStatement();
+                ResultSet rs = st.executeQuery(
+                        "select first 50 * "
+                        + " FROM types "                        
+                );
+                while (rs.next()) {
+                    data.add(new Type(rs.getInt("id"), rs.getString("name")));
+                }
+                rs.close();
+                st.close();
+
+            } catch (Exception e) {
+
+            }
+
+        } // find a specific type name
+        else {
+            try {
+                Statement st = this.connection.createStatement();
+                ResultSet rs = st.executeQuery(
+                        "select * "
+                        + " FROM types "
+                        + " WHERE name = '" + typeSearchString + "'"
+                );
+                while (rs.next()) {
+                    data.add(new Type(rs.getInt("id"), rs.getString("name")));
+                }
+                rs.close();
+                st.close();
+            } catch (Exception e) {
+
+            }
+        }
+                break;
+            case postgres:
+                // if no type name, find all
         if (typeSearchString.equals("")) {
             try {
                 Statement st = this.connection.createStatement();
@@ -113,6 +159,10 @@ public class SearchTypeController extends ControllerModel {
 
             }
         }
+                break;
+        }
+        
+        
         // set items        
         typeTable.setItems(data);
     }

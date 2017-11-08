@@ -19,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import supportClasses.Product;
 import supportClasses.Supplier;
+import supportClasses.databaseType;
 
 /**
  *
@@ -46,7 +47,7 @@ public class SearchProductController extends ControllerModel {
 
     @FXML
     public TableColumn<Product, Float> unitValueColumn;
-    
+
     @FXML
     public TableColumn<Product, String> unitTypeColumn;
 
@@ -59,6 +60,10 @@ public class SearchProductController extends ControllerModel {
 
     public SearchProductController(Connection db) {
         super(db);
+    }
+
+    SearchProductController(Connection connection, databaseType dbType) {
+        super(connection, dbType);
     }
 
     public void init(Stage modal) {
@@ -81,7 +86,7 @@ public class SearchProductController extends ControllerModel {
     }
 
     public void addToProductList(String productname, String brandname,
-            String typename, Integer minimumquantity, Integer currentquantity, Float unitvalue, String unitType) {        
+            String typename, Integer minimumquantity, Integer currentquantity, Float unitvalue, String unitType) {
         data.add(
                 new Product(productname, minimumquantity, currentquantity, unitvalue, unitType, brandname, typename)
         );
@@ -105,70 +110,142 @@ public class SearchProductController extends ControllerModel {
                     Alert.AlertType.ERROR);
         }
 
-        // if no brand name find all
-        if (productSearchString.equals("")) {
-            try {
-                Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery(
-                        "select * from get_products();"
-                );
-                while (rs.next()) {                    
-                    addToProductList(   
-                            rs.getString("productname"),
-                            rs.getString("brandname"),
-                            rs.getString("typename"),
-                            rs.getInt("minimumquantity"),
-                            rs.getInt("currentquantity"),
-                            rs.getFloat("unitvalue"),
-                            rs.getString("unittype"));
-                }
-                rs.close();
-                st.close();
+        switch (this.dbType) {
+            case firebird:
+                 if (productSearchString.equals("")) {
+                    try {
+                        Statement st = this.connection.createStatement();
+                        ResultSet rs = st.executeQuery(
+                                "select * from get_products;"
+                        );
+                        while (rs.next()) {
+                            addToProductList(
+                                    rs.getString("pname"),
+                                    rs.getString("brandname"),
+                                    rs.getString("typename"),
+                                    rs.getInt("minimumquantity"),
+                                    rs.getInt("currentquantity"),
+                                    rs.getFloat("unitvalue"),
+                                    rs.getString("unittype"));
+                        }
+                        rs.close();
+                        st.close();
 
-            } catch (Exception e) {
+                    } catch (Exception e) {
+                        System.out.println("ERROR " + e.getMessage());
 
-            }
+                    }
 
-        } // find a specific suplier name
-        else {
-            try {
-                Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery(
-                        "select * FROM get_a_product('" + productSearchString + "')"                        
-                );
-                if (rs.next()) {
-                    addToProductList(
-                           rs.getString("productname"),
-                            rs.getString("brandname"),
-                            rs.getString("typename"),
-                            rs.getInt("minimumquantity"),
-                            rs.getInt("currentquantity"),
-                            rs.getFloat("unitvalue"),
-                            rs.getString("unittype"));
-                } else {
-                    sendAlert(
-                            "No results!",
-                            "Search lead to 0 results. Try a different Product Name",
-                            "No Product with this name",
-                            Alert.AlertType.INFORMATION);
-                    return;
+                } // find a specific suplier name
+                else {
+                    try {
+                        Statement st = this.connection.createStatement();
+                        ResultSet rs = st.executeQuery(
+                                "EXECUTE PROCEDURE get_a_product('" + productSearchString + "');"
+                        );
+                        if (rs.next()) {
+                            addToProductList(
+                                    rs.getString("pname"),
+                                    rs.getString("brandname"),
+                                    rs.getString("typename"),
+                                    rs.getInt("minimumquantity"),
+                                    rs.getInt("currentquantity"),
+                                    rs.getFloat("unitvalue"),
+                                    rs.getString("unittype"));
+                        } else {
+                            sendAlert(
+                                    "No results!",
+                                    "Search lead to 0 results. Try a different Product Name",
+                                    "No Product with this name",
+                                    Alert.AlertType.INFORMATION);
+                            return;
+                        }
+                        while (rs.next()) {
+                            addToProductList(
+                                    rs.getString("pname"),
+                                    rs.getString("brandname"),
+                                    rs.getString("typename"),
+                                    rs.getInt("minimumquantity"),
+                                    rs.getInt("currentquantity"),
+                                    rs.getFloat("unitvalue"),
+                                    rs.getString("unittype"));
+                        }
+                        rs.close();
+                        st.close();
+                    } catch (Exception e) {
+                        System.out.println("ERRORS " + e.getMessage());
+                    }
                 }
-                while (rs.next()) {
-                    addToProductList(
-                           rs.getString("name"),
-                            rs.getString("brandname"),
-                            rs.getString("typename"),
-                            rs.getInt("minimumquantity"),
-                            rs.getInt("currentquantity"),
-                            rs.getFloat("unitvalue"),
-                            rs.getString("unittype"));
+                break;
+            case postgres:
+                // if no brand name find all
+                if (productSearchString.equals("")) {
+                    try {
+                        Statement st = this.connection.createStatement();
+                        ResultSet rs = st.executeQuery(
+                                "select * from get_products();"
+                        );
+                        while (rs.next()) {
+                            addToProductList(
+                                    rs.getString("productname"),
+                                    rs.getString("brandname"),
+                                    rs.getString("typename"),
+                                    rs.getInt("minimumquantity"),
+                                    rs.getInt("currentquantity"),
+                                    rs.getFloat("unitvalue"),
+                                    rs.getString("unittype"));
+                        }
+                        rs.close();
+                        st.close();
+
+                    } catch (Exception e) {
+
+                    }
+
+                } // find a specific suplier name
+                else {
+                    try {
+                        Statement st = this.connection.createStatement();
+                        ResultSet rs = st.executeQuery(
+                                "select * FROM get_a_product('" + productSearchString + "')"
+                        );
+                        if (rs.next()) {
+                            addToProductList(
+                                    rs.getString("productname"),
+                                    rs.getString("brandname"),
+                                    rs.getString("typename"),
+                                    rs.getInt("minimumquantity"),
+                                    rs.getInt("currentquantity"),
+                                    rs.getFloat("unitvalue"),
+                                    rs.getString("unittype"));
+                        } else {
+                            sendAlert(
+                                    "No results!",
+                                    "Search lead to 0 results. Try a different Product Name",
+                                    "No Product with this name",
+                                    Alert.AlertType.INFORMATION);
+                            return;
+                        }
+                        while (rs.next()) {
+                            addToProductList(
+                                    rs.getString("name"),
+                                    rs.getString("brandname"),
+                                    rs.getString("typename"),
+                                    rs.getInt("minimumquantity"),
+                                    rs.getInt("currentquantity"),
+                                    rs.getFloat("unitvalue"),
+                                    rs.getString("unittype"));
+                        }
+                        rs.close();
+                        st.close();
+                    } catch (Exception e) {
+                        System.out.println("ERRORS " + e.getMessage());
+                    }
                 }
-                rs.close();
-                st.close();
-            } catch (Exception e) {
-                System.out.println("ERRORS " +e.getMessage());
-            }
+                break;
+
         }
+
         // set items        
         productTable.setItems(data);
 

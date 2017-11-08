@@ -21,6 +21,7 @@ import javafx.scene.control.MenuBar;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import supportClasses.User;
+import supportClasses.databaseType;
 import supportClasses.userType;
 
 /**
@@ -30,7 +31,8 @@ import supportClasses.userType;
 public class ControllerModel {
     
     public Connection connection;
-    public User currentUser;    
+    public User currentUser;
+    public databaseType dbType;
     
     
     public ControllerModel(Connection db){
@@ -38,9 +40,21 @@ public class ControllerModel {
         
     }
     
+    public ControllerModel(Connection db, databaseType dbt){
+        this.connection = db;
+        this.dbType = dbt;
+        
+    }
+    
     public ControllerModel(Connection db, User user){
         this.connection = db;
         currentUser = user;           
+    }
+
+    public ControllerModel(Connection db, User user, databaseType databasetp){
+        this.dbType = databasetp;
+        this.connection = db;
+        currentUser = user;
     }
     
     public userType getUserType(){
@@ -66,9 +80,9 @@ public class ControllerModel {
                
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.show();    
-        
+        stage.show();
     }
+
     
     @FXML
     public Stage ChangeScreen(Button button, String FXMLFile, Object controller){

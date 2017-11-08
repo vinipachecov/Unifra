@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import supportClasses.databaseType;
 
 /**
  *
@@ -41,6 +42,10 @@ public class AddSupplierController extends ControllerModel {
         super(db);
     }
 
+    public AddSupplierController(Connection db, databaseType dbt) {
+        super(db, dbt);
+    }
+
     public void init(Stage modal) {
         dialog = modal;
     }
@@ -58,7 +63,7 @@ public class AddSupplierController extends ControllerModel {
             st.executeUpdate(""
                     + "insert into suppliers(socialreason, email, cnpj, telephone, fantasyname, numberpurchases)\n"
                     + "values('" + socialrtf + "', '" + emailString + "' ,"
-                            + "'" + cnpj + "','" + telephone + " ', '" +fantasyname + "', 0)");
+                    + "'" + cnpj + "','" + telephone + " ', '" + fantasyname + "', 0)");
             st.close();
         } catch (Exception e) {
 
@@ -69,30 +74,60 @@ public class AddSupplierController extends ControllerModel {
     public boolean checkSupplierAlreadyExists(String socialrtf, String emailString,
             String cnpj, String telephone, String fantasyname) {
 
-        try {
-            Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select *  "
-                    + " FROM suppliers "
-                    + " where socialreason = '" + socialrtf + "'"
-                    + " AND email = '" + emailString + "'"
-                    + " AND cnpj= '" + cnpj + "'"
-                    + " AND telephone= '" + telephone + "'"
-                    + " AND fantasyname= '" + fantasyname + "'"
-                    + " limit 1"
-            );
-            if (rs.next()) {
-                sendAlert("Error",
-                        "Supplier already exists!",
-                        "Supplier already exists with those values",
-                        Alert.AlertType.ERROR);
-                return true;
-            }
-            rs.close();
-            st.close();
-        } catch (Exception e) {
-            System.out.println("Error = " + e.getMessage());
+        switch (this.dbType) {
+            case firebird:
+                try {
+                    Statement st = this.connection.createStatement();
+                    ResultSet rs = st.executeQuery(
+                            "select first 1 *  "
+                            + " FROM suppliers "
+                            + " where socialreason = '" + socialrtf + "'"
+                            + " AND email = '" + emailString + "'"
+                            + " AND cnpj= '" + cnpj + "'"
+                            + " AND telephone= '" + telephone + "'"
+                            + " AND fantasyname= '" + fantasyname + "'"                            
+                    );
+                    if (rs.next()) {
+                        sendAlert("Error",
+                                "Supplier already exists!",
+                                "Supplier already exists with those values",
+                                Alert.AlertType.ERROR);
+                        return true;
+                    }
+                    rs.close();
+                    st.close();
+                } catch (Exception e) {
+                    System.out.println("Error = " + e.getMessage());
+                }
+                break;
 
+            case postgres:
+                try {
+                    Statement st = this.connection.createStatement();
+                    ResultSet rs = st.executeQuery(
+                            "select *  "
+                            + " FROM suppliers "
+                            + " where socialreason = '" + socialrtf + "'"
+                            + " AND email = '" + emailString + "'"
+                            + " AND cnpj= '" + cnpj + "'"
+                            + " AND telephone= '" + telephone + "'"
+                            + " AND fantasyname= '" + fantasyname + "'"
+                            + " limit 1"
+                    );
+                    if (rs.next()) {
+                        sendAlert("Error",
+                                "Supplier already exists!",
+                                "Supplier already exists with those values",
+                                Alert.AlertType.ERROR);
+                        return true;
+                    }
+                    rs.close();
+                    st.close();
+                } catch (Exception e) {
+                    System.out.println("Error = " + e.getMessage());
+
+                }
+                break;
         }
 
         return false;
@@ -125,7 +160,7 @@ public class AddSupplierController extends ControllerModel {
             return;
         }
         if (!checkSupplierAlreadyExists(socialrtf, emailString, cnpj, telephone, fantasyname)) {
-                addSupplier(socialrtf, emailString, cnpj, telephone, fantasyname);
+            addSupplier(socialrtf, emailString, cnpj, telephone, fantasyname);
         }
 
     }

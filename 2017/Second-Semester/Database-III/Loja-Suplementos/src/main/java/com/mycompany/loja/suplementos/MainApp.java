@@ -23,8 +23,10 @@ public class MainApp extends Application {
         LoginController lc = new LoginController(db);
         
         screen.setController(lc);
-        
+
         root = screen.load();
+        
+        lc.init();
         
         loginscreen = new Scene(root);
         loginscreen.getStylesheets().add("/styles/Styles.css");        

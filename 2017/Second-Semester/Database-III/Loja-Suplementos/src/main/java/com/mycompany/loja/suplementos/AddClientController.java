@@ -1,4 +1,4 @@
- /* To change this license header, choose License Headers in Project Properties.
+/* To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -15,6 +15,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import supportClasses.databaseType;
 
 /**
  *
@@ -41,6 +42,10 @@ public class AddClientController extends ControllerModel {
 
     public AddClientController(Connection db) {
         super(db);
+    }
+
+    AddClientController(Connection connection, databaseType dbType) {
+        super(connection,dbType);
     }
 
     public void init(Stage dialog) {
@@ -74,46 +79,79 @@ public class AddClientController extends ControllerModel {
     public void addClient(String name, String email,
             String telephone, String govid, LocalDate date) {
 
-        try {
-            Statement st = this.connection.createStatement();
-            st.executeUpdate(""
-                    + "insert into clients(name,numsales,email,telephone,govid,birthdate) \n"
-                    + "values('" + name + "',0,'" + email + "','" + telephone + "','" + govid + "','" + date + "')");
-            st.close();
-        } catch (Exception e) {
+        switch (this.dbType) {
+            case mongodb:
+                break;
 
+            default:
+                try {
+                    Statement st = this.connection.createStatement();
+                    st.executeUpdate(""
+                            + "insert into clients(name,numsales,email,telephone,govid,birthdate) \n"
+                            + "values('" + name + "',0,'" + email + "','" + telephone + "','" + govid + "','" + date + "')");
+                    st.close();
+                } catch (Exception e) {
+
+                }
+                sendAlert("Success", "Client Added!", "Client Added with Success.", Alert.AlertType.CONFIRMATION);
         }
-        sendAlert("Success", "Client Added!", "Client Added with Success.", Alert.AlertType.CONFIRMATION);
+
     }
 
     public boolean checkClientAlreadyExists(String name, String email,
             String telephone, String govid, LocalDate date) {
 
-        try {
-            Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select *  "
-                    + " FROM clients "
-                    + " where name = '" + name + "'"
-                    + " AND email = '" + email + "'"
-                    + " AND govid = '" + govid + "'"
-                    + " limit 1"
-            );
-            if (rs.next()) {
-                sendAlert("Error",
-                        "Client already exists!",
-                        "User already exists with those values",
-                        Alert.AlertType.ERROR);
-                return true;
-            }
-            rs.close();
-            st.close();
-        } catch (Exception e) {
-            System.out.println("Error = " + e.getMessage());
+        switch (this.dbType) {
+            case firebird:
+                try {
+                    Statement st = this.connection.createStatement();
+                    ResultSet rs = st.executeQuery(
+                            "select first 1 *  "
+                            + " FROM clients "
+                            + " where name = '" + name + "'"
+                            + " AND email = '" + email + "'"
+                            + " AND govid = '" + govid + "'"
+                    );
+                    if (rs.next()) {
+                        sendAlert("Error",
+                                "Client already exists!",
+                                "User already exists with those values",
+                                Alert.AlertType.ERROR);
+                        return true;
+                    }
+                    rs.close();
+                    st.close();
+                } catch (Exception e) {
+                    System.out.println("Error = " + e.getMessage());
+
+                }
+                break;
+            case postgres:
+                try {
+                    Statement st = this.connection.createStatement();
+                    ResultSet rs = st.executeQuery(
+                            "select *  "
+                            + " FROM clients "
+                            + " where name = '" + name + "'"
+                            + " AND email = '" + email + "'"
+                            + " AND govid = '" + govid + "'"
+                            + " limit 1"
+                    );
+                    if (rs.next()) {
+                        sendAlert("Error",
+                                "Client already exists!",
+                                "User already exists with those values",
+                                Alert.AlertType.ERROR);
+                        return true;
+                    }
+                    rs.close();
+                    st.close();
+                } catch (Exception e) {
+                    System.out.println("Error = " + e.getMessage());
+                }
 
         }
         return false;
-
     }
 
     @FXML
