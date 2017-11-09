@@ -141,9 +141,9 @@ END
 -------------------------------------------------------------------
 -- CREATE SALES
 
-CREATE TABLE SALES(
+CREATE TABLE sales(
 id D_PK PRIMARY KEY,
-saledate D_DATA,
+saledate D_DATE,
 invoice D_INVOICE,
 subtotal D_DECIMAL,
 discount D_DECIMAL,
@@ -154,10 +154,16 @@ FOREIGN KEY (clientid) REFERENCES CLIENTS(id)
 ON UPDATE CASCADE ON DELETE SET NULL
 );
 
+DROP TABLE SALES;
+
+SELECT * FROM sales;
+
+INSERT INTO sales (SALEDATE)
+VALUES(CURRENT_TIMESTAMP);
 
 CREATE generator g_inc_sales;
 
--- Trigger tipo
+
 
 CREATE OR ALTER TRIGGER t_inc_sales FOR sales
 active BEFORE INSERT POSITION 5
@@ -182,6 +188,7 @@ ON UPDATE CASCADE ON DELETE CASCADE,
 PRIMARY KEY(saleid,prodid)
 );
 
+DROP TABLE SALEITEMS;
 
 
 -------------------------------------------------------------------
@@ -190,7 +197,7 @@ PRIMARY KEY(saleid,prodid)
 
 CREATE TABLE PURCHASES(
 id D_PK PRIMARY KEY,
-purchasedate D_DATA,
+purchasedate D_DATE,
 invoice D_INVOICE,
 subtotal D_DECIMAL,
 discount D_DECIMAL,
@@ -199,6 +206,12 @@ supplierid D_INT,
 finalized D_FINALIZED
 FOREIGN KEY(supplierid) REFERENCES SUPPLIERS(id)
 ON UPDATE CASCADE ON DELETE SET null);
+
+ALTER TABLE PURCHASES
+DROP purchasedate;
+
+ALTER TABLE PURCHASES
+ADD purchasedate D_DATE;
 
 
 
@@ -237,4 +250,16 @@ INSERT INTO USERS(USERNAME,PASSWORD, USERTYPE)
 VALUES('admin','admin','admin')
 
 
+CREATE TABLE testa(
+mindata D_DATE
+);
+
+DROP TABLE TESTA;
+
+SELECT * FROM testa;
+
+
+
+INSERT INTO testa(mindata)
+VALUES(CURRENT_TIMESTAMP);
 

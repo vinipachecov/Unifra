@@ -95,8 +95,39 @@ public class PrincipalController extends ControllerModel {
     public void searchSupplier(ActionEvent event) {
 
         if (getUserType() == userType.admin) {
-            SearchSupplierController searchController = new SearchSupplierController(connection);
+            SearchSupplierController searchController = new SearchSupplierController(connection, this.dbType);
             dialog = CreateModal(event, menuBar, "/fxml/SearchSupplier.fxml", searchController, "Searching Suppliers");
+            searchController.init(dialog);
+        } else {
+            sendAlert("Access error",
+                    "Attempt to access admin feature.",
+                    "You have no access to search Suppliers data. Sign in as an administrator.",
+                    Alert.AlertType.ERROR);
+        }
+    }
+    
+    
+    @FXML
+    public void searchPurchase(ActionEvent event) {
+
+        if (getUserType() == userType.admin) {
+            SearchPurchaseController searchController = new SearchPurchaseController(connection, this.dbType);
+            dialog = CreateModal(event, menuBar, "/fxml/SearchPurchase.fxml", searchController, "Searching Purchases");
+            searchController.init(dialog);
+        } else {
+            sendAlert("Access error",
+                    "Attempt to access admin feature.",
+                    "You have no access to search Suppliers data. Sign in as an administrator.",
+                    Alert.AlertType.ERROR);
+        }
+    }
+    
+    @FXML
+    public void searchSale(ActionEvent event) {
+
+        if (getUserType() == userType.admin) {
+            SearchSaleController searchController = new SearchSaleController(connection, this.dbType);
+            dialog = CreateModal(event, menuBar, "/fxml/SearchSale.fxml", searchController, "Searching Sales");
             searchController.init(dialog);
         } else {
             sendAlert("Access error",
@@ -152,7 +183,7 @@ public class PrincipalController extends ControllerModel {
     public void searchClients(ActionEvent event) {
 
         if (getUserType() == userType.admin) {
-            SearchClientController searchController = new SearchClientController(connection);
+            SearchClientController searchController = new SearchClientController(connection,this.dbType);
             dialog = CreateModal(event, menuBar, "/fxml/SearchClient.fxml", searchController, "Searching Clients");
             searchController.init(dialog);
         } else {

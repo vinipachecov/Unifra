@@ -24,13 +24,13 @@
             <items>
               <MenuItem mnemonicParsing="false" onAction="#addSale" text="Add Sale Order" />
                   <MenuItem mnemonicParsing="false" text="Add item to Sale Order" />
-                  <MenuItem mnemonicParsing="false" text="Search..." />
+                  <MenuItem mnemonicParsing="false" onAction="#searchSale" text="Search..." />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Purchase orders">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#addPurchase" text="Add purchase order" />
-                  <MenuItem mnemonicParsing="false" text="Search..." />
+                  <MenuItem mnemonicParsing="false" onAction="#searchPurchase" text="Search..." />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Clients">

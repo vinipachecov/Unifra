@@ -39,11 +39,11 @@ unittype varchar(30)
 create table sales(
 id serial primary key,
 saledate timestamp,
-fiscalnote char(9),
-subtotal float,
-total float,
+invoice char(9),
+subtotal decimal(15,2),
+total decimal(15,2),
 clientid int references clients(id),
-discout float,
+discout decimal(15,2),
 finalized char(1)
 )
 
@@ -52,7 +52,9 @@ add column  invoice char(9);
 
 select * from sales;
 
-drop table saleitems;
+
+drop  table sales;
+
 
 create table saleitems(
 saleid int references sales(id),

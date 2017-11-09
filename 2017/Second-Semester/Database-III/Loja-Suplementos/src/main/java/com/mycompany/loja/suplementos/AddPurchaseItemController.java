@@ -103,7 +103,7 @@ public class AddPurchaseItemController extends ControllerModel {
             switch (dbType) {
                 case firebird:
                     rs = st.executeQuery(
-                            "EXECUTE PROCEDURE from get_a_typeby_product('" + findProductComboBox.getValue() + "');"
+                            "EXECUTE PROCEDURE get_a_typeby_product('" + findProductComboBox.getValue() + "');"
                     );
                     break;
                 case postgres:
@@ -213,6 +213,11 @@ public class AddPurchaseItemController extends ControllerModel {
 
     public void addItem(String itemname, Integer Quantity, Float unitValue) {
 
+        System.out.println("Item name " + itemname);
+        System.out.println("PURCHASEID = " + purchaseID);
+
+        System.out.println("Quantity " + Quantity);
+        System.out.println("unitValue " + unitValue);
         try {
             Statement st = this.connection.createStatement();
             switch (dbType) {
@@ -240,7 +245,7 @@ public class AddPurchaseItemController extends ControllerModel {
             }
             sendAlert("PurchaseItem added with success!", "PurchaseItem Added", "A PurchaseItem has been added!", Alert.AlertType.CONFIRMATION);
         } catch (Exception e) {
-            System.out.println("Error " + e.getMessage() + e.getLocalizedMessage());
+            System.out.println("Error adding product item" + e.getMessage() + e.getLocalizedMessage());
             return;
         }
 
@@ -269,9 +274,7 @@ public class AddPurchaseItemController extends ControllerModel {
                         return true;
                     }                    
                     break;
-            }
-            rs.close();
-            st.close();
+            }            
 
         } catch (Exception e) {
             sendAlert("Duplication error",
@@ -290,14 +293,14 @@ public class AddPurchaseItemController extends ControllerModel {
         String itemname = findProductComboBox.getValue();
         Integer quantity = Integer.parseInt(quantityTextField.getText());
         Float unitvalue = Float.parseFloat(unitValueTextField.getText());
-
+        
         if (itemname.equals("") || quantity.equals("")
                 || unitvalue.equals("")) {
             sendAlert("Error to add an Item",
                     "Form Error",
                     "Fill all the fields", Alert.AlertType.ERROR);
         } else {
-            if (!checkItemAlreadyExists(findProductComboBox.getValue())) {
+            if (!checkItemAlreadyExists(itemname)) {
                 addItem(itemname, quantity, unitvalue);
             }
         }

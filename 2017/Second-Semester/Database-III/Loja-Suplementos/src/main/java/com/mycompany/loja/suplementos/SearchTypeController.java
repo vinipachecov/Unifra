@@ -11,11 +11,14 @@ import java.sql.Statement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import supportClasses.Brand;
 import supportClasses.Type;
@@ -62,6 +65,15 @@ public class SearchTypeController extends ControllerModel {
 
         typeTable.setItems(data);
 
+        
+         typeSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent ke) {
+                if (ke.getCode().equals(KeyCode.ENTER)) {
+                    Search(new ActionEvent());
+                }
+            }
+        });
     }
 
     @FXML

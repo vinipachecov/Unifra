@@ -233,9 +233,10 @@ public class AddPurchaseController extends ControllerModel {
                         );
                         Statement st2 = this.connection.createStatement();
                         rs = st2.executeQuery(""
-                                + "select max(id) from sales");
+                                + "select max(id) from purchases");
                         if (rs.next()) {
                             purchaseId = rs.getInt("max");
+                            System.out.println("PURCHASEID RECEBEU = " + purchaseId);
                         }
                     } catch (Exception e) {
                         System.out.println("ERROR " + e.getMessage());
@@ -265,7 +266,9 @@ public class AddPurchaseController extends ControllerModel {
             }
         } catch (Exception e) {
         }
-
+        sendAlert("Success",
+                "Purchase Created",
+                "Purchase Created with sucess!", Alert.AlertType.CONFIRMATION);
         addItemButton.setDisable(false);
         purchaseCreated = true;
         addFinishPurchaseButton.setText("Finish Sale");
@@ -285,25 +288,21 @@ public class AddPurchaseController extends ControllerModel {
                 switch (dbType) {
                     case firebird:
                         st.executeUpdate("EXECUTE PROCEDURE checkPurchaseInvoiceExists('" + invoice + "');");
-                        break;
+                        return invoice;                        
                     case postgres:
                         rs = st.executeQuery("select * from checkInvoicePurchaseAlreadyExists('" + invoice + "');");
                         break;
                 }
-
                 if (rs.next()) {
-
+                    sendAlert(
+                        "Error invoice generation",
+                        "Error creating invoice.",
+                        "Critical error on invoice", Alert.AlertType.ERROR);                
                 } else {
                     return invoice;
                 }
-            } catch (Exception e) {
-                sendAlert(
-                        "Error invoice generation",
-                        "Error creating invoice.",
-                        "Critical error on invoice", Alert.AlertType.ERROR);
-                return "";
+            } catch (Exception e) {                
             }
-
         }
         sendAlert(
                 "Error invoice generation",

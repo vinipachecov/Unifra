@@ -89,9 +89,9 @@ END
 
 
 CREATE OR ALTER PROCEDURE hasproduct(PNAME D_NAME, BRANDNAME D_NAME)  
-  AS  	
-  DECLARE VARIABLE BRANDID D_INT;
-  BEGIN
+AS  	
+DECLARE VARIABLE BRANDID D_INT;
+BEGIN
 	  
 	  SELECT FIRST 1 ID 
 	  FROM BRANDS B
@@ -155,6 +155,10 @@ CREATE OR ALTER VIEW getbrands(
 ---------------------------------------------------------------------
 --				ADD A SALE
   
+  DROP VIEW get_clients;
+  
+  
+  
 CREATE OR ALTER VIEW get_clients(cname)
 AS
 SELECT  c.NAME 
@@ -162,6 +166,7 @@ FROM CLIENTS c
   
 SELECT cname FROM get_clients
 
+DROP PROCEDURE addSale;
 
 CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
 	total D_DECIMAL,
@@ -193,6 +198,8 @@ CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
   
   CREATE EXCEPTION INVOICEEXISTS 'Invoice already exists!';
 
+  DROP PROCEDURE checkInvoiceExists;
+  
   -- CHECK IF INVOICE ALREADY EXISTS
   CREATE OR ALTER PROCEDURE checkInvoiceExists(inputinvoice D_INVOICE)  
   AS  
@@ -203,14 +210,18 @@ CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
 	 EXCEPTION INVOICEEXISTS;
   END
   
-  SELECT * FROM SALES;
+  SELECT * FROM CLIENTS;
   
   EXECUTE PROCEDURE  checkInvoiceExists('987654321');
   
   
   SELECT * FROM SALES;
   
+  SELECT * FROM PURCHASES;
+  
   CREATE EXCEPTION NO_SALEID 'No sale found! Access Violation.';
+  
+  DROP PROCEDURE setInvoice;
   
   -- SET INVOICE TO THE SALE
   CREATE OR ALTER PROCEDURE setInvoice(idsale D_INT, inputinvoice D_INVOICE)  
@@ -234,6 +245,8 @@ CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
   EXECUTE PROCEDURE setInvoice(2 , '987654321');
   
   
+  DROP PROCEDURE finishSale;
+  
   CREATE OR ALTER PROCEDURE finishSale(saleid D_INT,  input_subtotal D_DECIMAL, input_total D_DECIMAL)  
   AS  
   BEGIN
@@ -255,19 +268,22 @@ CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
   EXECUTE PROCEDURE finishSale(1 , 50.0,100.0);
   
   
+  DROP PROCEDURE removeSale;
+  
+    
   CREATE OR ALTER PROCEDURE removeSale(currentSaleID D_INT)
   AS  
   BEGIN
-	DELETE FROM SALEITEMS
+	DELETE FROM saleitems
 	WHERE SALEID = :currentSaleID;
 	
 	DELETE FROM SALES
 	WHERE ID = :currentSaleID;	
   END 
   
-  SELECT * FROM SALES;
+  SELECT * FROM saleitems;
   
-  SELECT * FROM SALEITEMS;
+  SELECT * FROM ;
 	 
   EXECUTE PROCEDURE removeSale(1);
   
@@ -275,6 +291,7 @@ CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
   
 ---------------------------------------------------------------------
 --				ADD A SALEITEM
+  
   
   
 -- ADD ITEM PURCHASE	
@@ -306,11 +323,13 @@ CREATE OR ALTER PROCEDURE add_saleitem(
   
   SELECT * FROM sales;
   
-  SELECT * FROM SALEITEMS;
+  SELECT * FROM ;
   
   EXECUTE PROCEDURE add_saleitem(2,'Whey 100%', 150.0, 10, 1500);
   
   CREATE EXCEPTION SIT_ALREADYADDED 'Sale Item already Added!';
+  
+    DROP PROCEDURE saleItem_exists;
   
   -- CHECK IF SALEITEM HAS NOT BEEN ADDED
   CREATE OR ALTER PROCEDURE saleItem_exists(currentSaleID D_INT, pname D_NAME)
@@ -328,7 +347,7 @@ CREATE OR ALTER PROCEDURE add_saleitem(
 	 				INTO :IDPROD;
 		 			
 		 			IF( EXISTS (SELECT UNITVALUE
-		 			FROM SALEITEMS sit
+		 			FROM  SALEITEMS sit
 		 			WHERE sit.PRODID = :IDPROD AND sit.SALEID = :currentSaleID))
 		 			THEN
 		 				EXCEPTION SIT_ALREADYADDED;
@@ -344,7 +363,7 @@ CREATE OR ALTER PROCEDURE add_saleitem(
   
   SELECT * FROM sales;
   
-  SELECT * FROM SALEITEMS;
+  SELECT * FROM ;
 ---------------------------------------------------------------------
 --				ADD A PURCHASE
   
@@ -360,6 +379,8 @@ SELECT cname FROM get_suppliers;
 
 
 CREATE EXCEPTION NO_SUPPLIER 'No Supplier Found!';
+
+DROP PROCEDURE addPurchase;
 
 --ADD A PURCHASE
 CREATE OR ALTER PROCEDURE addPurchase(subtotal D_DECIMAL,
@@ -379,8 +400,7 @@ CREATE OR ALTER PROCEDURE addPurchase(subtotal D_DECIMAL,
 		  FROM SUPPLIERS s
 		  WHERE s.FANTASYNAME = :suppliername
 		  INTO idsupplier;
-		  
-		  
+		  		  
 		  INSERT INTO PURCHASES(PURCHASEDATE,SUBTOTAL,TOTAL,SUPPLIERID,DISCOUNT,FINALIZED)
 		  VALUES(CURRENT_TIMESTAMP, :SUBTOTAL, :total, :idsupplier, :discount, :finalized);
 	  END 
@@ -391,7 +411,7 @@ CREATE OR ALTER PROCEDURE addPurchase(subtotal D_DECIMAL,
   SELECT * FROM SUPPLIERS;
   
   
-  EXECUTE PROCEDURE addPurchase(0.0,0.0,'Batata  Suplementos',0.0,'N');
+  EXECUTE PROCEDURE addPurchase(0.0,0.0,'Batata Doce Suplementos',0.0,'N');
   
   SELECT * FROM PURCHASES;
   
@@ -430,7 +450,7 @@ CREATE OR ALTER PROCEDURE addPurchase(subtotal D_DECIMAL,
   
   SELECT * FROM PURCHASES;
   
-  EXECUTE PROCEDURE finishPurchase(2,100,150);
+  EXECUTE PROCEDURE finishPurchase(5,100,150);
   
   -- SET INVOICE
   CREATE OR ALTER PROCEDURE setInvoicePurchase(idpurchase D_INT, inputinvoice D_INVOICE)  
@@ -455,7 +475,9 @@ CREATE OR ALTER PROCEDURE addPurchase(subtotal D_DECIMAL,
   
   SELECT * FROM sales;
   
-  -- REMOVE SALE AND IT'S SALEITEMS
+  DROP PROCEDURE 
+  
+  -- REMOVE SALE AND IT'S purchaseItems
    CREATE OR ALTER PROCEDURE removePurchase(currentPurchaseID D_INT)
   AS  
   BEGIN
@@ -475,6 +497,7 @@ CREATE OR ALTER PROCEDURE addPurchase(subtotal D_DECIMAL,
 ---------------------------------------------------------------------
 --				ADD A PURCHASEITEM
 
+  DROP VIEW get_products_additem;
   
 -- VIEW TO GET PRODUCTS
 CREATE OR ALTER VIEW get_products_additem(productname)
@@ -568,7 +591,8 @@ RETURNS (brandname D_NAME)
   
   EXECUTE PROCEDURE get_a_brandby_product('Whey 100%'); 
  
-	
+	SELECT * FROM PURCHASES;
+  
 -- ADD ITEM PURCHASE	
 CREATE OR ALTER PROCEDURE add_purchaseitem( 
 	purchaseid_input D_INT,
@@ -598,10 +622,12 @@ CREATE OR ALTER PROCEDURE add_purchaseitem(
   
   SELECT * FROM sales;
   
-  SELECT * FROM PURCHASES;  
-    
+  DROP  PROCEDURE add_purchaseitem;
   
-  EXECUTE PROCEDURE purchaseItem_exists (1,'Top Whey',150,10,1500.0);
+  
+  
+  
+  EXECUTE PROCEDURE purchaseItem_exists (2,'Top Whey',150,10,1500.0);
   
   
   CREATE EXCEPTION PIT_ALREADYADDED 'PurchaseItem already Added!';
@@ -635,6 +661,8 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   
   SELECT * FROM PURCHASEITEMS;
   
+  SELECT * FROM PURCHASES;
+  
   EXECUTE PROCEDURE purchaseItem_exists(1,'Whey 100%');
   
   CREATE OR ALTER PROCEDURE removePurchase(currentPurchaseID D_INT)
@@ -653,4 +681,99 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   
   SELECT * FROM PURCHASEITEMS;
   
-  	
+------------------------------------------------------------
+--				SEARCH PURCHASE
+  
+  -- SEARCH PURCHASES
+  CREATE OR ALTER VIEW searchPurchase(fantasyname,invoice,subtotal, discount , total,purchasedate   )
+  AS
+  SELECT s.FANTASYNAME, p.INVOICE, p.SUBTOTAL,  p.DISCOUNT, p.TOTAL ,p.PURCHASEDATE
+  FROM PURCHASES p 
+  INNER JOIN SUPPLIERS s ON p.SUPPLIERID = s.ID
+  WHERE p.FINALIZED = 'Y'
+  
+  SELECT * FROM PURCHASES;
+  
+  SELECT FIRST 50 * FROM searchPurchase; 
+  
+  
+  -- SEARCH a SPECIFIC PURCHASE
+  CREATE OR ALTER PROCEDURE search_a_purchase(input_fantasyName D_NAME)
+  RETURNS (
+  fantasyname D_NAME,
+  invoice D_INVOICE,
+  subtotal D_DECIMAL,
+  discount D_DECIMAL,
+  total D_DECIMAL,    
+  purchasedate D_DATE
+  )
+  AS  
+  DECLARE VARIABLE idSupplier D_INT;
+  BEGIN
+	 SELECT FIRST 1 ID
+	 FROM SUPPLIERS
+	 WHERE FANTASYNAME = :input_fantasyName
+	 INTO :idSupplier;	  
+	  
+	
+	SELECT s.FANTASYNAME, p.INVOICE, p.SUBTOTAL, p.DISCOUNT, p.TOTAL, p.PURCHASEDATE
+	FROM PURCHASES P
+	INNER JOIN SUPPLIERS S ON P.SUPPLIERID = S.ID
+	WHERE P.SUPPLIERID = :idSupplier		 	
+	INTO :fantasyname, :invoice, :subtotal, :discount, :total, :purchasedate;	 				 
+  END
+  
+  
+------------------------------------------------------------
+--				SEARCH SALE
+  
+  
+  
+  DROP VIEW searchSale;
+   -- SEARCH PURCHASES
+  CREATE OR ALTER VIEW searchSale(clientname,invoice,subtotal, discount , total, saledate   )
+  AS
+  SELECT c.NAME, s.INVOICE, s.SUBTOTAL,  s.DISCOUNT, s.TOTAL ,s.SALEDATE
+  FROM SALES s 
+  INNER JOIN CLIENTS c ON s.CLIENTID = c.ID
+  WHERE s.FINALIZED = 'Y'
+  
+  SELECT * FROM SALES;
+  
+  SELECT FIRST 50 * FROM searchSale; 
+  
+  DROP PROCEDURE search_a_sale;
+  
+  DROP PROCEDURE search_a_sale;
+  
+  -- SEARCH a SPECIFIC PURCHASE
+  CREATE OR ALTER PROCEDURE search_a_sale(input_clientname D_NAME)
+  RETURNS (
+  clientname D_NAME,
+  invoice D_INVOICE,
+  subtotal D_DECIMAL,
+  discount D_DECIMAL,
+  total D_DECIMAL,    
+  saledate D_DATE
+  )
+  AS  
+  DECLARE VARIABLE idClient D_INT;
+  BEGIN
+	 SELECT FIRST 1 ID
+	 FROM CLIENTS
+	 WHERE NAME = :input_clientname
+	 INTO :idClient;	  
+	  
+	
+	SELECT c.NAME, s.INVOICE, s.SUBTOTAL, s.DISCOUNT, s.TOTAL, s.SALEDATE
+	FROM SALES s
+	INNER JOIN CLIENTS c ON s.CLIENTID = c.ID
+	WHERE s.FINALIZED = 'Y'	AND S.CLIENTID = :idClient 	 	
+	INTO :clientname, :invoice, :subtotal, :discount, :total, :saledate;	 				 
+  END
+  
+  SELECT * FROM CLIENTS;
+  
+  SELECT * FROM  SALES;
+  
+  EXECUTE PROCEDURE search_a_sale('Vinicius');

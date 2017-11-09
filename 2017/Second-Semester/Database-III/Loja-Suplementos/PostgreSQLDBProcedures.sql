@@ -671,14 +671,93 @@ select * from get_brands();
 
 select name from get_types()
 
---CREATE OR REPLACE FUNCTION my_function(user_id integer) RETURNS TABLE(name character varying) AS $$
---DECLARE
---    ids INTEGER[];
---BEGIN
---     ids := ARRAY[1,2];
---     RETURN QUERY
---         SELECT users.id, users.firstname, users.lastname
---         FROM public.users
---         WHERE users.id = ANY(ids);
---END;
---$$ LANGUAGE plpgsql;
+
+----------------------------------------------------------------
+--				search purchases
+
+create or replace view  searchpurchases as
+select s.fantasyname, p.invoice, p.subtotal, p.discout , p.total, purchasedate
+from purchases p
+inner join suppliers s on p.supplierid = s.id
+where p.finalized = 'Y';
+
+
+select * from searchpurchases;
+
+CREATE or replace FUNCTION search_a_purchase(inputfantasyname character varying)
+RETURNS TABLE(
+fantasyname character varying,
+invoice char(9),
+subtotal decimal(15,2),
+discount decimal(15,2),
+total decimal(15,2),
+purchasedate timestamp 
+) AS $$
+declare 
+	idsupplier INTEGER;
+BEGIN
+    select id
+    from suppliers s
+    where s.fantasyname = inputfantasyname
+    into idsupplier;
+    
+	RETURN QUERY    
+    select s.fantasyname, p.invoice, p.subtotal, p.discout, p.total, p.purchasedate
+    from purchases p
+    inner join suppliers s on p.supplierid = s.id
+    where p.supplierid = idsupplier and p.finalized = 'Y';
+END;            
+$$ LANGUAGE plpgsql;
+
+drop function search_a_purchase(inputfantasyname character varying);
+
+select * from suppliers;
+
+select * from search_a_purchase('batataDoceSales');
+
+
+----------------------------------------------------------------
+--				search sales
+
+create or replace view  searchsales as
+select c."name", s.invoice, s.subtotal, s.discout , s.total, s.saledate
+from sales s
+inner join clients c on s.clientid = c.id
+where s.finalized = 'Y';
+
+drop view searchsales;
+
+select * from searchpurchases;
+
+CREATE or replace FUNCTION search_a_sale(input_clientname character varying)
+RETURNS TABLE(
+clientname character varying,
+invoice char(9),
+subtotal DECIMAL(15,2),
+discount DECIMAL(15,2),
+total DECIMAL(15,2),
+saledate timestamp 
+) AS $$
+declare 
+	idclient INTEGER;
+BEGIN
+    select id
+    from clients c
+    where c."name" = input_clientname
+    into idclient;
+    
+	RETURN QUERY    
+    select c."name", s.invoice, s.subtotal, s.discout, s.total, s.saledate
+    from sales s
+    inner join clients c on s.clientid = c.id
+    where s.clientid = idclient and s.finalized = 'Y';
+END;            
+$$ LANGUAGE plpgsql;
+
+
+
+drop function search_a_sale(input_clientname character varying);
+
+select * from sales;
+
+select * from search_a_sale('vinicius');

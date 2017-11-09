@@ -12,13 +12,17 @@ import java.time.LocalDate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import supportClasses.Supplier;
+import supportClasses.databaseType;
 
 /**
  *
@@ -58,6 +62,10 @@ public class SearchSupplierController extends ControllerModel {
         super(db);
     }
 
+    SearchSupplierController(Connection connection, databaseType dbType) {
+        super(connection, dbType);
+    }
+
     public void init(Stage modal) {
 
         dialog = modal;
@@ -73,11 +81,20 @@ public class SearchSupplierController extends ControllerModel {
         purchasesColumn.setCellValueFactory(new PropertyValueFactory<Supplier, Integer>("purchases"));
 
         supplierTable.setItems(data);
+        
+        supplierSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent ke) {
+                if (ke.getCode().equals(KeyCode.ENTER)) {
+                    Search(new ActionEvent());
+                }
+            }
+        });
 
     }
 
     public void addToSupplierList(String socialreason, String email,
-            String cnpj, String telephone, String fantasyname, Integer purchases) {        
+            String cnpj, String telephone, String fantasyname, Integer purchases) {
         data.add(
                 new Supplier(socialreason, email, cnpj, telephone, fantasyname, purchases)
         );
@@ -102,70 +119,144 @@ public class SearchSupplierController extends ControllerModel {
         }
 
         // if no brand name find all
-        if (supplierSearchString.equals("")) {
-            try {
-                Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery(
-                        "select first 50 * "
-                        + " FROM suppliers "
-                        + " limit 50"
-                );
-                while (rs.next()) {
-                    addToSupplierList(
-                            rs.getString("socialreason"),
-                            rs.getString("email"),
-                            rs.getString("cnpj"),
-                            rs.getString("telephone"),
-                            rs.getString("fantasyname"),
-                            rs.getInt("numberpurchases"));
-                }
-                rs.close();
-                st.close();
+        try {
+            switch (dbType) {
+                case firebird:
+                    if (supplierSearchString.equals("")) {
+                        try {
+                            Statement st = this.connection.createStatement();
+                            ResultSet rs = st.executeQuery(
+                                    "select first 50 * "
+                                    + " FROM suppliers "                                    
+                            );
+                            while (rs.next()) {
+                                addToSupplierList(
+                                        rs.getString("socialreason"),
+                                        rs.getString("email"),
+                                        rs.getString("cnpj"),
+                                        rs.getString("telephone"),
+                                        rs.getString("fantasyname"),
+                                        rs.getInt("numberpurchases"));
+                            }
+                            rs.close();
+                            st.close();
 
-            } catch (Exception e) {
+                        } catch (Exception e) {
 
+                        }
+
+                    } // find a specific suplier name
+                    else {
+                        try {
+                            Statement st = this.connection.createStatement();
+                            ResultSet rs = st.executeQuery(
+                                    "select * "
+                                    + " FROM suppliers"
+                                    + " WHERE fantasyname = '" + supplierSearchString + "'"
+                            );
+                            if (rs.next()) {
+                                addToSupplierList(
+                                        rs.getString("socialreason"),
+                                        rs.getString("email"),
+                                        rs.getString("cnpj"),
+                                        rs.getString("telephone"),
+                                        rs.getString("fantasyname"),
+                                        rs.getInt("numberpurchases"));
+                            } else {
+                                sendAlert(
+                                        "No results!",
+                                        "Search lead to 0 results. Try a different Supplier Name",
+                                        "No Supplier with this name",
+                                        Alert.AlertType.INFORMATION);
+                                return;
+                            }
+                            while (rs.next()) {
+                                addToSupplierList(
+                                        rs.getString("socialreason"),
+                                        rs.getString("email"),
+                                        rs.getString("cnpj"),
+                                        rs.getString("telephone"),
+                                        rs.getString("fantasyname"),
+                                        rs.getInt("numberpurchases"));
+                            }
+                            rs.close();
+                            st.close();
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    break;
+                case postgres:
+                    if (supplierSearchString.equals("")) {
+                        try {
+                            Statement st = this.connection.createStatement();
+                            ResultSet rs = st.executeQuery(
+                                    "select * "
+                                    + " FROM suppliers "
+                                    + " limit 50"
+                            );
+                            while (rs.next()) {
+                                addToSupplierList(
+                                        rs.getString("socialreason"),
+                                        rs.getString("email"),
+                                        rs.getString("cnpj"),
+                                        rs.getString("telephone"),
+                                        rs.getString("fantasyname"),
+                                        rs.getInt("numberpurchases"));
+                            }
+                            rs.close();
+                            st.close();
+
+                        } catch (Exception e) {
+
+                        }
+
+                    } // find a specific suplier name
+                    else {
+                        try {
+                            Statement st = this.connection.createStatement();
+                            ResultSet rs = st.executeQuery(
+                                    "select * "
+                                    + " FROM suppliers"
+                                    + " WHERE fantasyname = '" + supplierSearchString + "'"
+                            );
+                            if (rs.next()) {
+                                addToSupplierList(
+                                        rs.getString("socialreason"),
+                                        rs.getString("email"),
+                                        rs.getString("cnpj"),
+                                        rs.getString("telephone"),
+                                        rs.getString("fantasyname"),
+                                        rs.getInt("numberpurchases"));
+                            } else {
+                                sendAlert(
+                                        "No results!",
+                                        "Search lead to 0 results. Try a different Supplier Name",
+                                        "No Supplier with this name",
+                                        Alert.AlertType.INFORMATION);
+                                return;
+                            }
+                            while (rs.next()) {
+                                addToSupplierList(
+                                        rs.getString("socialreason"),
+                                        rs.getString("email"),
+                                        rs.getString("cnpj"),
+                                        rs.getString("telephone"),
+                                        rs.getString("fantasyname"),
+                                        rs.getInt("numberpurchases"));
+                            }
+                            rs.close();
+                            st.close();
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    break;
             }
 
-        } // find a specific suplier name
-        else {
-            try {
-                Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery(
-                        "select * "
-                        + " FROM suppliers"
-                        + " WHERE fantasyname = '" + supplierSearchString + "'"
-                );
-                if (rs.next()) {
-                    addToSupplierList(
-                            rs.getString("socialreason"),
-                            rs.getString("email"),
-                            rs.getString("cnpj"),
-                            rs.getString("telephone"),
-                            rs.getString("fantasyname"),
-                            rs.getInt("numberpurchases"));
-                } else {
-                    sendAlert(
-                            "No results!",
-                            "Search lead to 0 results. Try a different Supplier Name",
-                            "No Supplier with this name",
-                            Alert.AlertType.INFORMATION);
-                    return;
-                }
-                while (rs.next()) {
-                    addToSupplierList(
-                            rs.getString("socialreason"),
-                            rs.getString("email"),
-                            rs.getString("cnpj"),
-                            rs.getString("telephone"),
-                            rs.getString("fantasyname"),
-                            rs.getInt("numberpurchases"));
-                }
-                rs.close();
-                st.close();
-            } catch (Exception e) {
-
-            }
+        } catch (Exception e) {
         }
+
         // set items        
         supplierTable.setItems(data);
 
