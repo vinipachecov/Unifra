@@ -149,6 +149,7 @@ subtotal D_DECIMAL,
 discount D_DECIMAL,
 total D_DECIMAL,
 clientid D_INT,
+finalized D_FINALIZED,
 FOREIGN KEY (clientid) REFERENCES CLIENTS(id)
 ON UPDATE CASCADE ON DELETE SET NULL
 );
@@ -195,10 +196,11 @@ subtotal D_DECIMAL,
 discount D_DECIMAL,
 total D_DECIMAL,
 supplierid D_INT,
+finalized D_FINALIZED
 FOREIGN KEY(supplierid) REFERENCES SUPPLIERS(id)
 ON UPDATE CASCADE ON DELETE SET null);
 
-DROP TABLE PURCHASES;
+
 
 CREATE generator g_inc_purchases;
 
@@ -233,4 +235,6 @@ DROP TABLE PURCHASEITEMS;
 
 INSERT INTO USERS(USERNAME,PASSWORD, USERTYPE)
 VALUES('admin','admin','admin')
+
+
 

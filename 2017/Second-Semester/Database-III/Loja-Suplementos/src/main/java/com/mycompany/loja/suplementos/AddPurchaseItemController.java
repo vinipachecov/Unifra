@@ -21,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import supportClasses.ProductItem;
+import supportClasses.databaseType;
 
 /**
  * FXML Controller class
@@ -29,7 +30,6 @@ import supportClasses.ProductItem;
  */
 public class AddPurchaseItemController extends ControllerModel {
 
-    
     @FXML
     public TextField quantityTextField;
 
@@ -43,22 +43,26 @@ public class AddPurchaseItemController extends ControllerModel {
 
     @FXML
     public Label totalLabel;
-    
+
     public Integer purchaseID;
 
     public Stage dialog;
 
     public TableView purchaseTable;
-    
+
     public Label subtotalAddPurchaseScreen;
-    
+
     public Label totalAddPurchaseScreen;
-    
-    public AddPurchaseController apc;    
+
+    public AddPurchaseController apc;
 
     public AddPurchaseItemController(Connection connection) {
         super(connection);
 
+    }
+
+    AddPurchaseItemController(Connection connection, databaseType dbType) {
+        super(connection, dbType);
     }
 
     /**
@@ -70,7 +74,7 @@ public class AddPurchaseItemController extends ControllerModel {
     }
 
     public void init(Stage modal, Integer id, TableView saletable, ObservableList<ProductItem> listdata,
-            AddPurchaseController apc ) {
+            AddPurchaseController apc) {
         this.apc = apc;
         this.subtotalAddPurchaseScreen = subtotalAddPurchaseScreen;
         this.totalAddPurchaseScreen = totalAddPurchaseScreen;
@@ -80,8 +84,6 @@ public class AddPurchaseItemController extends ControllerModel {
         this.purchaseID = id;
         getProducts();
     }
-    
-    
 
     @FXML
     public void recalculateTotal(ActionEvent event) {
@@ -97,9 +99,19 @@ public class AddPurchaseItemController extends ControllerModel {
         String typename = "";
         try {
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select * from get_a_typeby_product('" + findProductComboBox.getValue() + "')"
-            );
+            ResultSet rs = null;
+            switch (dbType) {
+                case firebird:
+                    rs = st.executeQuery(
+                            "EXECUTE PROCEDURE from get_a_typeby_product('" + findProductComboBox.getValue() + "');"
+                    );
+                    break;
+                case postgres:
+                    rs = st.executeQuery(
+                            "select * from get_a_typeby_product('" + findProductComboBox.getValue() + "')"
+                    );
+                    break;
+            }
             if (rs.next()) {
                 typename = rs.getString("typename");
             } else {
@@ -107,26 +119,48 @@ public class AddPurchaseItemController extends ControllerModel {
             }
 
             st = this.connection.createStatement();
-            rs = st.executeQuery(
-                    "select * from get_a_brandby_product('" + findProductComboBox.getValue() + "')"
-            );
+            switch (dbType) {
+                case firebird:
+                    rs = st.executeQuery(
+                            "EXECUTE PROCEDURE get_a_brandby_product('" + findProductComboBox.getValue() + "');"
+                    );
+                    break;
+                case postgres:
+                    rs = st.executeQuery(
+                            "select * from get_a_brandby_product('" + findProductComboBox.getValue() + "')"
+                    );
+                    break;
+            }
             if (rs.next()) {
                 brandname = rs.getString("brandname");
             }
         } catch (Exception e) {
+            sendAlert(
+                    "Error ",
+                    "Error retrieving values.",
+                    "Error getting type or brand names", Alert.AlertType.ERROR);
         }
 
-        
         auxdata.add(new ProductItem(itemname, unitvalue, brandname, typename, Quantity, total));
         purchaseTable.setItems(auxdata);
         apc.calculateSubtotalAndTotal();
     }
 
     public void getProducts() {
+
         try {
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select * from get_products();");
+            ResultSet rs = null;
+            switch (dbType) {
+                case firebird:
+                    rs = st.executeQuery(
+                            "select * from get_products_additem;");
+                    break;
+                case postgres:
+                    rs = st.executeQuery(
+                            "select * from get_products();");
+                    break;
+            }
             while (rs.next()) {
                 findProductComboBox.getItems().add(rs.getString("productname"));
             }
@@ -140,13 +174,27 @@ public class AddPurchaseItemController extends ControllerModel {
         Float valperUnit = null;
         try {
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select * from get_itemunitvalue('" + findProductComboBox.getValue() + "')"
-            );
-            if (rs.next()) {
-                valperUnit = rs.getFloat("get_itemunitvalue");
+            ResultSet rs;
+            switch (this.dbType) {
+                case firebird:
+                    rs = st.executeQuery(
+                            "EXECUTE PROCEDURE get_itemunitvalue('" + findProductComboBox.getValue() + "');"
+                    );
+                    if (rs.next()) {
+                        valperUnit = rs.getFloat("UNITVALUE");
+                    }
+                    break;
+                case postgres:
+                    rs = st.executeQuery(
+                            "select * from get_itemunitvalue('" + findProductComboBox.getValue() + "')"
+                    );
+                    if (rs.next()) {
+                        valperUnit = rs.getFloat("get_itemunitvalue");
+                    }
+                    st.close();
+                    break;
             }
-            st.close();
+
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage());
             return;
@@ -167,15 +215,29 @@ public class AddPurchaseItemController extends ControllerModel {
 
         try {
             Statement st = this.connection.createStatement();
-            st.executeUpdate("DO $$ BEGIN\n"
-                    + "    PERFORM add_purchaseitem("
-                    + "" + purchaseID + ","
-                    + "'" + itemname + "',"
-                    + "" + unitValue + "  ,"
-                    + "" + Quantity + ", "
-                    + "" + totalLabel.getText() + ");\n"
-                    + "END $$;"
-            );
+            switch (dbType) {
+                case firebird:
+                    st.executeUpdate(
+                            "EXECUTE PROCEDURE add_purchaseitem("
+                            + "" + purchaseID + ","
+                            + "'" + itemname + "',"
+                            + "" + unitValue + "  ,"
+                            + "" + Quantity + ", "
+                            + "" + totalLabel.getText() + ");"
+                    );
+                    break;
+                case postgres:
+                    st.executeUpdate("DO $$ BEGIN\n"
+                            + "    PERFORM add_purchaseitem("
+                            + "" + purchaseID + ","
+                            + "'" + itemname + "',"
+                            + "" + unitValue + "  ,"
+                            + "" + Quantity + ", "
+                            + "" + totalLabel.getText() + ");\n"
+                            + "END $$;"
+                    );
+                    break;
+            }
             sendAlert("PurchaseItem added with success!", "PurchaseItem Added", "A PurchaseItem has been added!", Alert.AlertType.CONFIRMATION);
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage() + e.getLocalizedMessage());
@@ -189,22 +251,34 @@ public class AddPurchaseItemController extends ControllerModel {
 
         try {
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery("select * from purchaseItem_exists(" + purchaseID + ","
-                    + "'" + itemname + "');");
-            rs.next();
-            if (rs.getString("hasitem").equals("t")) {
-                System.out.println("Error to add a item");
-                sendAlert("Duplication error",
-                        "Item already added.",
-                        "Item already added! Choose a different product!",
-                        Alert.AlertType.ERROR);
-                return true;
+            ResultSet rs = null;
+            switch (dbType) {
+                case firebird:
+                    st.executeUpdate("EXECUTE PROCEDURE purchaseItem_exists(" + purchaseID + ","
+                            + "'" + itemname + "');");
+                    break;
+                case postgres:
+                    rs = st.executeQuery("select * from purchaseItem_exists(" + purchaseID + ","
+                            + "'" + itemname + "');");
+                    rs.next();
+                    if (rs.getString("hasitem").equals("t")) {
+                        sendAlert("Duplication error",
+                                "Item already added.",
+                                "Item already added! Choose a different product!",
+                                Alert.AlertType.ERROR);
+                        return true;
+                    }                    
+                    break;
             }
             rs.close();
             st.close();
 
         } catch (Exception e) {
-            System.out.println("Error on checkfunciont additemsale! :" + e.getMessage());
+            sendAlert("Duplication error",
+                    "Item already added.",
+                    "Item already added! Choose a different product!",
+                    Alert.AlertType.ERROR);
+            return true;
         }
 
         return false;

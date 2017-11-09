@@ -136,14 +136,14 @@ unittype D_UNIT
    	
   EXECUTE PROCEDURE get_a_product('Whey 100%')
 
-CREATE OR ALTER VIEW get_products(pname,brandname,typename,minimumquantity,currentquantity,unitvalue,unittype)
+CREATE OR ALTER VIEW search_products(pname,brandname,typename,minimumquantity,currentquantity,unitvalue,unittype)
 AS
 SELECT  p.NAME, b.NAME, t.NAME, p.MINIMUMQUANTITY, p.CURRENTQUANTITY, p.UNITVALUE, p.UNITTYPE
 FROM PRODUCTS p
 INNER JOIN BRANDS B ON p.BRANDID = b.ID
 INNER JOIN TYPES T ON p.TYPEID = t.ID
 
-SELECT * FROM get_products;
+SELECT * FROM search_products;
  
 CREATE OR ALTER VIEW getbrands(
       NAME)
@@ -152,3 +152,505 @@ CREATE OR ALTER VIEW getbrands(
   FROM BRANDS
   	 
   
+---------------------------------------------------------------------
+--				ADD A SALE
+  
+CREATE OR ALTER VIEW get_clients(cname)
+AS
+SELECT  c.NAME 
+FROM CLIENTS c
+  
+SELECT cname FROM get_clients
+
+
+CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
+	total D_DECIMAL,
+	clientname D_NAME,
+	discount D_DECIMAL,
+	finalized D_FINALIZED)
+  AS  
+  DECLARE VARIABLE idclient D_INT;
+  BEGIN
+	  SELECT c.ID
+	  FROM CLIENTS C
+	  WHERE C.NAME = :clientname
+	  INTO :idclient;
+	  
+	  
+	  INSERT INTO SALES(SALEDATE,SUBTOTAL,TOTAL,CLIENTID,DISCOUNT,FINALIZED)
+	  VALUES(CURRENT_TIMESTAMP, :SUBTOTAL, :total, :idclient, :discount, :finalized);
+  END
+  
+  
+  SELECT * FROM CLIENTS;
+  
+  EXECUTE PROCEDURE addSale(0.0,0.0,'Vinicius',0.0,'N')
+  
+  SELECT * FROM sales;
+  
+  
+  SELECT max(id) FROM sales;
+  
+  CREATE EXCEPTION INVOICEEXISTS 'Invoice already exists!';
+
+  -- CHECK IF INVOICE ALREADY EXISTS
+  CREATE OR ALTER PROCEDURE checkInvoiceExists(inputinvoice D_INVOICE)  
+  AS  
+  BEGIN
+	 IF(EXISTS (SELECT id
+	 FROM sales s 
+	 WHERE s.INVOICE = :inputinvoice))THEN
+	 EXCEPTION INVOICEEXISTS;
+  END
+  
+  SELECT * FROM SALES;
+  
+  EXECUTE PROCEDURE  checkInvoiceExists('987654321');
+  
+  
+  SELECT * FROM SALES;
+  
+  CREATE EXCEPTION NO_SALEID 'No sale found! Access Violation.';
+  
+  -- SET INVOICE TO THE SALE
+  CREATE OR ALTER PROCEDURE setInvoice(idsale D_INT, inputinvoice D_INVOICE)  
+  AS  
+  BEGIN
+	 IF( EXISTS(SELECT id
+	 			FROM SALES s
+	 			WHERE s.ID = :idsale))
+	 			THEN
+	 			BEGIN
+		 			UPDATE SALES
+	 				SET INVOICE = :inputinvoice
+	 				WHERE id = :idsale;
+	 			END 
+  				ELSE
+  				EXCEPTION NO_SALEID;	 
+  END
+  
+  SELECT * FROM sales;
+  
+  EXECUTE PROCEDURE setInvoice(2 , '987654321');
+  
+  
+  CREATE OR ALTER PROCEDURE finishSale(saleid D_INT,  input_subtotal D_DECIMAL, input_total D_DECIMAL)  
+  AS  
+  BEGIN
+	 IF( EXISTS(SELECT id
+	 			FROM SALES s
+	 			WHERE s.ID = :saleid))
+	 			THEN
+	 			BEGIN
+		 			UPDATE SALES
+	 				SET FINALIZED = 'Y',SUBTOTAL = :input_subtotal, TOTAL = :input_total
+	 				WHERE id = :saleid;
+	 			END 
+  				ELSE
+  				EXCEPTION NO_SALEID;	 
+  END
+  
+  SELECT * FROM sales;
+  
+  EXECUTE PROCEDURE finishSale(1 , 50.0,100.0);
+  
+  
+  CREATE OR ALTER PROCEDURE removeSale(currentSaleID D_INT)
+  AS  
+  BEGIN
+	DELETE FROM SALEITEMS
+	WHERE SALEID = :currentSaleID;
+	
+	DELETE FROM SALES
+	WHERE ID = :currentSaleID;	
+  END 
+  
+  SELECT * FROM SALES;
+  
+  SELECT * FROM SALEITEMS;
+	 
+  EXECUTE PROCEDURE removeSale(1);
+  
+  
+  
+---------------------------------------------------------------------
+--				ADD A SALEITEM
+  
+  
+-- ADD ITEM PURCHASE	
+CREATE OR ALTER PROCEDURE add_saleitem( 
+	saleid_input D_INT,
+	prodname_input D_NAME,
+	unitvalue_input D_DECIMAL,
+	quantity_input D_INT,
+	total_input D_DECIMAL)
+  AS  
+  DECLARE IDPROD D_INT;
+  BEGIN	  
+	 IF( EXISTS(SELECT p.ID
+	 			FROM PRODUCTS p
+	 			WHERE p.NAME = :prodname_input))
+	 			THEN
+	 			BEGIN		 			
+		 			SELECT p.ID
+	 				FROM PRODUCTS p
+	 				WHERE p.NAME = :prodname_input
+	 				INTO :IDPROD;
+		 			
+		 			INSERT INTO SALEITEMS(SALEID ,PRODID,UNITVALUE,QUANTITY,TOTAL)
+		 			VALUES (:saleid_input, :IDPROD, :unitvalue_input, :quantity_input, :total_input );
+	 			END 
+  				ELSE
+  				EXCEPTION NO_PRODUCT;	 
+  END	
+  
+  SELECT * FROM sales;
+  
+  SELECT * FROM SALEITEMS;
+  
+  EXECUTE PROCEDURE add_saleitem(2,'Whey 100%', 150.0, 10, 1500);
+  
+  CREATE EXCEPTION SIT_ALREADYADDED 'Sale Item already Added!';
+  
+  -- CHECK IF SALEITEM HAS NOT BEEN ADDED
+  CREATE OR ALTER PROCEDURE saleItem_exists(currentSaleID D_INT, pname D_NAME)
+  AS  
+  DECLARE IDPROD D_INT;
+  BEGIN	  
+	 IF( EXISTS(SELECT p.ID
+	 			FROM PRODUCTS p
+	 			WHERE p.NAME = :pname))
+	 			THEN
+	 			BEGIN		 			
+		 			SELECT p.ID
+	 				FROM PRODUCTS p
+	 				WHERE p.NAME = :pname
+	 				INTO :IDPROD;
+		 			
+		 			IF( EXISTS (SELECT UNITVALUE
+		 			FROM SALEITEMS sit
+		 			WHERE sit.PRODID = :IDPROD AND sit.SALEID = :currentSaleID))
+		 			THEN
+		 				EXCEPTION SIT_ALREADYADDED;
+	 			END 
+  				ELSE
+  				EXCEPTION NO_PRODUCT;	 
+  END	
+  
+  
+  EXECUTE PROCEDURE saleItem_exists(2,'Whey 100%');
+  
+  EXECUTE PROCEDURE saleItem_exists(10,'Whey 100%');
+  
+  SELECT * FROM sales;
+  
+  SELECT * FROM SALEITEMS;
+---------------------------------------------------------------------
+--				ADD A PURCHASE
+  
+  
+  
+  
+CREATE OR ALTER VIEW get_suppliers(cname)
+AS
+SELECT  s.FANTASYNAME 
+FROM SUPPLIERS s
+  
+SELECT cname FROM get_suppliers;
+
+
+CREATE EXCEPTION NO_SUPPLIER 'No Supplier Found!';
+
+--ADD A PURCHASE
+CREATE OR ALTER PROCEDURE addPurchase(subtotal D_DECIMAL,
+	total D_DECIMAL,
+	suppliername D_NAME,
+	discount D_DECIMAL,
+	finalized D_FINALIZED)
+  AS  
+  DECLARE VARIABLE idsupplier D_INT;
+  BEGIN
+	  IF( EXISTS (SELECT s.ID
+	  FROM SUPPLIERS s
+	  WHERE s.FANTASYNAME = :suppliername ))
+	  THEN
+	  BEGIN
+		  SELECT s.ID
+		  FROM SUPPLIERS s
+		  WHERE s.FANTASYNAME = :suppliername
+		  INTO idsupplier;
+		  
+		  
+		  INSERT INTO PURCHASES(PURCHASEDATE,SUBTOTAL,TOTAL,SUPPLIERID,DISCOUNT,FINALIZED)
+		  VALUES(CURRENT_TIMESTAMP, :SUBTOTAL, :total, :idsupplier, :discount, :finalized);
+	  END 
+	  ELSE
+	  EXCEPTION NO_SUPPLIER;	  
+  END
+  
+  SELECT * FROM SUPPLIERS;
+  
+  
+  EXECUTE PROCEDURE addPurchase(0.0,0.0,'Batata  Suplementos',0.0,'N');
+  
+  SELECT * FROM PURCHASES;
+  
+  
+  
+  CREATE OR ALTER PROCEDURE checkPurchaseInvoiceExists(inputinvoice D_INVOICE)  
+  AS  
+  BEGIN
+	 IF(EXISTS (SELECT id
+	 FROM PURCHASES p 
+	 WHERE p.INVOICE = :inputinvoice))THEN
+	 EXCEPTION INVOICEEXISTS;
+  END
+  
+  SELECT * FROM PURCHASES;
+  
+  EXECUTE PROCEDURE checkPurchaseInvoiceExists('123456799');
+  
+  CREATE EXCEPTION NO_PURCHASEID 'No Purchase with this id has been found! Access Violation.';
+  
+  CREATE OR ALTER PROCEDURE finishPurchase(purchaseID D_INT,  input_subtotal D_DECIMAL, input_total D_DECIMAL)  
+  AS  
+  BEGIN
+	 IF( EXISTS(SELECT id
+	 			FROM PURCHASES P
+	 			WHERE P.ID = :purchaseID))
+	 			THEN
+	 			BEGIN
+		 			UPDATE PURCHASES
+	 				SET FINALIZED = 'Y',SUBTOTAL = :input_subtotal, TOTAL = :input_total
+	 				WHERE id = :purchaseID;
+	 			END 
+  				ELSE
+  				EXCEPTION NO_PURCHASEID;	 
+  END
+  
+  SELECT * FROM PURCHASES;
+  
+  EXECUTE PROCEDURE finishPurchase(2,100,150);
+  
+  -- SET INVOICE
+  CREATE OR ALTER PROCEDURE setInvoicePurchase(idpurchase D_INT, inputinvoice D_INVOICE)  
+  AS  
+  BEGIN
+	 IF( EXISTS(SELECT id
+	 			FROM PURCHASES p
+	 			WHERE p.ID = :idpurchase))
+	 			THEN
+	 			BEGIN
+		 			UPDATE PURCHASES
+	 				SET INVOICE = :inputinvoice
+	 				WHERE id = :idpurchase;
+	 			END 
+  				ELSE
+  				EXCEPTION NO_PURCHASEID;	 
+  END
+  
+  SELECT * FROM PURCHASES;
+  
+  EXECUTE PROCEDURE setInvoicePurchase(2 , '987654322');
+  
+  SELECT * FROM sales;
+  
+  -- REMOVE SALE AND IT'S SALEITEMS
+   CREATE OR ALTER PROCEDURE removePurchase(currentPurchaseID D_INT)
+  AS  
+  BEGIN
+	DELETE FROM PURCHASEITEMS
+	WHERE PURCHASEID = :currentPurchaseID;
+	
+	DELETE FROM PURCHASES
+	WHERE ID = :currentPurchaseID;	
+  END 
+  
+  SELECT * FROM PURCHASES;
+  
+  SELECT * FROM PURCHASEITEMS;
+  
+  EXECUTE PROCEDURE removePurchase(2);
+  
+---------------------------------------------------------------------
+--				ADD A PURCHASEITEM
+
+  
+-- VIEW TO GET PRODUCTS
+CREATE OR ALTER VIEW get_products_additem(productname)
+AS
+SELECT  P.NAME 
+FROM PRODUCTS P
+  
+SELECT productname FROM get_products_purchaseitem;
+
+
+CREATE EXCEPTION NO_PRODUCT 'No product registered with this Name!';
+
+CREATE OR ALTER PROCEDURE get_itemunitvalue(pname D_NAME)
+RETURNS (unitvalue D_DECIMAL)
+  AS  
+  BEGIN
+	 IF( EXISTS(SELECT id
+	 			FROM PRODUCTS p
+	 			WHERE p.NAME = :pname))
+	 			THEN
+	 			BEGIN
+		 			SELECT p.UNITVALUE 
+		 			FROM PRODUCTS p
+		 			WHERE p.NAME = :pname
+		 			INTO :unitvalue;
+	 			END 
+  				ELSE
+  				EXCEPTION NO_PRODUCT;	 
+  END
+  
+  SELECT * FROM PRODUCTS;
+  
+  EXECUTE PROCEDURE get_itemunitvalue('Whey 100%');
+  
+  
+  
+  
+
+  
+CREATE OR ALTER PROCEDURE get_a_typeby_product(pname D_NAME)
+RETURNS (typename D_NAME)
+  AS  
+  DECLARE IDTYPE D_INT;
+  BEGIN	  
+	 IF( EXISTS(SELECT id
+	 			FROM PRODUCTS p
+	 			WHERE p.NAME = :pname))
+	 			THEN
+	 			BEGIN
+		 			SELECT p.TYPEID
+					FROM PRODUCTS P
+					WHERE p.NAME = :pname
+					INTO :IDTYPE;
+		 			
+		 			SELECT t.NAME
+		 			FROM TYPES t
+		 			WHERE t.ID = :IDTYPE
+		 			INTO :typename;
+	 			END 
+  				ELSE
+  				EXCEPTION NO_PRODUCT;	 
+  END
+  
+  EXECUTE PROCEDURE get_a_typeby_product('Whey 100%')
+  
+  
+CREATE OR ALTER PROCEDURE get_a_brandby_product(pname D_NAME)
+RETURNS (brandname D_NAME)
+  AS  
+  DECLARE IDBRAND D_INT;
+  BEGIN	  
+	 IF( EXISTS(SELECT id
+	 			FROM PRODUCTS p
+	 			WHERE p.NAME = :pname))
+	 			THEN
+	 			BEGIN
+		 			SELECT p.BRANDID
+					FROM PRODUCTS P
+					WHERE p.NAME = :pname
+					INTO :IDBRAND;
+		 			
+		 			SELECT b.NAME
+		 			FROM BRANDS b
+		 			WHERE b.ID = :IDBRAND
+		 			INTO :brandname;
+	 			END 
+  				ELSE
+  				EXCEPTION NO_PRODUCT;	 
+  END
+  
+  
+  EXECUTE PROCEDURE get_a_brandby_product('Whey 100%'); 
+ 
+	
+-- ADD ITEM PURCHASE	
+CREATE OR ALTER PROCEDURE add_purchaseitem( 
+	purchaseid_input D_INT,
+	prodname_input D_NAME,
+	unitvalue_input D_DECIMAL,
+	quantity_input D_INT,
+	total_input D_DECIMAL)
+  AS  
+  DECLARE IDPROD D_INT;
+  BEGIN	  
+	 IF( EXISTS(SELECT p.ID
+	 			FROM PRODUCTS p
+	 			WHERE p.NAME = :prodname_input))
+	 			THEN
+	 			BEGIN		 			
+		 			SELECT p.ID
+	 				FROM PRODUCTS p
+	 				WHERE p.NAME = :prodname_input
+	 				INTO :IDPROD;
+		 			
+		 			INSERT INTO PURCHASEITEMS(purchaseid ,PRODID,UNITVALUE,QUANTITY,TOTAL)
+		 			VALUES (:purchaseid_input, :IDPROD, :unitvalue_input, :quantity_input, :total_input );
+	 			END 
+  				ELSE
+  				EXCEPTION NO_PRODUCT;	 
+  END	
+  
+  SELECT * FROM sales;
+  
+  SELECT * FROM PURCHASES;  
+    
+  
+  EXECUTE PROCEDURE purchaseItem_exists (1,'Top Whey',150,10,1500.0);
+  
+  
+  CREATE EXCEPTION PIT_ALREADYADDED 'PurchaseItem already Added!';
+  
+  -- CHECK IF PURCHASE ITEM HAS NOT BEEN ADDED	
+CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_NAME)
+  AS  
+  DECLARE IDPROD D_INT;
+  BEGIN	  
+	 IF( EXISTS(SELECT p.ID
+	 			FROM PRODUCTS p
+	 			WHERE p.NAME = :pname))
+	 			THEN
+	 			BEGIN		 			
+		 			SELECT p.ID
+	 				FROM PRODUCTS p
+	 				WHERE p.NAME = :pname
+	 				INTO :IDPROD;
+		 			
+		 			IF( EXISTS (SELECT UNITVALUE
+		 			FROM PURCHASEITEMS pit
+		 			WHERE pit.PRODID = :IDPROD AND pit.PURCHASEID = :currentPurchaseID))
+		 			THEN
+		 				EXCEPTION PIT_ALREADYADDED;
+	 			END 
+  				ELSE
+  				EXCEPTION NO_PRODUCT;	 
+  END	
+  
+  SELECT * FROM PRODUCTS;
+  
+  SELECT * FROM PURCHASEITEMS;
+  
+  EXECUTE PROCEDURE purchaseItem_exists(1,'Whey 100%');
+  
+  CREATE OR ALTER PROCEDURE removePurchase(currentPurchaseID D_INT)
+  AS  
+  BEGIN
+	DELETE FROM PURCHASEITEMS
+	WHERE PURCHASEID = :currentPurchaseID;
+	
+	DELETE FROM PURCHASES
+	WHERE ID = :currentPurchaseID;	
+  END 
+	 
+  EXECUTE PROCEDURE removePurchase(1);
+  
+  SELECT * FROM PURCHASES;
+  
+  SELECT * FROM PURCHASEITEMS;
+  
+  	

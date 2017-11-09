@@ -30,22 +30,22 @@
       </TableView>
       <Label layoutX="256.0" layoutY="61.0" text="Discount:" />
       <Button fx:id="addItemButton" layoutX="65.0" layoutY="484.0" mnemonicParsing="false" onAction="#addItemSale" prefHeight="29.0" prefWidth="110.0" text="Add item" />
-      <Label layoutX="65.0" layoutY="424.0" text="Subtotal:">
+      <Label layoutX="65.0" layoutY="424.0" text="Subtotal R$">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <Label fx:id="subtotalLabel" layoutX="131.0" layoutY="424.0" text="Subtotal-VALOR">
+      <Label fx:id="subtotalLabel" layoutX="141.0" layoutY="424.0" text="0.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <Label layoutX="65.0" layoutY="453.0" text="Total:">
+      <Label layoutX="62.0" layoutY="453.0" text="Total R$">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="totalLabel" layoutX="112.0" layoutY="454.0" text="TOTAL-VALOR">
+      <Label fx:id="totalLabel" layoutX="120.0" layoutY="454.0" text="0.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>

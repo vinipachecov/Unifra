@@ -21,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import supportClasses.ProductItem;
+import supportClasses.databaseType;
 
 /**
  * FXML Controller class
@@ -48,22 +49,26 @@ public class AddSaleItemController extends ControllerModel {
 
     @FXML
     public Label totalLabel;
-    
+
     public Integer saleID;
 
     public Stage dialog;
 
     public TableView saleTable;
-    
+
     public Label subtotalAddSaleScreen;
-    
+
     public Label totalAddSaleScreen;
-    
-    public AddSaleController asic;    
+
+    public AddSaleController asic;
 
     public AddSaleItemController(Connection connection) {
         super(connection);
 
+    }
+
+    AddSaleItemController(Connection connection, databaseType dbType) {
+        super(connection, dbType);
     }
 
     /**
@@ -75,7 +80,7 @@ public class AddSaleItemController extends ControllerModel {
     }
 
     public void init(Stage modal, Integer id, TableView saletable, ObservableList<ProductItem> listdata,
-            AddSaleController asic ) {
+            AddSaleController asic) {
         this.asic = asic;
         this.subtotalAddSaleScreen = subtotalAddSaleScreen;
         this.totalAddSaleScreen = totalAddSaleScreen;
@@ -85,8 +90,6 @@ public class AddSaleItemController extends ControllerModel {
         this.saleID = id;
         getProducts();
     }
-    
-    
 
     @FXML
     public void recalculateTotal(ActionEvent event) {
@@ -102,26 +105,49 @@ public class AddSaleItemController extends ControllerModel {
         String typename = "";
         try {
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select * from get_a_typeby_product('" + findProductComboBox.getValue() + "')"
-            );
+            ResultSet rs = null;
+            switch (dbType) {
+                case firebird:
+                    rs = st.executeQuery(
+                            "EXECUTE PROCEDURE get_a_typeby_product('" + findProductComboBox.getValue() + "');"
+                    );
+                    break;
+                case postgres:
+                    rs = st.executeQuery(
+                            "select * from get_a_typeby_product('" + findProductComboBox.getValue() + "')"
+                    );
+                    break;
+            }
             if (rs.next()) {
-                typename = rs.getString("typename");
+                typename = rs.getString("TYPENAME");
             } else {
                 System.out.println("ERROR");
             }
 
             st = this.connection.createStatement();
-            rs = st.executeQuery(
-                    "select * from get_a_brandby_product('" + findProductComboBox.getValue() + "')"
-            );
+            switch (dbType) {
+                case firebird:
+                    rs = st.executeQuery(
+                            "EXECUTE PROCEDURE get_a_brandby_product('" + findProductComboBox.getValue() + "');"
+                    );
+                    break;
+                case postgres:
+                    rs = st.executeQuery(
+                            "select * from get_a_brandby_product('" + findProductComboBox.getValue() + "')"
+                    );
+                    break;
+            }
             if (rs.next()) {
-                brandname = rs.getString("brandname");
+                brandname = rs.getString("BRANDNAME");
             }
         } catch (Exception e) {
+            System.out.println("ERROR GETTING TYPES AND BRANDS " + e.getMessage());
+            sendAlert(
+                    "Error ",
+                    "Error retrieving values.",
+                    "Error getting type or brand names", Alert.AlertType.ERROR);
         }
 
-        
         auxdata.add(new ProductItem(itemname, unitvalue, brandname, typename, Quantity, total));
         saleTable.setItems(auxdata);
         asic.calculateSubtotalAndTotal();
@@ -130,26 +156,53 @@ public class AddSaleItemController extends ControllerModel {
     public void getProducts() {
         try {
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select * from get_products();");
+            ResultSet rs = null;
+            switch (dbType) {
+                case firebird:
+                    rs = st.executeQuery(
+                            "SELECT productname FROM get_products_additem;");
+                    break;
+                case postgres:
+                    rs = st.executeQuery(
+                            "select * from get_products();");
+                    break;
+            }
             while (rs.next()) {
                 findProductComboBox.getItems().add(rs.getString("productname"));
             }
         } catch (Exception e) {
+            sendAlert("Error",
+                    "Error Retreiving Products",
+                    "Error on function to get products",
+                    Alert.AlertType.ERROR);
         }
 
     }
 
     @FXML
-    private void getUnitValue(ActionEvent event) {
+    private void getUnitValue() {
         Float valperUnit = null;
         try {
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select * from get_itemunitvalue('" + findProductComboBox.getValue() + "')"
-            );
-            if (rs.next()) {
-                valperUnit = rs.getFloat("get_itemunitvalue");
+            ResultSet rs = null;
+            switch (dbType) {
+                case firebird:
+                    rs = st.executeQuery(
+                            "EXECUTE PROCEDURE get_itemunitvalue('" + findProductComboBox.getValue() + "');"
+                    );
+                    if (rs.next()) {
+                        valperUnit = rs.getFloat("UNITVALUE");
+                    }
+                    break;
+                case postgres:
+                    rs = st.executeQuery(
+                            "select * from get_itemunitvalue('" + findProductComboBox.getValue() + "')"
+                    );
+                    if (rs.next()) {
+                        valperUnit = rs.getFloat("get_itemunitvalue");
+                    }
+                    break;
+
             }
             st.close();
         } catch (Exception e) {
@@ -172,16 +225,31 @@ public class AddSaleItemController extends ControllerModel {
 
         try {
             Statement st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n"
-                    + "    PERFORM add_saleitem("
-                    + "" + saleID + ","
-                    + "'" + itemname + "',"
-                    + "" + unitValue + "  ,"
-                    + "" + Quantity + ", "
-                    + "" + totalLabel.getText() + ");\n"
-                    + "END $$;"
-            );
+            switch (dbType) {
+                case firebird:
+                    st.executeUpdate(
+                            "EXECUTE PROCEDURE add_saleitem("
+                            + "" + saleID + ","
+                            + "'" + itemname + "',"
+                            + "" + unitValue + "  ,"
+                            + "" + Quantity + ", "
+                            + "" + totalLabel.getText() + ");"
+                    );
+                    break;
+                case postgres:
+                    st.executeUpdate(
+                            "DO $$ BEGIN\n"
+                            + "    PERFORM add_saleitem("
+                            + "" + saleID + ","
+                            + "'" + itemname + "',"
+                            + "" + unitValue + "  ,"
+                            + "" + Quantity + ", "
+                            + "" + totalLabel.getText() + ");\n"
+                            + "END $$;"
+                    );
+                    break;
+            }
+
             sendAlert("SaleItem added with success!", "SaleItem Added", "A saleItem has been added!", Alert.AlertType.CONFIRMATION);
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage() + e.getLocalizedMessage());
@@ -194,24 +262,40 @@ public class AddSaleItemController extends ControllerModel {
     public boolean checkItemAlreadyExists(String itemname) {
 
         try {
+            System.out.println("CUrrent saleid = " + saleID);
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select * from item_exists(" + saleID + ","
-                    + "'" + itemname + "');");
-            rs.next();
-            if (rs.getString("hasitem").equals("t")) {
-                System.out.println("Error to add a item");
-                sendAlert("Duplication error",
-                        "Item already added.",
-                        "Item already added! Choose a different product!",
-                        Alert.AlertType.ERROR);
-                return true;
+            ResultSet rs = null;
+            switch (dbType) {
+                case firebird:
+                    st.executeUpdate("EXECUTE PROCEDURE saleItem_exists(" + saleID + ","
+                            + "'" + itemname + "');");
+                    break;
+                case postgres:
+                    rs = st.executeQuery(
+                            "select * from item_exists(" + saleID + ","
+                            + "'" + itemname + "');");
+                    rs.next();
+                    if (rs.getString("hasitem").equals("t")) {
+                        System.out.println("Error to add a item");
+                        sendAlert("Duplication error",
+                                "Item already added.",
+                                "Item already added! Choose a different product!",
+                                Alert.AlertType.ERROR);
+                        rs.close();
+                        return true;
+                    }
+
+                    break;
             }
-            rs.close();
             st.close();
 
         } catch (Exception e) {
-            System.out.println("Error on checkfunciont additemsale! :" + e.getMessage());
+            System.out.println("ERROR " + e.getMessage());
+            sendAlert("Duplication error",
+                    "Item already added.",
+                    "Item already added! Choose a different product!",
+                    Alert.AlertType.ERROR);
+            return true;
         }
 
         return false;

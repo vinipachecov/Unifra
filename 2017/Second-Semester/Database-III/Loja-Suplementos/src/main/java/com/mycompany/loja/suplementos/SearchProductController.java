@@ -116,7 +116,7 @@ public class SearchProductController extends ControllerModel {
                     try {
                         Statement st = this.connection.createStatement();
                         ResultSet rs = st.executeQuery(
-                                "select * from get_products;"
+                                "select * from search_products;"
                         );
                         while (rs.next()) {
                             addToProductList(

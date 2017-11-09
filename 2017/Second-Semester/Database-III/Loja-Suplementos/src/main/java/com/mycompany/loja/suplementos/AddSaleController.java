@@ -24,6 +24,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import supportClasses.ProductItem;
+import supportClasses.databaseType;
 
 /**
  *
@@ -86,6 +87,10 @@ public class AddSaleController extends ControllerModel {
         super(db);
     }
 
+    AddSaleController(Connection connection, databaseType dbType) {
+        super(connection, dbType);
+    }
+
     public void init(Stage modal, PrincipalController princpController) {
 
         pc = princpController;
@@ -140,34 +145,70 @@ public class AddSaleController extends ControllerModel {
     public void deleteSale() {
         try {
             Statement st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n"
-                    + "    PERFORM removeSale(" + saleId + ");\n"
-                    + "END $$;"
-            );
+            switch (this.dbType) {
+                case firebird:
+                    st.executeUpdate(
+                            "EXECUTE PROCEDURE removeSale(" + saleId + ");"
+                    );
+                    break;
+                case postgres:
+                    st.executeUpdate(
+                            "DO $$ BEGIN\n"
+                            + "    PERFORM removeSale(" + saleId + ");\n"
+                            + "END $$;"
+                    );
+                    break;
+            }
 
         } catch (Exception e) {
             System.out.println("ERRO AO DELETAR SALE " + e.getMessage());
+            sendAlert("ERROR",
+                    "Error deleting Sale",
+                    "Error Deleting current Sale!", Alert.AlertType.ERROR);
         }
     }
 
     public void getComboBoxClients() {
+
         try {
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select * from get_clients();");
-            while (rs.next()) {
-                clientComboBox.getItems().add(rs.getString("name"));
+            ResultSet rs = null;
+            switch (this.dbType) {
+                case firebird:
+                    try {
+                        rs = st.executeQuery(
+                                "select CNAME from get_clients;");
+                        while (rs.next()) {
+                            clientComboBox.getItems().add(rs.getString("CNAME"));
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ERROR GETTING CLIENTS: " + e.getMessage());
+                    }
+                    break;
+                case postgres:
+                    try {                        
+                         rs = st.executeQuery(
+                                "select * from get_clients();");
+                        while (rs.next()) {
+                            clientComboBox.getItems().add(rs.getString("name"));
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ERROR GETTING CLIENTS: " + e.getMessage());
+                    }
+                    break;
             }
+
         } catch (Exception e) {
+            
         }
+
     }
 
     //Add item to this sale
     @FXML
     public void addItemSale() {
 
-        AddSaleItemController itemController = new AddSaleItemController(connection);
+        AddSaleItemController itemController = new AddSaleItemController(connection, this.dbType);
         dialogAddItem = CreateModal(backButton, "/fxml/AddSaleItem.fxml", itemController, "Add Product Item");
         itemController.init(dialogAddItem, saleId, saleTable, data, this);
 
@@ -178,24 +219,52 @@ public class AddSaleController extends ControllerModel {
         //Create a sale but it is not finished 
         //so the salesman can add products to this sale and then 
         // generate its invoice
-        try {
-            Statement st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n"
-                    + "PERFORM add_sale(0.0,0.0,"
-                    + "'" + clientComboBox.getValue() + "',"
-                    + "" + discount + ", 'F');\n"
-                    + "END $$;"
-            );
-            Statement st2 = this.connection.createStatement();
-            ResultSet rs = st2.executeQuery(""
-                    + "select max(id) from sales");
-            if (rs.next()) {
-                saleId = rs.getInt("max");
-            }
-        } catch (Exception e) {
-            System.out.println("ERROR " + e.getMessage());
+
+        switch (this.dbType) {
+            case firebird:
+                try {
+                    Statement st = this.connection.createStatement();
+                    st.executeUpdate(
+                            "EXECUTE PROCEDURE addSale(0.0,0.0,"
+                            + "'" + clientComboBox.getValue() + "',"
+                            + "" + discount + ", 'F');"
+                    );
+                    Statement st2 = this.connection.createStatement();
+                    ResultSet rs = st2.executeQuery(""
+                            + "select max(id) from sales");
+                    if (rs.next()) {
+                        saleId = rs.getInt("max");
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR " + e.getMessage());
+                }
+                break;
+            case postgres:
+                try {
+                    Statement st = this.connection.createStatement();
+                    st.executeUpdate(
+                            "DO $$ BEGIN\n"
+                            + "PERFORM add_sale(0.0,0.0,"
+                            + "'" + clientComboBox.getValue() + "',"
+                            + "" + discount + ", 'F');\n"
+                            + "END $$;"
+                    );
+                    Statement st2 = this.connection.createStatement();
+                    ResultSet rs = st2.executeQuery(""
+                            + "select max(id) from sales");
+                    if (rs.next()) {
+                        saleId = rs.getInt("max");
+                    }
+                } catch (Exception e) {
+                    System.out.println("ERROR " + e.getMessage());
+                }
+                break;
+
         }
+        sendAlert(
+                "Information",
+                "Sale Created!", 
+                "Now you can Add Items!", Alert.AlertType.CONFIRMATION);
         addItemButton.setDisable(false);
         saleCreated = true;
         addFinishSaleButton.setText("Finish Sale");
@@ -205,53 +274,108 @@ public class AddSaleController extends ControllerModel {
     public String generateInvoice() {
         boolean newnumber = false;
 
-        while (!newnumber) {
-            String FN = Integer.toString(ThreadLocalRandom.current().nextInt(100000000, 999999999 + 1));
+        switch (this.dbType) {
+            case firebird:
+                while (!newnumber) {
+                    String invoice = Integer.toString(ThreadLocalRandom.current().nextInt(100000000, 999999999 + 1));
 
-            //verify if there is already a sale with the generated fiscal note        
-            try {
-                Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery("select * from checkInvoiceIDAlreadyExists('" + FN + "');");
+                    //verify if there is already a sale with the generated fiscal note        
+                    System.out.println("invoice = " + invoice);
+                    try {
+                        Statement st = this.connection.createStatement();
+                        st.executeUpdate("EXECUTE PROCEDURE checkInvoiceExists('" + invoice + "');");
+                        return invoice;
+                    } catch (Exception e) {
+                        sendAlert("Invoice Error",
+                                "Invoice Exists",
+                                "Critical: error on invoice generation", Alert.AlertType.ERROR);
+                    }
 
-                if (rs.next()) {
-
-                } else {
-                    return FN;
                 }
-            } catch (Exception e) {
-            }
+                sendAlert(
+                        "Error invoice generation",
+                        "Error creating invoice.",
+                        "Critical error on invoice", Alert.AlertType.ERROR);
+                break;
+            case postgres:
+                while (!newnumber) {
+                    String invoice = Integer.toString(ThreadLocalRandom.current().nextInt(100000000, 999999999 + 1));
 
+                    //verify if there is already a sale with the generated fiscal note        
+                    try {
+                        Statement st = this.connection.createStatement();
+                        ResultSet rs = st.executeQuery("select * from checkInvoiceIDAlreadyExists('" + invoice + "');");
+
+                        if (rs.next()) {
+
+                        } else {
+                            return invoice;
+                        }
+                    } catch (Exception e) {
+                    }
+
+                }
+                sendAlert(
+                        "Error invoice generation",
+                        "Error creating invoice.",
+                        "Critical error on invoice", Alert.AlertType.ERROR);
+                break;
         }
-        sendAlert(
-                "Error invoice generation",
-                "Error creating invoice.",
-                "Critical error on invoice", Alert.AlertType.ERROR);
+
         return "";
     }
 
     public void finishSale() {
-        try {
-            Statement st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n"
-                    + "    PERFORM finishSale(" + saleId + ", "
-                    + subtotalLabel.getText() + " , "
-                    + "" + totalLabel.getText() + ");\n"
-                    + "END $$;"
-            );
 
-            String invoice = generateInvoice();
+        switch (this.dbType) {
+            case firebird:
+                try {
 
-            st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n"
-                    + "    PERFORM setInvoice(" + saleId + ",'" + invoice + "');\n"
-                    + "END $$;"
-            );
+                    String invoice = generateInvoice();
 
-        } catch (Exception e) {
-            System.out.println("Error generating invoice! " + e.getMessage());
+                    Statement st = this.connection.createStatement();
+                    st.executeUpdate(
+                            "EXECUTE PROCEDURE setInvoice(" + saleId + ",'" + invoice + "');"
+                    );
+
+                    st = this.connection.createStatement();
+                    st.executeUpdate(
+                            "EXECUTE PROCEDURE finishSale(" + saleId + ", "
+                            + subtotalLabel.getText() + " , "
+                            + "" + totalLabel.getText() + ");"
+                    );
+
+                } catch (Exception e) {
+                    System.out.println("Error generating invoice! " + e.getMessage());
+                }
+                break;
+            case postgres:
+                try {
+
+                    String invoice = generateInvoice();
+
+                    Statement st = this.connection.createStatement();
+                    st.executeUpdate(
+                            "DO $$ BEGIN\n"
+                            + "    PERFORM setInvoice(" + saleId + ",'" + invoice + "');\n"
+                            + "END $$;"
+                    );
+
+                    st = this.connection.createStatement();
+                    st.executeUpdate(
+                            "DO $$ BEGIN\n"
+                            + "    PERFORM finishSale(" + saleId + ", "
+                            + subtotalLabel.getText() + " , "
+                            + "" + totalLabel.getText() + ");\n"
+                            + "END $$;"
+                    );
+
+                } catch (Exception e) {
+                    System.out.println("Error generating invoice! " + e.getMessage());
+                }
+                break;
         }
+
         sendAlert("Success",
                 "Sale Added",
                 "Sale added with success!", Alert.AlertType.CONFIRMATION);

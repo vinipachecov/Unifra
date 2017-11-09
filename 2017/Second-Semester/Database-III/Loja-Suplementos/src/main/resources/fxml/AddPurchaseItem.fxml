@@ -27,17 +27,17 @@
             <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
          </opaqueInsets>
          <children>
-            <Label layoutX="6.0" layoutY="9.0" text="Total:">
+            <Label layoutX="6.0" layoutY="9.0" text="Total do Produto R$">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <Label fx:id="totalLabel" layoutX="53.0" layoutY="10.0" text="TOTAL-VALOR">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Label>
          </children>
       </Pane>
+      <Label fx:id="totalLabel" layoutX="189.0" layoutY="305.0" text="0.0">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

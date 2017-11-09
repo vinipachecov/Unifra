@@ -24,6 +24,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import supportClasses.ProductItem;
+import supportClasses.databaseType;
 
 /**
  *
@@ -86,6 +87,10 @@ public class AddPurchaseController extends ControllerModel {
         super(db);
     }
 
+    AddPurchaseController(Connection connection, databaseType dbType) {
+        super(connection, dbType);
+    }
+
     public void init(Stage modal, PrincipalController princpController) {
 
         pc = princpController;
@@ -112,9 +117,9 @@ public class AddPurchaseController extends ControllerModel {
         addItemButton.setDisable(true);
 
     }
-    
+
     @FXML
-    public void backToMainScreen(){
+    public void backToMainScreen() {
         ChangeScreen(dialog, "/fxml/MainScreen.fxml", pc);
     }
 
@@ -140,25 +145,61 @@ public class AddPurchaseController extends ControllerModel {
     public void deletePurchase() {
         try {
             Statement st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n"
-                    + "    PERFORM removePurchase(" + purchaseId + ");\n"
-                    + "END $$;"
-            );
+            switch (dbType) {
+                case firebird:
+                    st.executeUpdate(
+                            
+                            "EXECUTE PROCEDURE removePurchase(" + purchaseId + ")"                            
+                    );
+                    break;
+                case postgres:
+                    st.executeUpdate(
+                            "DO $$ BEGIN\n"
+                            + "    PERFORM removePurchase(" + purchaseId + ");\n"
+                            + "END $$;"
+                    );
+                    break;
+            }
 
         } catch (Exception e) {
             System.out.println("ERRO AO DELETAR PURCHASE " + e.getMessage());
+            sendAlert("Error Deleting Item", 
+                    "Error Deleting Purchase",
+                    "Error deleting current purchase. " + e.getMessage(), 
+                    Alert.AlertType.ERROR);
         }
     }
 
     public void getComboBoxSuppliers() {
+
         try {
             Statement st = this.connection.createStatement();
-            ResultSet rs = st.executeQuery(
-                    "select * from get_suppliers();");
-            while (rs.next()) {
-                suppliersComboBox.getItems().add(rs.getString("name"));
+            ResultSet rs = null;
+            switch (this.dbType) {
+                case firebird:
+                    try {
+                        rs = st.executeQuery(
+                                "select cname from get_suppliers;");
+                        while (rs.next()) {
+                            suppliersComboBox.getItems().add(rs.getString("cname"));
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ERROR GETTING CLIENTS: " + e.getMessage());
+                    }
+                    break;
+                case postgres:
+                    try {
+                        rs = st.executeQuery(
+                                "select * from get_suppliers();");
+                        while (rs.next()) {
+                            suppliersComboBox.getItems().add(rs.getString("name"));
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ERROR GETTING CLIENTS: " + e.getMessage());
+                    }
+                    break;
             }
+
         } catch (Exception e) {
         }
     }
@@ -167,7 +208,7 @@ public class AddPurchaseController extends ControllerModel {
     @FXML
     public void addItemPurchase() {
 
-        AddPurchaseItemController itemController = new AddPurchaseItemController(connection);
+        AddPurchaseItemController itemController = new AddPurchaseItemController(connection, dbType);
         dialogAddItem = CreateModal(backButton, "/fxml/AddPurchaseItem.fxml", itemController, "Add Product Item");
         itemController.init(dialogAddItem, purchaseId, purchaseTable, data, this);
 
@@ -180,24 +221,54 @@ public class AddPurchaseController extends ControllerModel {
         // generate its invoice
         try {
             Statement st = this.connection.createStatement();
-            st.executeUpdate("DO $$ BEGIN\n"
-                    + "PERFORM add_purchase(0.0,0.0,"
-                    + "'" + suppliersComboBox.getValue() + "',"
-                    + "" + discount + ", 'F');\n"
-                    + "END $$;"
-            );
-            Statement st2 = this.connection.createStatement();
-            ResultSet rs = st2.executeQuery(""
-                    + "select max(id) from purchases");
-            if (rs.next()) {
-                purchaseId = rs.getInt("max");
+            ResultSet rs = null;
+            switch (this.dbType) {
+                case firebird:
+                    try {
+                        st = this.connection.createStatement();
+                        st.executeUpdate(
+                                "EXECUTE PROCEDURE addPurchase(0.0,0.0,"
+                                + "'" + suppliersComboBox.getValue() + "',"
+                                + "" + discount + ", 'F');"
+                        );
+                        Statement st2 = this.connection.createStatement();
+                        rs = st2.executeQuery(""
+                                + "select max(id) from sales");
+                        if (rs.next()) {
+                            purchaseId = rs.getInt("max");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ERROR " + e.getMessage());
+                    }
+                    break;
+                case postgres:
+                    try {
+                        st = this.connection.createStatement();
+                        st.executeUpdate(
+                                "DO $$ BEGIN\n"
+                                + "PERFORM add_purchase(0.0,0.0,"
+                                + "'" + suppliersComboBox.getValue() + "',"
+                                + "" + discount + ", 'F');\n"
+                                + "END $$;"
+                        );
+                        Statement st2 = this.connection.createStatement();
+                        rs = st2.executeQuery(""
+                                + "select max(id) from sales");
+                        if (rs.next()) {
+                            purchaseId = rs.getInt("max");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("ERROR " + e.getMessage());
+                    }
+                    break;
+
             }
         } catch (Exception e) {
-            System.out.println("ERROR " + e.getMessage());
         }
+
         addItemButton.setDisable(false);
         purchaseCreated = true;
-        addFinishPurchaseButton.setText("Finish Purchase");
+        addFinishPurchaseButton.setText("Finish Sale");
     }
 
     // fake fiscal notes
@@ -210,7 +281,15 @@ public class AddPurchaseController extends ControllerModel {
             //verify if there is already a sale with the generated fiscal note        
             try {
                 Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery("select * from checkInvoicePurchaseAlreadyExists('" + invoice + "');");
+                ResultSet rs = null;
+                switch (dbType) {
+                    case firebird:
+                        st.executeUpdate("EXECUTE PROCEDURE checkPurchaseInvoiceExists('" + invoice + "');");
+                        break;
+                    case postgres:
+                        rs = st.executeQuery("select * from checkInvoicePurchaseAlreadyExists('" + invoice + "');");
+                        break;
+                }
 
                 if (rs.next()) {
 
@@ -218,6 +297,11 @@ public class AddPurchaseController extends ControllerModel {
                     return invoice;
                 }
             } catch (Exception e) {
+                sendAlert(
+                        "Error invoice generation",
+                        "Error creating invoice.",
+                        "Critical error on invoice", Alert.AlertType.ERROR);
+                return "";
             }
 
         }
@@ -232,32 +316,55 @@ public class AddPurchaseController extends ControllerModel {
         try {
             Float subtotal = Float.parseFloat(subtotalLabel.getText());
             Float total = Float.parseFloat(totalLabel.getText());
-            
+
             Statement st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n" +
-                    "PERFORM finishPurchase("
+            switch (dbType) {
+                case firebird:
+                    st.executeUpdate(
+                            "EXECUTE PROCEDURE finishPurchase("
                             + "" + purchaseId + ","
-                            + "" + subtotal +  ","
-                            + "" + total +");\n" +
-                    "END $$;"
-            );
-        }catch (Exception e){
+                            + "" + subtotal + ","
+                            + "" + total + ");"
+                    );
+                    break;
+                case postgres:
+                    st.executeUpdate(
+                            "DO $$ BEGIN\n"
+                            + "PERFORM finishPurchase("
+                            + "" + purchaseId + ","
+                            + "" + subtotal + ","
+                            + "" + total + ");\n"
+                            + "END $$;"
+                    );
+                    break;
+            }
+
+        } catch (Exception e) {
             System.out.println("ERROR FINISHING PURCHASE " + e.getMessage());
+            return;
         }
 
         try {
             String invoice = generateInvoice();
-            
             Statement st = this.connection.createStatement();
-            st.executeUpdate(
-                    "DO $$ BEGIN\n"
-                    + "    PERFORM setPurchaseInvoice(" + purchaseId + ",'" + invoice + "');\n"
-                    + "END $$;"
-            );
-            
-        } 
-        catch (Exception e) {
+            switch (dbType) {
+                case firebird:
+                    st.executeUpdate(
+                            "EXECUTE PROCEDURE "
+                            + "setInvoicePurchase(" + purchaseId + ","
+                            + "'" + invoice + "')"
+                    );
+                    break;
+                case postgres:
+                    st.executeUpdate(
+                            "DO $$ BEGIN\n"
+                            + "    PERFORM setPurchaseInvoice(" + purchaseId + ",'" + invoice + "');\n"
+                            + "END $$;"
+                    );
+                    break;
+            }
+
+        } catch (Exception e) {
             System.out.println("Error generating invoice! " + e.getMessage());
         }
         sendAlert("Success",

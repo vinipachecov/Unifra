@@ -66,7 +66,7 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public void addSale(ActionEvent event) {
-        AddSaleController saleController = new AddSaleController(this.connection);
+        AddSaleController saleController = new AddSaleController(this.connection, this.dbType);
         ChangeScreen(menuBar,
                 "/fxml/AddSale.fxml",
                 saleController,
@@ -75,8 +75,8 @@ public class PrincipalController extends ControllerModel {
     }
 
     @FXML
-    public void addṔurchase(ActionEvent event) {
-        AddPurchaseController purchaseController = new AddPurchaseController(this.connection);
+    public void addPurchase(ActionEvent event) {
+        AddPurchaseController purchaseController = new AddPurchaseController(this.connection,this.dbType);
         ChangeScreen(menuBar,
                 "/fxml/AddPurchase.fxml",
                 purchaseController,
