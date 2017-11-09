@@ -250,7 +250,7 @@ SET term ;^
 -----------------------------------------------
 
 -- Produto
-CREATE TABLE Produto(
+CREATE TABLE TESTE(
 codigo D_INTEIRO PRIMARY KEY,
 codtipo D_INTEIRO,
 codmarca D_PK,
