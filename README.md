@@ -1,6 +1,5 @@
-# Unifra
-Codes and models from my course of Information Systems at Centro Universitário Franciscano
-
+# University-Codes
+Has the codes related to my Bachelor in Information Systems at Centro Universitário Franciscano (Santa Maria, Brazil)
 
 # Structure
 
