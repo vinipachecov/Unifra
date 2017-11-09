@@ -8,7 +8,7 @@ The database used is in the folder to check what has been done.
 ## Databases III
 More generic discipline to check more perspectives of datbases such as data-warehouses.
 
-My final project is a simple software to manage a supplements store. It is using FireBird, PostgreSQL and I'll insert what is possible with MOngoDB. 
+My final project is a simple software to manage a supplements store. It is using FireBird, PostgreSQL and I'll insert what is possible with MongoDB. 
 Developed in Java with JavaFX in Netbeans Project.
 
 
