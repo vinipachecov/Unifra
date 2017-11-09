@@ -11,6 +11,8 @@ More generic discipline to check more perspectives of datbases such as data-ware
 My final project is a simple software to manage a supplements store. It is using FireBird, PostgreSQL and I'll insert what is possible with MongoDB. 
 Developed in Java with JavaFX in Netbeans Project.
 
+The name of the Project folder is Loja-Suplementos.
+
 
 ## FinalGraduation Project II
 Has some material that references my graduation article.
