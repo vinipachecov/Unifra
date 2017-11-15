@@ -46,27 +46,25 @@ public class PrincipalController extends ControllerModel {
     public MenuItem addUserMenuItem;
 
     
-    
-    
+//    TOP SOLD PRODUCTS
     @FXML
     public TextField yearTopProductsTextField;
-    
+
     @FXML
     public TableView<TopProduct> topProductsTable;
-    
+
     @FXML
-    public ObservableList<TopProduct> topProductsData;
-    
+    public TableColumn<TopProduct, String> productNameColumn;
+
     @FXML
-    public TableColumn<TopProduct, String > productNameColumn;
-    
+    public TableColumn<TopProduct, Integer> numberSalesColumn;
+
     @FXML
-    public TableColumn<TopProduct, Integer > numberSalesColumn;
+    public TableColumn<TopProduct, Float> cashGeneratedColumn;
     
-    @FXML
-    public TableColumn<TopProduct, Float > cashGeneratedColumn;
+    TopSaleProductsController topSaleProductsController;
     
-    
+// NEW FEATURE
 
     public Stage dialog;
 
@@ -78,149 +76,21 @@ public class PrincipalController extends ControllerModel {
 
     public PrincipalController(Connection db, User current, databaseType databType) {
         super(db, current, databType);
-        
-        
+
     }
     
-    public void initTopProducts(){
+
+    public void init(Stage stage) {
+        this.currentStage = stage;
         
-        yearTopProductsTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                    String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    yearTopProductsTextField.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
-        
-        topProductsData = FXCollections.observableArrayList();
-          // the property name between "" has to be the same name of the attribute on the class
-        productNameColumn.setCellValueFactory(new PropertyValueFactory<TopProduct, String>("name"));
-        numberSalesColumn.setCellValueFactory(new PropertyValueFactory<TopProduct, Integer>("numsales"));
-        cashGeneratedColumn.setCellValueFactory(new PropertyValueFactory<TopProduct, Float>("cashgenerated"));
-        
-        topProductsTable.setItems(topProductsData);
-        
-        yearTopProductsTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent ke) {
-                if (ke.getCode().equals(KeyCode.ENTER)) {
-                    searchTopProducts(new ActionEvent());
-                }
-            }
-        });
-    }
-    
-     public void addTopProductsList(String prodname, Integer numsales, 
-             Float cashgenerated) {        
-         
-         topProductsData.add(
-                new TopProduct(prodname, numsales, cashgenerated)
-        );
+        topSaleProductsController = new TopSaleProductsController(yearTopProductsTextField, topProductsTable, productNameColumn, numberSalesColumn, cashGeneratedColumn, connection, dbType);
     }
     
     @FXML
-    public void searchTopProducts(ActionEvent event){        
-
-        topProductsData.clear();
-        String YearSearchString = null;
-        try {
-            YearSearchString = yearTopProductsTextField.getText();
-        } catch (Exception e) {
-
-        }
-
-        if (YearSearchString == null) {
-            sendAlert("Error finding TopProducts",
-                    "No year to find top Products.",
-                    "Type a year to find top products feature.",
-                    Alert.AlertType.ERROR);
-        }
-        // if no brand name find all
-        try {
-            Statement st = this.connection.createStatement();
-            ResultSet rs = null;
-            switch (dbType) {
-                case firebird:
-                    
-                    if (YearSearchString.equals("")) {
-                        try {
-                            rs = st.executeQuery(
-                                    "SELECT * FROM  listTopProductSales('2017');"
-                            );
-                            while (rs.next()) {                                
-                                addTopProductsList(
-                                        rs.getString("prodname"),
-                                        rs.getInt("prodsales"),
-                                        rs.getFloat("prodsalecash")
-                                );                                
-                            }
-                            rs.close();
-                            st.close();
-
-                        } catch (Exception e) {
-                            System.out.println("EERROR " + e.getMessage());
-                        }
-
-                    } // find a specific client name
-                    else {
-                        try {
-                            st = this.connection.createStatement();
-                            rs = st.executeQuery(
-                                    "SELECT * FROM  listTopProductSales('" + YearSearchString + "');"
-                            );
-                            if (rs.next()) {
-                                 addTopProductsList(
-                                        rs.getString("prodname"),
-                                        rs.getInt("prodsales"),
-                                        rs.getFloat("prodsalecash")
-                                );     
-                            } else {
-                                sendAlert(
-                                        "No results!",
-                                        "Search lead to 0 results. Try a different Year",
-                                        "No Top Products with the year " + YearSearchString,
-                                        Alert.AlertType.INFORMATION);
-                                return;
-                            }
-                            while (rs.next()) {
-                                 addTopProductsList(
-                                        rs.getString("prodname"),
-                                        rs.getInt("prodsales"),
-                                        rs.getFloat("prodsalecash")
-                                );     
-                            }
-                            rs.close();
-                            st.close();
-                        } catch (Exception e) {
-                            System.out.println("EERROR " + e.getMessage());
-                            return;
-
-                        }
-                    }
-                    break;
-                default:
-                    sendAlert("Warning",
-                            "Feature not available",
-                            "Feature not available in this DataBase",
-                            Alert.AlertType.WARNING);
-                    break;
-            }
-
-        } catch (Exception e) {
-        }
-        // set items        
-        topProductsTable.setItems(topProductsData);
-
+    public void searchTopProducts(ActionEvent event) {
+        topSaleProductsController.searchTopProducts(event);
     }
-        
-    public void init(Stage stage) {
-        this.currentStage = stage;
 
-        initTopProducts();
-        
-    }
 
     @FXML
     public void addSupplier(ActionEvent event) {

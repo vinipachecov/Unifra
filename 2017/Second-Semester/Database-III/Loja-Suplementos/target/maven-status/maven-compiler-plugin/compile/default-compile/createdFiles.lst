@@ -1,6 +1,5 @@
 com/mycompany/loja/suplementos/AddSupplierController.class
 com/mycompany/loja/suplementos/AddTypeController.class
-com/mycompany/loja/suplementos/PrincipalController$3.class
 com/mycompany/loja/suplementos/SearchClientController.class
 com/mycompany/loja/suplementos/AddTypeController$1.class
 com/mycompany/loja/suplementos/SearchTypeController.class
@@ -18,7 +17,6 @@ com/mycompany/loja/suplementos/SearchBrandController.class
 com/mycompany/loja/suplementos/AddUserController.class
 com/mycompany/loja/suplementos/CheckHistoryController$1.class
 com/mycompany/loja/suplementos/MainApp.class
-com/mycompany/loja/suplementos/PrincipalController$1.class
 com/mycompany/loja/suplementos/SearchTypeController$1.class
 com/mycompany/loja/suplementos/AddSaleItemController.class
 supportClasses/Product.class
@@ -30,6 +28,7 @@ supportClasses/Client.class
 com/mycompany/loja/suplementos/SearchSaleController.class
 com/mycompany/loja/suplementos/AddPurchaseController.class
 com/mycompany/loja/suplementos/SearchSaleController$2.class
+com/mycompany/loja/suplementos/TopSaleProductsController$2.class
 com/mycompany/loja/suplementos/AddSaleController.class
 com/mycompany/loja/suplementos/AddBrandController.class
 com/mycompany/loja/suplementos/CheckHistoryController.class
@@ -41,6 +40,7 @@ com/mycompany/loja/suplementos/AddPurchaseController$1.class
 supportClasses/HistoryItem.class
 supportClasses/userType.class
 supportClasses/User.class
+com/mycompany/loja/suplementos/TopSaleProductsController$1.class
 com/mycompany/loja/suplementos/LoginController.class
 supportClasses/Purchase.class
 com/mycompany/loja/suplementos/SearchSaleController$1.class
@@ -53,12 +53,13 @@ com/mycompany/loja/suplementos/SearchClientController$1.class
 com/mycompany/loja/suplementos/AddBrandController$1.class
 com/mycompany/loja/suplementos/AddPurchaseItemController.class
 com/mycompany/loja/suplementos/SearchPurchaseController$1.class
+com/mycompany/loja/suplementos/TopSaleProductsController$3.class
+com/mycompany/loja/suplementos/TopSaleProductsController.class
 com/mycompany/loja/suplementos/AddProductController$1.class
 supportClasses/TopProduct.class
 com/mycompany/loja/suplementos/AddSaleItemController$1.class
 com/mycompany/loja/suplementos/AddClientController$2.class
 supportClasses/Type.class
-com/mycompany/loja/suplementos/PrincipalController$2.class
 supportClasses/Brand.class
 com/mycompany/loja/suplementos/SearchPurchaseController.class
 com/mycompany/loja/suplementos/SearchProductController$1.class
