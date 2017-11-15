@@ -84,7 +84,8 @@
                               <TableColumn fx:id="cashGeneratedColumn" prefWidth="107.0" text="CashGenerated" />
                           </columns>
                         </TableView>
-                        <TextField fx:id="yearTopProductsTextField" layoutX="22.0" layoutY="14.0" promptText="Type a Year to Check" />
+                        <TextField fx:id="yearTopProductsTextField" layoutX="22.0" layoutY="14.0" promptText="Year for Top Products" />
+                        <Button layoutX="194.0" layoutY="14.0" mnemonicParsing="false" onAction="#searchTopProducts" text="Check" />
                      </children>
                   </AnchorPane>
             </content>

@@ -77,14 +77,15 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="273.0" prefWidth="335.0" styleClass="pane" stylesheets="@../styles/panes.css">
                      <children>
-                        <TableView layoutX="22.0" layoutY="56.0" prefHeight="202.0" prefWidth="328.0">
+                        <TableView fx:id="topProductsTable" layoutX="22.0" layoutY="56.0" prefHeight="202.0" prefWidth="328.0">
                           <columns>
-                            <TableColumn prefWidth="104.0" text="Product" />
-                            <TableColumn prefWidth="110.0" text="NumberSales" />
-                              <TableColumn prefWidth="107.0" text="CashGenerated" />
+                            <TableColumn fx:id="productNameColumn" prefWidth="104.0" text="Product" />
+                            <TableColumn fx:id="numberSalesColumn" prefWidth="110.0" text="NumberSales" />
+                              <TableColumn fx:id="cashGeneratedColumn" prefWidth="107.0" text="CashGenerated" />
                           </columns>
                         </TableView>
-                        <TextField fx:id="yearTopProductsTextField" layoutX="22.0" layoutY="14.0" promptText="Type a Year to Check" />
+                        <TextField fx:id="yearTopProductsTextField" layoutX="22.0" layoutY="14.0" promptText="Year for Top Products" />
+                        <Button layoutX="194.0" layoutY="14.0" mnemonicParsing="false" onAction="#searchTopProducts" text="Check" />
                      </children>
                   </AnchorPane>
             </content>

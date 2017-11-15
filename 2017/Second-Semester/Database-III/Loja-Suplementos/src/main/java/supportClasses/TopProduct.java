@@ -9,20 +9,20 @@ package supportClasses;
  *
  * @author vinicius
  */
-public class TopProducts {
+public class TopProduct {
 
 
     public String name;
     public Integer numsales;
     public Float cashgenerated;
 
-    public TopProducts(String name, Integer numsales, Float cashgenerated) {
+    public TopProduct(String name, Integer numsales, Float cashgenerated) {
         this.name = name;
         this.numsales = numsales;
         this.cashgenerated = cashgenerated;
     }
     
-        public String getName() {
+    public String getName() {
         return name;
     }
 

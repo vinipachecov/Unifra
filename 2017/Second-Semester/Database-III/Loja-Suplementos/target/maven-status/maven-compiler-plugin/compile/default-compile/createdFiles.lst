@@ -1,5 +1,6 @@
 com/mycompany/loja/suplementos/AddSupplierController.class
 com/mycompany/loja/suplementos/AddTypeController.class
+com/mycompany/loja/suplementos/PrincipalController$3.class
 com/mycompany/loja/suplementos/SearchClientController.class
 com/mycompany/loja/suplementos/AddTypeController$1.class
 com/mycompany/loja/suplementos/SearchTypeController.class
@@ -53,9 +54,11 @@ com/mycompany/loja/suplementos/AddBrandController$1.class
 com/mycompany/loja/suplementos/AddPurchaseItemController.class
 com/mycompany/loja/suplementos/SearchPurchaseController$1.class
 com/mycompany/loja/suplementos/AddProductController$1.class
+supportClasses/TopProduct.class
 com/mycompany/loja/suplementos/AddSaleItemController$1.class
 com/mycompany/loja/suplementos/AddClientController$2.class
 supportClasses/Type.class
+com/mycompany/loja/suplementos/PrincipalController$2.class
 supportClasses/Brand.class
 com/mycompany/loja/suplementos/SearchPurchaseController.class
 com/mycompany/loja/suplementos/SearchProductController$1.class
