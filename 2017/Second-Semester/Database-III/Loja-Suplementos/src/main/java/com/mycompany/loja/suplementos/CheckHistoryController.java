@@ -8,7 +8,6 @@ package com.mycompany.loja.suplementos;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,49 +21,56 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
-import supportClasses.Purchase;
+import supportClasses.HistoryItem;
 import supportClasses.databaseType;
 
 /**
  *
  * @author vinicius
  */
-public class SearchPurchaseController extends ControllerModel {
+public class CheckHistoryController extends ControllerModel {
 
     @FXML
-    public TextField purchaseSearchTextField;
+    public TextField dateStartSearchTextField;
+    
+    @FXML
+    public TextField dateToSearchTextField;
 
     @FXML
-    public TableColumn<Purchase, String> nameColumn;
+    public TableColumn<HistoryItem, String> typeColumn;
 
     @FXML
-    public TableColumn<Purchase, String> invoiceColumn;
+    public TableColumn<HistoryItem, String> invoiceColumn;
 
     @FXML
-    public TableColumn<Purchase, Float> subtotalColumn;
+    public TableColumn<HistoryItem, String> productColumn;
 
     @FXML
-    public TableColumn<Purchase, Float> totalColumn;
+    public TableColumn<HistoryItem, Integer> quantityColumn;
+    
+    @FXML
+    public TableColumn<HistoryItem, Float> unitValueColumn;
+    
+    @FXML
+    public TableColumn<HistoryItem, Float> totalColumn;
 
     @FXML
-    public TableColumn<Purchase, String> purchaseDateColumn;
+    public TableColumn<HistoryItem, String> DateColumn;
+
+    
 
     @FXML
-    TableColumn<Purchase, Float> discountColumn;
+    public javafx.scene.control.TableView<HistoryItem> historyTable;
 
-    @FXML
-    public javafx.scene.control.TableView<Purchase> purchaseTable;
-
-    public ObservableList<Purchase> data;
+    public ObservableList<HistoryItem> data;
 
     public Stage dialog;
 
-    public SearchPurchaseController(Connection db) {
+    public CheckHistoryController(Connection db) {
         super(db);
     }
 
-    SearchPurchaseController(Connection connection, databaseType dbType) {
+    CheckHistoryController(Connection connection, databaseType dbType) {
         super(connection, dbType);
     }
 
@@ -75,16 +81,17 @@ public class SearchPurchaseController extends ControllerModel {
         data = FXCollections.observableArrayList();
 
         // the property name between "" has to be the same name of the attribute on the class
-        nameColumn.setCellValueFactory(new PropertyValueFactory<Purchase, String>("supplier"));
-        invoiceColumn.setCellValueFactory(new PropertyValueFactory<Purchase, String>("invoice"));
-        subtotalColumn.setCellValueFactory(new PropertyValueFactory<Purchase, Float>("subtotal"));
-        discountColumn.setCellValueFactory(new PropertyValueFactory<Purchase, Float>("discount"));
-        totalColumn.setCellValueFactory(new PropertyValueFactory<Purchase, Float>("total"));
-        purchaseDateColumn.setCellValueFactory(new PropertyValueFactory<Purchase, String>("purchasedate"));
+        typeColumn.setCellValueFactory(new PropertyValueFactory<HistoryItem, String>("type"));
+        invoiceColumn.setCellValueFactory(new PropertyValueFactory<HistoryItem, String>("invoice"));
+        productColumn.setCellValueFactory(new PropertyValueFactory<HistoryItem, String>("product"));
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<HistoryItem, Integer>("quantity"));
+        unitValueColumn.setCellValueFactory(new PropertyValueFactory<HistoryItem, Float>("unitvalue"));        
+        totalColumn.setCellValueFactory(new PropertyValueFactory<HistoryItem, Float>("total"));
+        DateColumn.setCellValueFactory(new PropertyValueFactory<HistoryItem, String>("date"));
 
-        purchaseTable.setItems(data);
+        historyTable.setItems(data);
         
-         purchaseSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+         dateToSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
                 if (ke.getCode().equals(KeyCode.ENTER)) {
@@ -95,10 +102,11 @@ public class SearchPurchaseController extends ControllerModel {
 
     }
 
-    public void addToPurchaseList(String fantasyname, String invoice, 
-            Float subtotal, Float discount, Float total, String purchaseDate) {        
+    public void addToHistoryItemList(String type, String productname, 
+            String invoice, Integer quantity, Float unitvalue, Float total, 
+            String actiondate) {                
         data.add(
-                new Purchase(fantasyname, invoice, subtotal, discount, total, purchaseDate)
+                new HistoryItem(type, invoice, productname, quantity, total, unitvalue, actiondate)
         );
     }
 
@@ -106,14 +114,16 @@ public class SearchPurchaseController extends ControllerModel {
     public void Search(ActionEvent event) {
 
         data.clear();
-        String purchaseSearchString = null;
+        String dateFrom = null;
+        String dateTo = null;
         try {
-            purchaseSearchString = purchaseSearchTextField.getText();
+            dateFrom = dateStartSearchTextField.getText();
+            dateTo = dateToSearchTextField.getText();
         } catch (Exception e) {
 
         }
 
-        if (purchaseSearchString == null) {
+        if (dateFrom == null) {
             sendAlert("Error finding Brand",
                     "No Brand name to search.",
                     "Pick a brand name to search.",
@@ -126,20 +136,20 @@ public class SearchPurchaseController extends ControllerModel {
             switch (dbType) {
                 case firebird:
                     
-                    if (purchaseSearchString.equals("")) {
+                    if (dateFrom.equals("")) {
                         try {
                             rs = st.executeQuery(
-                                    "select first 50 * "
-                                    + " FROM searchPurchase "
+                                    "SELECT * FROM checkAllHistory;"
                             );
                             while (rs.next()) {                                
-                                addToPurchaseList(
-                                        rs.getString("fantasyname"),
-                                        rs.getString("invoice"),
-                                        rs.getFloat("subtotal"),                                        
-                                        rs.getFloat("discount"),
-                                        rs.getFloat("total"),                                        
-                                        rs.getTimestamp("purchasedate")
+                                addToHistoryItemList(
+                                        rs.getString("tipo"),
+                                        rs.getString("productname"),
+                                        rs.getString("invoice"),                                        
+                                        rs.getInt("quantity"),
+                                        rs.getFloat("unitvalue"),                                        
+                                        rs.getFloat("total"),                                                                                
+                                        rs.getTimestamp("actiondate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
                                                         .ofPattern("YYYY-MM-dd HH:mm:ss"))
@@ -157,16 +167,17 @@ public class SearchPurchaseController extends ControllerModel {
                         try {
                             st = this.connection.createStatement();
                             rs = st.executeQuery(
-                                    "SELECT * FROM search_a_purchase( '" + purchaseSearchString + "');"
+                                    "SELECT * from checkHistoryRange('" + dateFrom + "','" + dateTo + "');"
                             );
                             if (rs.next()) {
-                                addToPurchaseList(
-                                        rs.getString("fantasyname"),
-                                        rs.getString("invoice"),
-                                        rs.getFloat("subtotal"),
-                                        rs.getFloat("discount"),
-                                        rs.getFloat("total"),
-                                        rs.getTimestamp("purchasedate")
+                                 addToHistoryItemList(
+                                        rs.getString("tipo"),
+                                        rs.getString("productname"),
+                                        rs.getString("invoice"),                                        
+                                        rs.getInt("quantity"),
+                                        rs.getFloat("unitvalue"),                                        
+                                        rs.getFloat("total"),                                                                                
+                                        rs.getTimestamp("actiondate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
                                                         .ofPattern("YYYY-MM-dd HH:mm:ss"))
@@ -180,13 +191,14 @@ public class SearchPurchaseController extends ControllerModel {
                                 return;
                             }
                             while (rs.next()) {
-                                addToPurchaseList(
-                                        rs.getString("fantasyname"),
-                                        rs.getString("invoice"),
-                                        rs.getFloat("subtotal"),
-                                        rs.getFloat("discount"),
-                                        rs.getFloat("total"),
-                                        rs.getTimestamp("purchasedate")
+                                addToHistoryItemList(
+                                        rs.getString("tipo"),
+                                        rs.getString("productname"),
+                                        rs.getString("invoice"),                                        
+                                        rs.getInt("quantity"),
+                                        rs.getFloat("unitvalue"),                                        
+                                        rs.getFloat("total"),                                                                                
+                                        rs.getTimestamp("actiondate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
                                                         .ofPattern("YYYY-MM-dd HH:mm:ss"))
@@ -202,7 +214,7 @@ public class SearchPurchaseController extends ControllerModel {
                     }
                     break;
                 case postgres:
-                    if (purchaseSearchString.equals("")) {
+                    if (dateFrom.equals("")) {
                         try {
                             st = this.connection.createStatement();
                             rs = st.executeQuery(
@@ -210,13 +222,14 @@ public class SearchPurchaseController extends ControllerModel {
                                     + " FROM searchpurchases;"
                             );
                             while (rs.next()) {
-                                addToPurchaseList(
-                                        rs.getString("fantasyname"),
-                                        rs.getString("invoice"),
-                                        rs.getFloat("subtotal"),
-                                        rs.getFloat("discout"),
-                                        rs.getFloat("total"),
-                                        rs.getTimestamp("purchasedate")
+                                 addToHistoryItemList(
+                                        rs.getString("tipo"),
+                                        rs.getString("productname"),
+                                        rs.getString("invoice"),                                        
+                                        rs.getInt("quantity"),
+                                        rs.getFloat("unitvalue"),                                        
+                                        rs.getFloat("total"),                                                                                
+                                        rs.getTimestamp("actiondate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
                                                         .ofPattern("YYYY-MM-dd HH:mm:ss"))
@@ -235,16 +248,17 @@ public class SearchPurchaseController extends ControllerModel {
                             st = this.connection.createStatement();
                             rs = st.executeQuery(
                                     "select * "
-                                    + " search_a_purchase('" + purchaseSearchString + "')"
+                                    + " search_a_purchase('" + dateFrom + "')"
                             );
                             if (rs.next()) {
-                                addToPurchaseList(
-                                        rs.getString("fantasyname"),
-                                        rs.getString("invoice"),
-                                        rs.getFloat("subtotal"),
-                                        rs.getFloat("discout"),
-                                        rs.getFloat("total"),
-                                        rs.getTimestamp("purchasedate")
+                                 addToHistoryItemList(
+                                        rs.getString("tipo"),
+                                        rs.getString("productname"),
+                                        rs.getString("invoice"),                                        
+                                        rs.getInt("quantity"),
+                                        rs.getFloat("unitvalue"),                                        
+                                        rs.getFloat("total"),                                                                                
+                                        rs.getTimestamp("actiondate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
                                                         .ofPattern("YYYY-MM-dd HH:mm:ss"))
@@ -258,13 +272,14 @@ public class SearchPurchaseController extends ControllerModel {
                                 return;
                             }
                             while (rs.next()) {
-                                addToPurchaseList(
-                                        rs.getString("fantasyname"),
-                                        rs.getString("invoice"),
-                                        rs.getFloat("subtotal"),
-                                        rs.getFloat("discout"),
-                                        rs.getFloat("total"),
-                                        rs.getTimestamp("purchasedate")
+                                 addToHistoryItemList(
+                                        rs.getString("tipo"),
+                                        rs.getString("productname"),
+                                        rs.getString("invoice"),                                        
+                                        rs.getInt("quantity"),
+                                        rs.getFloat("unitvalue"),                                        
+                                        rs.getFloat("total"),                                                                                
+                                        rs.getTimestamp("actiondate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
                                                         .ofPattern("YYYY-MM-dd HH:mm:ss"))
@@ -283,7 +298,7 @@ public class SearchPurchaseController extends ControllerModel {
         }
 
         // set items        
-        purchaseTable.setItems(data);
+        historyTable.setItems(data);
 
     }
 

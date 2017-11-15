@@ -6,12 +6,20 @@
 package com.mycompany.loja.suplementos;
 
 import java.sql.Connection;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import supportClasses.Sale;
+import supportClasses.TopProducts;
 import supportClasses.User;
 import supportClasses.databaseType;
 import supportClasses.userType;
@@ -31,6 +39,15 @@ public class PrincipalController extends ControllerModel {
     @FXML
     public MenuItem addUserMenuItem;
 
+    @FXML
+    public TextField yearTopProductsTextField;
+    
+    @FXML
+    public TableView<TopProducts> topProductsTable;
+    
+    @FXML
+    public ObservableList<TopProducts> topProductsData;
+
     public Stage dialog;
 
     public Stage currentStage;
@@ -41,10 +58,22 @@ public class PrincipalController extends ControllerModel {
 
     public PrincipalController(Connection db, User current, databaseType databType) {
         super(db, current, databType);
+        
+        topProductsData = FXCollections.observableArrayList();
     }
 
     public void init(Stage stage) {
         this.currentStage = stage;
+
+        yearTopProductsTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    yearTopProductsTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
     @FXML
@@ -65,6 +94,23 @@ public class PrincipalController extends ControllerModel {
     }
 
     @FXML
+    public void checkHistory(ActionEvent event) {
+        if (getUserType() == userType.admin) {
+            CheckHistoryController historyController = new CheckHistoryController(this.connection, this.dbType);
+            dialog = CreateModal(event, menuBar,
+                    "/fxml/CheckHistory.fxml",
+                    historyController,
+                    "Check History");
+            historyController.init(dialog);
+        } else {
+            sendAlert("Access error",
+                    "Attempt to access admin feature.",
+                    "You have no access to check History. Sign in as an administrator.",
+                    Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
     public void addSale(ActionEvent event) {
         AddSaleController saleController = new AddSaleController(this.connection, this.dbType);
         ChangeScreen(menuBar,
@@ -76,7 +122,7 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public void addPurchase(ActionEvent event) {
-        AddPurchaseController purchaseController = new AddPurchaseController(this.connection,this.dbType);
+        AddPurchaseController purchaseController = new AddPurchaseController(this.connection, this.dbType);
         ChangeScreen(menuBar,
                 "/fxml/AddPurchase.fxml",
                 purchaseController,
@@ -86,7 +132,7 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public void searchProduct(ActionEvent event) {
-        SearchProductController searchController = new SearchProductController(connection,this.dbType);
+        SearchProductController searchController = new SearchProductController(connection, this.dbType);
         dialog = CreateModal(event, menuBar, "/fxml/SearchProduct.fxml", searchController, "Searching Products");
         searchController.init(dialog);
     }
@@ -105,8 +151,7 @@ public class PrincipalController extends ControllerModel {
                     Alert.AlertType.ERROR);
         }
     }
-    
-    
+
     @FXML
     public void searchPurchase(ActionEvent event) {
 
@@ -121,7 +166,7 @@ public class PrincipalController extends ControllerModel {
                     Alert.AlertType.ERROR);
         }
     }
-    
+
     @FXML
     public void searchSale(ActionEvent event) {
 
@@ -183,7 +228,7 @@ public class PrincipalController extends ControllerModel {
     public void searchClients(ActionEvent event) {
 
         if (getUserType() == userType.admin) {
-            SearchClientController searchController = new SearchClientController(connection,this.dbType);
+            SearchClientController searchController = new SearchClientController(connection, this.dbType);
             dialog = CreateModal(event, menuBar, "/fxml/SearchClient.fxml", searchController, "Searching Clients");
             searchController.init(dialog);
         } else {
@@ -216,7 +261,7 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public void addBrands(ActionEvent event) {
-        
+
         if (getUserType() == userType.admin) {
             AddBrandController brandController = new AddBrandController(this.connection, this.dbType);
             dialog = CreateModal(event, menuBar,

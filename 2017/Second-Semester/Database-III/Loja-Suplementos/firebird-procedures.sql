@@ -716,12 +716,19 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
 	 INTO :idSupplier;	  
 	  
 	
-	SELECT s.FANTASYNAME, p.INVOICE, p.SUBTOTAL, p.DISCOUNT, p.TOTAL, p.PURCHASEDATE
+	FOR SELECT s.FANTASYNAME, p.INVOICE, p.SUBTOTAL, p.DISCOUNT, p.TOTAL, p.PURCHASEDATE
 	FROM PURCHASES P
 	INNER JOIN SUPPLIERS S ON P.SUPPLIERID = S.ID
-	WHERE P.SUPPLIERID = :idSupplier		 	
-	INTO :fantasyname, :invoice, :subtotal, :discount, :total, :purchasedate;	 				 
+	WHERE P.SUPPLIERID = :idSupplier	AND p.FINALIZED = 'Y'	 	
+	INTO :fantasyname, :invoice, :subtotal, :discount, :total, :purchasedate
+	DO 
+	SUSPEND;
   END
+  
+ SELECT * FROM SUPPLIERS;
+  
+  
+  SELECT * FROM search_a_purchase('Batata Doce Suplementos');
   
   
 ------------------------------------------------------------
@@ -747,6 +754,7 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   DROP PROCEDURE search_a_sale;
   
   -- SEARCH a SPECIFIC PURCHASE
+  
   CREATE OR ALTER PROCEDURE search_a_sale(input_clientname D_NAME)
   RETURNS (
   clientname D_NAME,
@@ -758,22 +766,229 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   )
   AS  
   DECLARE VARIABLE idClient D_INT;
+  DECLARE VARIABLE idSale D_INT;
   BEGIN
 	 SELECT FIRST 1 ID
 	 FROM CLIENTS
 	 WHERE NAME = :input_clientname
 	 INTO :idClient;	  
-	  
 	
-	SELECT c.NAME, s.INVOICE, s.SUBTOTAL, s.DISCOUNT, s.TOTAL, s.SALEDATE
+	FOR SELECT c.NAME, s.INVOICE, s.SUBTOTAL, s.DISCOUNT, s.TOTAL, s.SALEDATE
 	FROM SALES s
 	INNER JOIN CLIENTS c ON s.CLIENTID = c.ID
-	WHERE s.FINALIZED = 'Y'	AND S.CLIENTID = :idClient 	 	
-	INTO :clientname, :invoice, :subtotal, :discount, :total, :saledate;	 				 
+	WHERE s.FINALIZED = 'Y'	AND S.CLIENTID = :idClient 	
+	INTO :clientname, :invoice, :subtotal, :discount, :total, :saledate
+	DO 
+		SUSPEND;
   END
   
   SELECT * FROM CLIENTS;
   
   SELECT * FROM  SALES;
   
-  EXECUTE PROCEDURE search_a_sale('Vinicius');
+  SELECT * FROM  search_a_sale('Vinicius');
+  
+  
+  ------------------------------------------------------------
+--				CHECK HISTORY
+  
+
+  CREATE EXCEPTION NO_SALE_OR_PURCHASE 'No sale or Purchase found with given date interval';
+  
+ 
+  
+  
+    CREATE OR ALTER PROCEDURE checkAllHistory
+  RETURNS (
+  tipo D_NAME,
+  productname D_NAME,
+  invoice D_INVOICE,
+  quantity D_INT,
+  unitvalue D_DECIMAL,
+  total D_DECIMAL,    
+  actiondate D_DATE
+  )
+  AS   
+  DECLARE VARIABLE idsale D_INT;
+  DECLARE VARIABLE idItem D_INT; 
+  DECLARE VARIABLE idpurchase D_INT;
+  BEGIN
+	 IF( EXISTS (SELECT ID
+	 			  FROM SALES s
+	 			  WHERE s.FINALIZED = 'Y' 
+	 			  ) OR EXISTS(SELECT ID 
+				 			  FROM PURCHASES p
+				 			  WHERE p.FINALIZED = 'Y' ))
+										 			  THEN
+	 			  						 			  BEGIN
+		 			  						 			FOR SELECT S.ID, sit.PRODID
+	 			  								      	FROM SALES s
+	 			  								      	INNER JOIN SALEITEMS sit ON s.ID = sit.SALEID
+	 			  								      	WHERE s.FINALIZED = 'Y' 
+ 			  										  	INTO :idsale, :idItem
+ 			  										  	DO 			  										  	
+ 			  										  		BEGIN 
+	 			  										  		FOR SELECT DISTINCT s.INVOICE, prod.NAME ,sit.QUANTITY, sit.UNITVALUE, sit.TOTAL, s.SALEDATE
+ 			  										  	 		FROM SALEITEMS sit
+ 			  										  			INNER JOIN PRODUCTS prod ON sit.PRODID = prod.ID
+ 			  										  	 		INNER JOIN SALES s ON sit.SALEID = s.ID		  										  			
+		  										  				WHERE sit.SALEID = :idsale AND sit.PRODID = :idItem
+		  										  				INTO :invoice, :productname, :quantity, :unitvalue, :total, :actiondate
+		  										  				DO 
+			  										  				tipo = 'Sale';			  										  			
+		  										  				SUSPEND;
+ 			  										  		END
+ 			  										  		
+		  										  		FOR SELECT p.ID, pit.PRODID
+		  										  		FROM PURCHASES p
+		  										  		INNER JOIN PURCHASEITEMS pit ON p.ID = pit.PURCHASEID
+		  										  		WHERE p.FINALIZED = 'Y' 
+		  										  		INTO :idpurchase, :idItem
+		  										  		DO 
+		  										  			BEGIN
+			  										  			FOR SELECT DISTINCT p.INVOICE, prod.NAME, pit.QUANTITY, pit.UNITVALUE, pit.TOTAL, p.PURCHASEDATE 
+			  										  			FROM PURCHASEITEMS pit
+			  										  			INNER JOIN PRODUCTS prod ON pit.PRODID = prod.ID
+			  										  			INNER JOIN PURCHASES p ON pit.PURCHASEID = p.ID
+			  										  			WHERE pit.PURCHASEID = :idpurchase AND pit.PRODID = :idItem
+			  										  			INTO :invoice, :productname, :quantity, :unitvalue, :total, :actiondate
+			  										  			DO
+			  										  				tipo = 'Purchase';
+			  										  				SUSPEND;
+		  										  			END 
+		  										  	  END		  										  	  
+	 			  						 			  ELSE
+	 			  						 			  EXCEPTION NO_SALE_OR_PURCHASE;	 			  						 			  
+  END  
+  
+  SELECT * FROM checkAllHistory;
+  
+  
+  CREATE OR ALTER PROCEDURE checkHistoryRange(input_data1 D_DATE, input_data2 D_DATE)
+  RETURNS (
+  tipo D_NAME,
+  productname D_NAME,
+  invoice D_INVOICE,
+  quantity D_INT,
+  unitvalue D_DECIMAL,
+  total D_DECIMAL,    
+  actiondate D_DATE
+  )
+  AS   
+  DECLARE VARIABLE idsale D_INT;
+  DECLARE VARIABLE idItem D_INT; 
+  DECLARE VARIABLE idpurchase D_INT;
+  BEGIN
+	 IF( EXISTS (SELECT ID
+	 			  FROM SALES s
+	 			  WHERE s.FINALIZED = 'Y' 
+	 			  AND s.SALEDATE BETWEEN :input_data1 AND :input_data2) OR EXISTS(SELECT ID 
+	 			  						 			  FROM PURCHASES p
+	 			  						 			  WHERE p.FINALIZED = 'Y' AND p.PURCHASEDATE BETWEEN :input_data1 AND :input_data2 ))
+	 			  						 			  THEN
+	 			  						 			  BEGIN
+		 			  						 			FOR SELECT S.ID, sit.PRODID
+	 			  								      	FROM SALES s
+	 			  								      	INNER JOIN SALEITEMS sit ON s.ID = sit.SALEID
+	 			  									  	WHERE s.FINALIZED = 'Y' AND  s.SALEDATE BETWEEN :input_data1 AND :input_data2
+ 			  										  	INTO :idsale, :idItem
+ 			  										  	DO 			  										  	
+ 			  										  		BEGIN 
+	 			  										  		FOR SELECT DISTINCT s.INVOICE, prod.NAME ,sit.QUANTITY, sit.UNITVALUE, sit.TOTAL, s.SALEDATE
+ 			  										  	 		FROM SALEITEMS sit
+ 			  										  			INNER JOIN PRODUCTS prod ON sit.PRODID = prod.ID
+ 			  										  	 		INNER JOIN SALES s ON sit.SALEID = s.ID		  										  			
+		  										  				WHERE sit.SALEID = :idsale AND sit.PRODID = :idItem
+		  										  				INTO :invoice, :productname, :quantity, :unitvalue, :total, :actiondate
+		  										  				DO 
+			  										  				tipo = 'Sale';			  										  			
+		  										  				SUSPEND;
+ 			  										  		END
+ 			  										  		
+		  										  		FOR SELECT p.ID, pit.PRODID
+		  										  		FROM PURCHASES p
+		  										  		INNER JOIN PURCHASEITEMS pit ON p.ID = pit.PURCHASEID
+		  										  		WHERE p.FINALIZED = 'Y' AND p.PURCHASEDATE  BETWEEN :input_data1 AND :input_data2
+		  										  		INTO :idpurchase, :idItem
+		  										  		DO 
+		  										  			BEGIN
+			  										  			FOR SELECT DISTINCT p.INVOICE, prod.NAME, pit.QUANTITY, pit.UNITVALUE, pit.TOTAL, p.PURCHASEDATE 
+			  										  			FROM PURCHASEITEMS pit
+			  										  			INNER JOIN PRODUCTS prod ON pit.PRODID = prod.ID
+			  										  			INNER JOIN PURCHASES p ON pit.PURCHASEID = p.ID
+			  										  			WHERE pit.PURCHASEID = :idpurchase AND pit.PRODID = :idItem
+			  										  			INTO :invoice, :productname, :quantity, :unitvalue, :total, :actiondate
+			  										  			DO
+			  										  				tipo = 'Purchase';
+			  										  				SUSPEND;
+		  										  			END 
+		  										  	  END		  										  	  
+	 			  						 			  ELSE
+	 			  						 			  EXCEPTION NO_SALE_OR_PURCHASE;	 			  						 			  
+  END  
+  
+  
+  CREATE OR ALTER PROCEDURE listTopProductSales(input_date VARCHAR(4))
+  RETURNS(
+  prodname D_NAME,
+  prodsales D_INT,
+  prodsalecash D_DECIMAL,
+  dateyear VARCHAR(4)
+  )
+  AS
+  BEGIN
+	  --PEGAR PRODUTOS MAIS VENDIDOS
+	  	  FOR SELECT  SUM(sit.QUANTITY) NUMBERSALES, SUM(SIT.QUANTITY * SIT.UNITVALUE) TOTALCASH, p.NAME PRODUCT
+		  FROM SALEITEMS sit
+  		  INNER JOIN PRODUCTS p ON sit.PRODID = p.ID
+  		  INNER JOIN SALES s ON sit.SALEID = s.ID
+  		  WHERE EXTRACT(YEAR FROM s.SALEDATE) = :input_date
+          GROUP BY sit.PRODID, p.NAME
+          INTO :prodsales, :prodsalecash, :prodname
+          DO 
+          BEGIN
+          	dateyear = :input_date;
+          	SUSPEND;
+  		  END          
+  END 
+  
+  
+  SELECT * FROM  listTopProductSales('2017');
+  
+  SELECT * FROM SALEITEMS;
+  
+  SELECT * FROM PRODUCTS;
+  
+  SELECT  SUM(sit.QUANTITY) NUMBERSALES, SUM(SIT.QUANTITY * SIT.UNITVALUE) TOTALCASH, p.NAME PRODUCT 
+  FROM SALEITEMS sit
+  INNER JOIN PRODUCTS p ON sit.PRODID = p.ID
+  INNER JOIN SALES s ON sit.SALEID = s.ID
+  WHERE EXTRACT(YEAR FROM s.SALEDATE) = '2017'
+  GROUP BY sit.PRODID, p.NAME
+  
+  
+  SELECT * from checkHistoryRange('2017-11-08','2017-11-17');
+  
+  SELECT * FROM sales;  
+  
+  SELECT * FROM SALEITEMS;
+  
+  SELECT * FROM PURCHASES;
+  
+  SELECT * FROM PURCHASEITEMS;
+  
+  SELECT *  
+  FROM SALES s
+  WHERE s.SALEDATE BETWEEN '2017-11-8' AND '2017-11-15';
+  
+  
+  SELECT sit.PRODID
+  FROM SALEITEMS sit
+  WHERE sit.SALEID = 28;
+  
+   SELECT DISTINCT s.INVOICE, prod.NAME ,sit.QUANTITY, sit.UNITVALUE, sit.TOTAL, s.SALEDATE
+ 	FROM SALEITEMS sit
+	INNER JOIN PRODUCTS prod ON sit.PRODID = prod.ID
+ 	INNER JOIN SALES s ON sit.SALEID = s.ID		  										  			
+	 
+  

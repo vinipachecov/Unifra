@@ -406,6 +406,8 @@ $$ LANGUAGE plpgsql;
 
 select * from get_clients();
 
+
+
 select * from sales;
 
 -- GET PRODUCTS

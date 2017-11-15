@@ -46,7 +46,6 @@ public class LoginController extends ControllerModel {
         dbComboBox.getItems().addAll(databases);
         Image img = new Image("file:bb-logo-clean.png");
         logoImageView.setImage(img);
-
     }
 
     @FXML
@@ -140,7 +139,7 @@ public class LoginController extends ControllerModel {
             connectionProperties.put("user", "SYSDBA");
             connectionProperties.put("password", "masterkey");            
             connection = DriverManager.getConnection(
-                    "jdbc:firebirdsql://localhost:3050//home/vinicius/repos/Unifra/2017/Second-Semester/Database-III/Loja-Suplementos/FireBirdDataBase.fdb", connectionProperties
+                    "jdbc:firebirdsql://localhost:3050//home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/FireBirdDataBase.fdb", connectionProperties
             );
 
         } catch (SQLException e) {

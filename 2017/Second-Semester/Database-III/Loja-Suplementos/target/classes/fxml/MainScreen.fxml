@@ -7,10 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-    <stylesheets>
-        <URL value="@/styles/Styles.css" />
-    </stylesheets>
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" stylesheets="@/styles/panes.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar fx:id="menuBar">
         <menus>
@@ -23,7 +20,6 @@
           <Menu mnemonicParsing="false" text="Sales orders">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#addSale" text="Add Sale Order" />
-                  <MenuItem mnemonicParsing="false" text="Add item to Sale Order" />
                   <MenuItem mnemonicParsing="false" onAction="#searchSale" text="Search..." />
             </items>
           </Menu>
@@ -70,11 +66,35 @@
             </Menu>
             <Menu mnemonicParsing="false" text="History">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Check History" />
-                  <MenuItem mnemonicParsing="false" text="Search..." />
+                  <MenuItem mnemonicParsing="false" onAction="#checkHistory" text="Check History" />
                </items>
             </Menu>
         </menus>
       </MenuBar>
+      <TabPane layoutX="263.0" layoutY="66.0" prefHeight="305.0" prefWidth="372.0" stylesheets="@../styles/panes.css" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="TopSalePRoducts">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="273.0" prefWidth="335.0" styleClass="pane" stylesheets="@../styles/panes.css">
+                     <children>
+                        <TableView layoutX="22.0" layoutY="56.0" prefHeight="202.0" prefWidth="328.0">
+                          <columns>
+                            <TableColumn prefWidth="104.0" text="Product" />
+                            <TableColumn prefWidth="110.0" text="NumberSales" />
+                              <TableColumn prefWidth="107.0" text="CashGenerated" />
+                          </columns>
+                        </TableView>
+                        <TextField fx:id="yearTopProductsTextField" layoutX="22.0" layoutY="14.0" promptText="Type a Year to Check" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Untitled Tab 2">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="pane" stylesheets="@../styles/panes.css" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
    </children>
 </AnchorPane>

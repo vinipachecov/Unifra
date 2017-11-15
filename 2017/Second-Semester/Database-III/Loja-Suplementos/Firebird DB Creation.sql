@@ -250,16 +250,35 @@ INSERT INTO USERS(USERNAME,PASSWORD, USERTYPE)
 VALUES('admin','admin','admin')
 
 
-CREATE TABLE testa(
-mindata D_DATE
-);
-
-DROP TABLE TESTA;
-
-SELECT * FROM testa;
 
 
+-------------------------------------------------------------------
+-- CREATE HISTORY
 
-INSERT INTO testa(mindata)
-VALUES(CURRENT_TIMESTAMP);
+CREATE TABLE ACTIONHISTORY(
+id D_PK PRIMARY KEY,
+prodid D_PK,
+purchaseid D_INT,
+saleid D_INT,
+unitvalue D_DECIMAL,
+total D_DECIMAL,
+quantity D_INT,
+actiondate D_DATE
+)
+
+
+DROP TABLE actionhistory;
+
+CREATE generator g_inc_actionhistory;
+
+-- Trigger tipo
+
+DROP TRIGGER t_inc_actionhistory;
+
+CREATE OR ALTER TRIGGER t_inc_actionhistory FOR actionhistory
+active BEFORE INSERT POSITION 5
+AS BEGIN
+	NEW.id=gen_id(g_inc_purchases,1);
+END
+
 
