@@ -959,36 +959,68 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   
   SELECT * FROM PRODUCTS;
   
-  SELECT  SUM(sit.QUANTITY) NUMBERSALES, SUM(SIT.QUANTITY * SIT.UNITVALUE) TOTALCASH, p.NAME PRODUCT 
-  FROM SALEITEMS sit
-  INNER JOIN PRODUCTS p ON sit.PRODID = p.ID
-  INNER JOIN SALES s ON sit.SALEID = s.ID
-  WHERE EXTRACT(YEAR FROM s.SALEDATE) = '2017'
-  GROUP BY sit.PRODID, p.NAME
+ 
+  
+ ---------------------------------------------------------------------
+ --					CLIENTS THAT BUYS THE MOST
+ 
+  
+  CREATE OR ALTER PROCEDURE bestbuyers
+  RETURNS(
+  clientname D_NAME,
+  numbuys D_INT,
+  totalcash D_DECIMAL  
+  )
+  AS
+  BEGIN	  
+	  FOR SELECT c.NAME, COUNT(s.ID), SUM(s.TOTAL)
+	  FROM SALES s
+	  INNER JOIN CLIENTS c ON s.CLIENTID = c.ID
+  	  WHERE s.FINALIZED = 'Y'
+  	  GROUP BY c.NAME
+  	  ORDER BY SUM(s.total) DESC
+  	  INTO :clientname, :numbuys, :totalcash
+  	  DO
+  	  	BEGIN
+	  	  	SUSPEND;
+  	  	END  	  	
+  END 
   
   
-  SELECT * from checkHistoryRange('2017-11-08','2017-11-17');
+  CREATE OR ALTER PROCEDURE client_spendings(input_clientname D_NAME)
+  RETURNS(
+  clientname D_NAME,
+  numbuys D_INT,
+  totalcash D_DECIMAL  
+  )
+  AS
+  BEGIN	  
+	  FOR SELECT c.NAME, COUNT(s.ID), SUM(s.TOTAL)
+	  FROM SALES s
+	  INNER JOIN CLIENTS c ON s.CLIENTID = c.ID
+  	  WHERE s.FINALIZED = 'Y' AND c.NAME = :input_clientname
+  	  GROUP BY c.NAME
+  	  ORDER BY SUM(s.total) DESC
+  	  INTO :clientname, :numbuys, :totalcash
+  	  DO
+  	  	BEGIN
+	  	  	SUSPEND;
+  	  	END  	  	
+  END 
   
-  SELECT * FROM sales;  
+  SELECT * FROM client_spendings('Vinicius');
   
-  SELECT * FROM SALEITEMS;
-  
-  SELECT * FROM PURCHASES;
-  
-  SELECT * FROM PURCHASEITEMS;
-  
-  SELECT *  
+    SELECT * FROM bestbuyers;
+    
+  SELECT C.NAME, COUNT(s.ID), SUM(s.TOTAL)
   FROM SALES s
-  WHERE s.SALEDATE BETWEEN '2017-11-8' AND '2017-11-15';
+  INNER JOIN CLIENTS c ON s.CLIENTID = c.ID
+  WHERE s.FINALIZED = 'Y'
+  GROUP BY C.NAME
   
-  
-  SELECT sit.PRODID
-  FROM SALEITEMS sit
-  WHERE sit.SALEID = 28;
-  
-   SELECT DISTINCT s.INVOICE, prod.NAME ,sit.QUANTITY, sit.UNITVALUE, sit.TOTAL, s.SALEDATE
- 	FROM SALEITEMS sit
-	INNER JOIN PRODUCTS prod ON sit.PRODID = prod.ID
- 	INNER JOIN SALES s ON sit.SALEID = s.ID		  										  			
+   		  										  			
 	 
+ 	
+ 	
+ 	
   

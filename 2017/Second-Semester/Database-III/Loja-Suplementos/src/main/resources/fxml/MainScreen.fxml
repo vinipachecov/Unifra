@@ -90,9 +90,21 @@
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Untitled Tab 2">
+          <Tab text="Best Clients">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="pane" stylesheets="@../styles/panes.css" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="pane" stylesheets="@../styles/panes.css">
+                     <children>
+                        <Button layoutX="192.0" layoutY="14.0" mnemonicParsing="false" onAction="#searchBestClients" text="Check" />
+                        <TableView fx:id="bestClientsTable" layoutX="22.0" layoutY="56.0" prefHeight="202.0" prefWidth="328.0">
+                           <columns>
+                              <TableColumn fx:id="clientNameBCColumn" prefWidth="104.0" text="Client" />
+                              <TableColumn fx:id="boughtTimesBCColumn" prefWidth="110.0" text="BoughtTimes" />
+                              <TableColumn fx:id="cashGeneratedBCColumn" prefWidth="113.0" text="CashGenerated" />
+                           </columns>
+                        </TableView>
+                        <TextField fx:id="bestClientTextField" layoutX="22.0" layoutY="14.0" promptText="ClientName" />
+                     </children>
+                  </AnchorPane>
             </content>
           </Tab>
         </tabs>
