@@ -945,6 +945,7 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   		  INNER JOIN SALES s ON sit.SALEID = s.ID
   		  WHERE EXTRACT(YEAR FROM s.SALEDATE) = :input_date
           GROUP BY sit.PRODID, p.NAME
+          ORDER BY SUM(sit.QUANTITY) DESC
           INTO :prodsales, :prodsalecash, :prodname
           DO 
           BEGIN
@@ -974,15 +975,14 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   dateyear VARCHAR(4)
   )
   AS
-  BEGIN
-	  --PEGAR PRODUTOS MAIS VENDIDOS
+  BEGIN	  
 	  	  FOR SELECT  SUM(sit.QUANTITY) NUMBERSALES, SUM(SIT.QUANTITY * SIT.UNITVALUE) TOTALCASH, p.NAME PRODUCT
 		  FROM SALEITEMS sit
   		  INNER JOIN PRODUCTS p ON sit.PRODID = p.ID
   		  INNER JOIN SALES s ON sit.SALEID = s.ID
   		  WHERE EXTRACT(YEAR FROM s.SALEDATE) = :input_date
           GROUP BY sit.PRODID, p.NAME
-          ORDER BY SUM(sit.QUANTITY) NUMBERSALES DESC
+          ORDER BY SUM(sit.QUANTITY) ASC
           INTO :prodsales, :prodsalecash, :prodname
           DO 
           BEGIN
@@ -992,7 +992,7 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   END 
   
   
-  SELECT * FROM  listTopProductSales('2017');
+  SELECT * FROM  listWorstProductSales('2017');
   
   SELECT * FROM SALEITEMS;
   
@@ -1059,7 +1059,7 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   
   
   
-------------------------------------------------------------
+-----------------------------------------------------------------------------
 --					MOST REQUIRED SUPPLIERS 
  	
   
@@ -1072,4 +1072,36 @@ AS
 BEGIN
 	
 END 
-  
+
+-----------------------------------------------------------------------------
+--					NEW CLIENTS THIS YEAR
+
+CREATE OR ALTER PROCEDURE newclientsyear(input_year char(4))
+RETURNS(
+clientname D_NAME,
+email D_EMAIL,
+telephone D_TELEPHONE,
+cJOINDATE D_DATE
+)
+AS
+BEGIN
+	FOR SELECT c.NAME, c.EMAIL, c."TELEPHONE", c.JOINDATE 
+	FROM CLIENTS c
+	WHERE EXTRACT(YEAR FROM c.JOINDATE) = :input_year
+	INTO :clientname, :email, :TELEPHONE, :cjoindate
+	DO
+	BEGIN
+		SUSPEND;
+	END 
+END 
+
+
+SELECT * FROM newclientsyear('2017');
+
+SELECT * FROM CLIENTS;
+
+INSERT INTO CLIENTS(NAME,NUMSALES, "TELEPHONE",EMAIL,BIRTHDATE,GOVID,JOINDATE)
+VALUES('teste',0,'55-9344203', 'liz@gmail','2015-02-03','123456789','2016-02-03')
+
+
+ 

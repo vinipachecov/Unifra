@@ -87,11 +87,11 @@ public class AddClientController extends ControllerModel {
                 try {
                     Statement st = this.connection.createStatement();
                     st.executeUpdate(""
-                            + "insert into clients(name,numsales,email,telephone,govid,birthdate) \n"
-                            + "values('" + name + "',0,'" + email + "','" + telephone + "','" + govid + "','" + date + "')");
+                            + "insert into clients(name,numsales,email,telephone,govid,birthdate, joindate) \n"
+                            + "values('" + name + "',0,'" + email + "','" + telephone + "','" + govid + "','" + date + "', current_timestamp)");
                     st.close();
                 } catch (Exception e) {
-
+                    System.out.println("Error " + e.getMessage());
                 }
                 sendAlert("Success", "Client Added!", "Client Added with Success.", Alert.AlertType.CONFIRMATION);
         }

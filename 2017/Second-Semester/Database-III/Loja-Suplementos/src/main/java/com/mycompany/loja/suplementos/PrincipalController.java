@@ -99,6 +99,27 @@ public class PrincipalController extends ControllerModel {
     
     
 
+//  NEW CLIENTS
+    
+     @FXML
+    public TextField yearNewClientsTextField;
+            
+    @FXML
+    public TableView<BestClient> newClientsTable;
+
+    @FXML
+    public TableColumn<BestClient, String> clientNameNCColumn;
+
+    @FXML
+    public TableColumn<BestClient, String> contactColumn;
+
+    @FXML
+    public TableColumn<BestClient, Float> JoinDateNCColumn;
+        
+    
+    
+    
+    
     public Stage dialog;
 
     public Stage currentStage;
@@ -115,12 +136,17 @@ public class PrincipalController extends ControllerModel {
     
     
     
+    
     public void init(Stage stage) {
         this.currentStage = stage;
         
         topSaleProductsController = new TopSaleProductsController(yearTopProductsTextField, topProductsTable, productNameColumn, numberSalesColumn, cashGeneratedColumn, connection, dbType);
         bestClientsController = new BestClientsController(bestClientTextField ,bestClientsTable, clientNameBCColumn, boughtTimesBCColumn, cashGeneratedBCColumn, connection, dbType);
         worstSaleProductsController = new WorstSaleProductsController(yearWorstProductsTextField, worstProductsTable, productNameWSColumn, numberSalesWSColumn, cashGeneratedWSColumn, connection, dbType);
+    }
+    
+    @FXML void searchNewClients(ActionEvent event){
+        
     }
     
     @FXML 

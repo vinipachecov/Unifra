@@ -13,18 +13,22 @@ add column usertype varchar(14)
 
 select * from usuario;
 
+--------------------------------------------------------
+-- 			TYPES TABLE
 create table types(
 id serial primary key,
 name varchar(30)
 )
 
-
+--------------------------------------------------------
+-- 			BRANDS TABLE
 create table brands(
 id serial primary key,
 name varchar(30)
 )
 
-
+--------------------------------------------------------
+-- 			PRODUCTS TABLE
 create table products(
 id serial primary key,
 name varchar(50),
@@ -36,6 +40,8 @@ unitvalue decimal(15,2),
 unittype varchar(30)
 )
 
+--------------------------------------------------------
+-- 			SALES TABLE
 create table sales(
 id serial primary key,
 saledate timestamp,
@@ -55,7 +61,8 @@ select * from sales;
 
 drop  table sales;
 
-
+--------------------------------------------------------
+-- 			SALEITEMS  TABLE
 create table saleitems(
 saleid int references sales(id),
 prodid int references products(id),
@@ -72,7 +79,8 @@ select * from products;
 
 select * from brands
 
-
+--------------------------------------------------------
+-- 			SALEITEMS  TABLE
 create table clients(
 id serial primary key,
 name varchar(60),
@@ -82,6 +90,9 @@ telephone varchar(20),
 govid varchar(20),
 birthdate date
 )
+
+alter table CLIENTS
+add column joindate timestamp
 
 drop table client;
 
@@ -93,6 +104,8 @@ password varchar(20),
 usertype varchar(20)
 )
 
+ALTER TABLE users
+ADD COLUMN joindate TIMESTAMP
 
 CREATE TABLE suppliers(
 id serial PRIMARY KEY,

@@ -83,6 +83,8 @@ email D_EMAIL,
 govid D_GOVID,
 birthdate D_DATA);
 
+ALTER TABLE CLIENTS
+ADD JOINDATE D_DATE
 
 CREATE generator g_inc_clients;
 
