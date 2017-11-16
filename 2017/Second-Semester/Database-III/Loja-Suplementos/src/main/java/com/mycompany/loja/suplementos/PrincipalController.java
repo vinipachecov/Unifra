@@ -7,6 +7,7 @@ package com.mycompany.loja.suplementos;
 
 import supportClasses.BestClient;
 import java.sql.Connection;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -53,7 +54,28 @@ public class PrincipalController extends ControllerModel {
     @FXML
     public TableColumn<TopProduct, Float> cashGeneratedColumn;
     
-    TopSaleProductsController topSaleProductsController;
+    public TopSaleProductsController topSaleProductsController;
+    
+    // WORST SOLD PRODUCTS
+    
+     @FXML
+    public TextField yearWorstProductsTextField;
+
+    @FXML
+    public TableView<TopProduct> worstProductsTable;
+    
+    public ObservableList<TopProduct> worstProductWSData;
+
+    @FXML
+    public TableColumn<TopProduct, String> productNameWSColumn;
+
+    @FXML
+    public TableColumn<TopProduct, Integer> numberSalesWSColumn;
+
+    @FXML
+    public TableColumn<TopProduct, Float> cashGeneratedWSColumn;
+    
+    public WorstSaleProductsController worstSaleProductsController;
     
 // TOP CLIENTS
     
@@ -74,6 +96,8 @@ public class PrincipalController extends ControllerModel {
     public TableColumn<BestClient, Float> cashGeneratedBCColumn;
     
     public BestClientsController bestClientsController;
+    
+    
 
     public Stage dialog;
 
@@ -96,6 +120,12 @@ public class PrincipalController extends ControllerModel {
         
         topSaleProductsController = new TopSaleProductsController(yearTopProductsTextField, topProductsTable, productNameColumn, numberSalesColumn, cashGeneratedColumn, connection, dbType);
         bestClientsController = new BestClientsController(bestClientTextField ,bestClientsTable, clientNameBCColumn, boughtTimesBCColumn, cashGeneratedBCColumn, connection, dbType);
+        worstSaleProductsController = new WorstSaleProductsController(yearWorstProductsTextField, worstProductsTable, productNameWSColumn, numberSalesWSColumn, cashGeneratedWSColumn, connection, dbType);
+    }
+    
+    @FXML 
+    public void searchWorstSaleProducts(ActionEvent event){
+        worstSaleProductsController.searchWorstProducts(event);
     }
     
     @FXML

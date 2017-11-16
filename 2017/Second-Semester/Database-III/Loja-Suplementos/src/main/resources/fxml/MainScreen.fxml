@@ -73,7 +73,7 @@
       </MenuBar>
       <TabPane layoutX="263.0" layoutY="66.0" prefHeight="305.0" prefWidth="372.0" stylesheets="@../styles/panes.css" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="TopSalePRoducts">
+          <Tab text="TopSaleProducts">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="273.0" prefWidth="335.0" styleClass="pane" stylesheets="@../styles/panes.css">
                      <children>
@@ -81,7 +81,7 @@
                           <columns>
                             <TableColumn fx:id="productNameColumn" prefWidth="104.0" text="Product" />
                             <TableColumn fx:id="numberSalesColumn" prefWidth="110.0" text="NumberSales" />
-                              <TableColumn fx:id="cashGeneratedColumn" prefWidth="107.0" text="CashGenerated" />
+                              <TableColumn fx:id="cashGeneratedColumn" prefWidth="113.0" text="CashGenerated" />
                           </columns>
                         </TableView>
                         <TextField fx:id="yearTopProductsTextField" layoutX="22.0" layoutY="14.0" promptText="Year for Top Products" />
@@ -90,6 +90,23 @@
                   </AnchorPane>
             </content>
           </Tab>
+            <Tab text="WorstSaleProducts">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="273.0" prefWidth="335.0" styleClass="pane" stylesheets="@../styles/panes.css">
+                     <children>
+                        <TableView fx:id="worstProductsTable" layoutX="22.0" layoutY="56.0" prefHeight="202.0" prefWidth="328.0">
+                           <columns>
+                              <TableColumn fx:id="productNameWSColumn" prefWidth="104.0" text="Product" />
+                              <TableColumn fx:id="numberSalesWSColumn" prefWidth="110.0" text="NumberSales" />
+                              <TableColumn fx:id="cashGeneratedWSColumn" prefWidth="113.0" text="CashGenerated" />
+                           </columns>
+                        </TableView>
+                        <TextField fx:id="yearWorstProductsTextField" layoutX="22.0" layoutY="14.0" promptText="Year for Worst Products" />
+                        <Button layoutX="194.0" layoutY="14.0" mnemonicParsing="false" onAction="#searchWorstSaleProducts" text="Check" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
           <Tab text="Best Clients">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="pane" stylesheets="@../styles/panes.css">

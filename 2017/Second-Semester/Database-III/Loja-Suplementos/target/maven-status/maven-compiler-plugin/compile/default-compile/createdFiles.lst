@@ -21,6 +21,7 @@ com/mycompany/loja/suplementos/SearchTypeController$1.class
 com/mycompany/loja/suplementos/AddSaleItemController.class
 supportClasses/Product.class
 com/mycompany/loja/suplementos/AddClientController$1.class
+com/mycompany/loja/suplementos/WorstSaleProductsController$1.class
 com/mycompany/loja/suplementos/SearchBrandController$1.class
 com/mycompany/loja/suplementos/SearchSupplierController$1.class
 com/mycompany/loja/suplementos/BestClientsController$2.class
@@ -40,6 +41,8 @@ com/mycompany/loja/suplementos/AddSaleController$1.class
 com/mycompany/loja/suplementos/AddPurchaseController$1.class
 supportClasses/HistoryItem.class
 supportClasses/userType.class
+com/mycompany/loja/suplementos/WorstSaleProductsController$2.class
+com/mycompany/loja/suplementos/WorstSaleProductsController.class
 supportClasses/User.class
 com/mycompany/loja/suplementos/TopSaleProductsController$1.class
 com/mycompany/loja/suplementos/LoginController.class
@@ -51,6 +54,7 @@ com/mycompany/loja/suplementos/CheckHistoryController$2.class
 com/mycompany/loja/suplementos/BestClientsController$1.class
 com/mycompany/loja/suplementos/SearchPurchaseController$2.class
 com/mycompany/loja/suplementos/AddProductController.class
+com/mycompany/loja/suplementos/WorstSaleProductsController$3.class
 com/mycompany/loja/suplementos/SearchClientController$1.class
 com/mycompany/loja/suplementos/AddBrandController$1.class
 com/mycompany/loja/suplementos/AddPurchaseItemController.class

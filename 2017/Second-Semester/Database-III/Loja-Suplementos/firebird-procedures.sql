@@ -926,7 +926,8 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
 	 			  						 			  ELSE
 	 			  						 			  EXCEPTION NO_SALE_OR_PURCHASE;	 			  						 			  
   END  
-  
+----------------------------------------------------------------------------------------
+--				Top Product Sales
   
   CREATE OR ALTER PROCEDURE listTopProductSales(input_date VARCHAR(4))
   RETURNS(
@@ -960,6 +961,42 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   SELECT * FROM PRODUCTS;
   
  
+  
+----------------------------------------------------------------------------------------
+--				Worst Product Sales
+
+  
+  CREATE OR ALTER PROCEDURE listWorstProductSales(input_date VARCHAR(4))
+  RETURNS(
+  prodname D_NAME,
+  prodsales D_INT,
+  prodsalecash D_DECIMAL,
+  dateyear VARCHAR(4)
+  )
+  AS
+  BEGIN
+	  --PEGAR PRODUTOS MAIS VENDIDOS
+	  	  FOR SELECT  SUM(sit.QUANTITY) NUMBERSALES, SUM(SIT.QUANTITY * SIT.UNITVALUE) TOTALCASH, p.NAME PRODUCT
+		  FROM SALEITEMS sit
+  		  INNER JOIN PRODUCTS p ON sit.PRODID = p.ID
+  		  INNER JOIN SALES s ON sit.SALEID = s.ID
+  		  WHERE EXTRACT(YEAR FROM s.SALEDATE) = :input_date
+          GROUP BY sit.PRODID, p.NAME
+          ORDER BY SUM(sit.QUANTITY) NUMBERSALES DESC
+          INTO :prodsales, :prodsalecash, :prodname
+          DO 
+          BEGIN
+          	dateyear = :input_date;
+          	SUSPEND;
+  		  END          
+  END 
+  
+  
+  SELECT * FROM  listTopProductSales('2017');
+  
+  SELECT * FROM SALEITEMS;
+  
+  SELECT * FROM PRODUCTS;
   
  ---------------------------------------------------------------------
  --					CLIENTS THAT BUYS THE MOST
@@ -1018,9 +1055,21 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
   WHERE s.FINALIZED = 'Y'
   GROUP BY C.NAME
   
-   		  										  			
-	 
+   	
+  
+  
+  
+------------------------------------------------------------
+--					MOST REQUIRED SUPPLIERS 
  	
+  
+  --Ter uma lista dos fornecedores que são mais requisitados no negócio .e 	sua porcentagem de participação no estoque.
  	
- 	
+CREATE OR ALTER PROCEDURE mostRequiredSupp
+RETURNS(
+)
+AS
+BEGIN
+	
+END 
   
