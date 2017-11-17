@@ -5,6 +5,8 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.logging.Level;
@@ -33,7 +35,7 @@ public class ControllerModel {
     public Connection connection;
     public User currentUser;
     public databaseType dbType;
-    
+    public MongoDatabase mongoDatabase;
     
     public ControllerModel(Connection db){
         this.connection = db;
@@ -42,9 +44,21 @@ public class ControllerModel {
     
     public ControllerModel(Connection db, databaseType dbt){
         this.connection = db;
-        this.dbType = dbt;
-        
+        this.dbType = dbt;        
     }
+    
+    public ControllerModel(MongoDatabase db, User user, databaseType dbt){
+        this.mongoDatabase = db;
+        this.dbType = dbt;        
+        this.currentUser = user;
+    }
+    
+    
+    public ControllerModel(MongoDatabase db, databaseType dbt){
+        this.mongoDatabase = db;
+        this.dbType = dbt;        
+    }    
+        
     
     public ControllerModel(Connection db, User user){
         this.connection = db;

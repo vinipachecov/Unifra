@@ -135,12 +135,29 @@
                         <TableView fx:id="newClientsTable" layoutX="22.0" layoutY="56.0" prefHeight="332.0" prefWidth="399.0">
                            <columns>
                               <TableColumn fx:id="clientNameNCColumn" prefWidth="117.0" text="Client" />
-                              <TableColumn fx:id="cashGeneratedColumn1" prefWidth="121.0" text="Contact" />
-                              <TableColumn fx:id="cashGeneratedColumn11" prefWidth="158.0" text="JoinDate" />
+                              <TableColumn fx:id="contactColumn" prefWidth="121.0" text="Contact" />
+                              <TableColumn fx:id="JoinDateNCColumn" prefWidth="158.0" text="JoinDate" />
                            </columns>
                         </TableView>
                         <TextField fx:id="yearNewClientsTextField" layoutX="22.0" layoutY="14.0" promptText="Year for new Clients" />
                         <Button layoutX="194.0" layoutY="14.0" mnemonicParsing="false" onAction="#searchNewClients" text="Check" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Most Required Suppliers">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="344.0" prefWidth="365.0" styleClass="pane" stylesheets="@../styles/panes.css">
+                     <children>
+                        <TableView fx:id="mostRequiredSuppliersTable" layoutX="22.0" layoutY="56.0" prefHeight="332.0" prefWidth="399.0">
+                           <columns>
+                              <TableColumn fx:id="nameMRSColumn" prefWidth="117.0" text="Supplier" />
+                              <TableColumn fx:id="totalItemsMRSColumn" prefWidth="121.0" text="TotalItems" />
+                              <TableColumn fx:id="totalPercentMRSColumn" prefWidth="158.0" text="TotalPercent" />
+                           </columns>
+                        </TableView>
+                        <TextField fx:id="requiredSupplierTextField" layoutX="22.0" layoutY="14.0" promptText="SUpplier Name" />
+                        <Button layoutX="194.0" layoutY="14.0" mnemonicParsing="false" onAction="#searchRequiredSuppliers" text="Check" />
                      </children>
                   </AnchorPane>
                </content>

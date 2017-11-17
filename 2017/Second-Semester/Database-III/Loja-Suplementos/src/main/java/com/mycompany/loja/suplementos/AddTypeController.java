@@ -5,14 +5,22 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.bson.Document;
+import supportClasses.User;
 import supportClasses.databaseType;
+import supportClasses.userType;
 
 /**
  *
@@ -31,6 +39,10 @@ public class AddTypeController extends ControllerModel {
 
     AddTypeController(Connection connection, databaseType dbType) {
         super(connection, dbType);
+    }
+
+    AddTypeController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
     }
 
     public void init(Stage dialog) {
@@ -53,7 +65,10 @@ public class AddTypeController extends ControllerModel {
                             + " VALUES('" + typeString + "' )"
                     );
                     st.close();
-                    sendAlert("Product type added with success!", "Type Added", "A new type have been added!", Alert.AlertType.CONFIRMATION);
+                    sendAlert("Product type added with success!", 
+                            "Type Added", 
+                            "A new type have been added!", 
+                            Alert.AlertType.CONFIRMATION);
                 } catch (Exception e) {
                     System.out.println("Error " + e.getMessage());
                     return;
@@ -67,10 +82,28 @@ public class AddTypeController extends ControllerModel {
                             + " VALUES('" + typeString + "' )"
                     );
                     st.close();
-                    sendAlert("Product type added with success!", "Type Added", "A new type have been added!", Alert.AlertType.CONFIRMATION);
+                    sendAlert("Product type added with success!", 
+                            "Type Added", 
+                            "A new type have been added!", 
+                            Alert.AlertType.CONFIRMATION);
                 } catch (Exception e) {
                     System.out.println("Error " + e.getMessage());
                     return;
+                }
+                break;
+            case mongodb:
+                try {
+                    MongoCollection<Document> types = mongoDatabase.getCollection("types");
+                    
+                    Document newtype = new Document();
+                    newtype.put("name", typeString);
+                    types.insertOne(newtype);                    
+                    sendAlert("Product type added with success!", 
+                            "Type Added", 
+                            "A new type have been added!", 
+                            Alert.AlertType.CONFIRMATION);
+                } catch (Exception e) {
+                    System.out.println("Erro no banco " + dbType + ": " + e.getMessage());
                 }
                 break;
         }
@@ -126,8 +159,24 @@ public class AddTypeController extends ControllerModel {
 
                 }
                 break;
-        }
+            case mongodb:
+                MongoCollection<Document> types = mongoDatabase.getCollection("types");
 
+                BasicDBObject andquery = new BasicDBObject();
+                List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                obj.add(new BasicDBObject("name", typeString));
+                andquery.put("$and", obj);
+                List<Document> documents = types.find().filter(andquery).into(new ArrayList<Document>());
+
+                if (documents.size() != 0) {
+                    sendAlert("Error to add a type",
+                            "Type exists.",
+                            "Type already Exists! Choose a different Type name!",
+                            Alert.AlertType.ERROR);
+                    return true;
+                }
+                break;
+        }
         return false;
     }
 

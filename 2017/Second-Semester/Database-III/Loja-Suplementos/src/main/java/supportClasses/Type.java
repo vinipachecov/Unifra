@@ -28,4 +28,8 @@ public class Type {
         return name;
     }
     
+    public Type(String name){
+        this.name = name;
+    }
+    
 }

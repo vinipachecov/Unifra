@@ -16,13 +16,16 @@
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/SearchBrandController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/supportClasses/Sale.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/supportClasses/userType.java
+/home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/NewClientsController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/AddSupplierController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/SearchPurchaseController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/supportClasses/BestClient.java
+/home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/supportClasses/NewClient.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/SearchTypeController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/AddSaleItemController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/MainApp.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/supportClasses/Brand.java
+/home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/supportClasses/MostRequiredSupplier.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/LoginController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/AddBrandController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/AddTypeController.java
@@ -31,6 +34,7 @@
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/PrincipalController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/CheckHistoryController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/supportClasses/ProductItem.java
+/home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/MostRequiredSuppliersController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/com/mycompany/loja/suplementos/AddUserController.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/supportClasses/databaseType.java
 /home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/src/main/java/supportClasses/Client.java

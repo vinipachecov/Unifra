@@ -5,6 +5,7 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.client.MongoDatabase;
 import supportClasses.BestClient;
 import java.sql.Connection;
 import javafx.collections.ObservableList;
@@ -17,6 +18,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import supportClasses.MostRequiredSupplier;
+import supportClasses.NewClient;
 import supportClasses.TopProduct;
 import supportClasses.User;
 import supportClasses.databaseType;
@@ -37,7 +40,6 @@ public class PrincipalController extends ControllerModel {
     @FXML
     public MenuItem addUserMenuItem;
 
-    
 //    TOP SOLD PRODUCTS
     @FXML
     public TextField yearTopProductsTextField;
@@ -53,17 +55,16 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public TableColumn<TopProduct, Float> cashGeneratedColumn;
-    
+
     public TopSaleProductsController topSaleProductsController;
-    
+
     // WORST SOLD PRODUCTS
-    
-     @FXML
+    @FXML
     public TextField yearWorstProductsTextField;
 
     @FXML
     public TableView<TopProduct> worstProductsTable;
-    
+
     public ObservableList<TopProduct> worstProductWSData;
 
     @FXML
@@ -74,15 +75,13 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public TableColumn<TopProduct, Float> cashGeneratedWSColumn;
-    
+
     public WorstSaleProductsController worstSaleProductsController;
-    
+
 // TOP CLIENTS
-    
-    
     @FXML
     public TextField bestClientTextField;
-            
+
     @FXML
     public TableView<BestClient> bestClientsTable;
 
@@ -94,32 +93,46 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public TableColumn<BestClient, Float> cashGeneratedBCColumn;
-    
+
     public BestClientsController bestClientsController;
-    
-    
 
 //  NEW CLIENTS
-    
-     @FXML
+    @FXML
     public TextField yearNewClientsTextField;
-            
-    @FXML
-    public TableView<BestClient> newClientsTable;
 
     @FXML
-    public TableColumn<BestClient, String> clientNameNCColumn;
+    public TableView<NewClient> newClientsTable;
 
     @FXML
-    public TableColumn<BestClient, String> contactColumn;
+    public TableColumn<NewClient, String> clientNameNCColumn;
 
     @FXML
-    public TableColumn<BestClient, Float> JoinDateNCColumn;
-        
-    
-    
-    
-    
+    public TableColumn<NewClient, String> contactColumn;
+
+    @FXML
+    public TableColumn<NewClient, String> JoinDateNCColumn;
+
+    public NewClientsController newClientsController;
+
+    // MOST REQUIRED SUPPLIERS
+    @FXML
+    public TextField requiredSupplierTextField;
+
+    @FXML
+    public TableView<MostRequiredSupplier> mostRequiredSuppliersTable;
+
+    @FXML
+    public TableColumn<MostRequiredSupplier, String> nameMRSColumn;
+
+    @FXML
+    public TableColumn<MostRequiredSupplier, Integer> totalItemsMRSColumn;
+
+    @FXML
+    public TableColumn<MostRequiredSupplier, Float> totalPercentMRSColumn;
+
+    public MostRequiredSuppliersController mostRequiredSuppliersController;
+
+    //
     public Stage dialog;
 
     public Stage currentStage;
@@ -132,38 +145,45 @@ public class PrincipalController extends ControllerModel {
         super(db, current, databType);
 
     }
-    
-    
-    
-    
-    
+
+    PrincipalController(MongoDatabase mongoDatabase, User current, databaseType databaseType) {
+        super(mongoDatabase, current, databaseType);
+    }
+
     public void init(Stage stage) {
         this.currentStage = stage;
-        
+
         topSaleProductsController = new TopSaleProductsController(yearTopProductsTextField, topProductsTable, productNameColumn, numberSalesColumn, cashGeneratedColumn, connection, dbType);
-        bestClientsController = new BestClientsController(bestClientTextField ,bestClientsTable, clientNameBCColumn, boughtTimesBCColumn, cashGeneratedBCColumn, connection, dbType);
+        bestClientsController = new BestClientsController(bestClientTextField, bestClientsTable, clientNameBCColumn, boughtTimesBCColumn, cashGeneratedBCColumn, connection, dbType);
         worstSaleProductsController = new WorstSaleProductsController(yearWorstProductsTextField, worstProductsTable, productNameWSColumn, numberSalesWSColumn, cashGeneratedWSColumn, connection, dbType);
+        newClientsController = new NewClientsController(yearNewClientsTextField, newClientsTable, clientNameNCColumn, contactColumn, JoinDateNCColumn, connection, dbType);
+        mostRequiredSuppliersController = new MostRequiredSuppliersController(requiredSupplierTextField, mostRequiredSuppliersTable, nameMRSColumn, totalItemsMRSColumn, totalPercentMRSColumn, connection, dbType);
     }
-    
-    @FXML void searchNewClients(ActionEvent event){
-        
+
+    @FXML
+    public void searchRequiredSuppliers(ActionEvent event) {
+        mostRequiredSuppliersController.searchMostRequiredSuppliers(event);
     }
-    
-    @FXML 
-    public void searchWorstSaleProducts(ActionEvent event){
+
+    @FXML
+    public void searchNewClients(ActionEvent event) {
+        newClientsController.searchNewClients(event);
+    }
+
+    @FXML
+    public void searchWorstSaleProducts(ActionEvent event) {
         worstSaleProductsController.searchWorstProducts(event);
     }
-    
+
     @FXML
     public void searchTopProducts(ActionEvent event) {
         topSaleProductsController.searchTopProducts(event);
     }
-    
+
     @FXML
-    public void searchBestClients(){
+    public void searchBestClients() {
         bestClientsController.searchBestClients();
     }
-    
 
     @FXML
     public void addSupplier(ActionEvent event) {
@@ -273,9 +293,19 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public void searchBrands(ActionEvent event) {
-        SearchBrandController searchController = new SearchBrandController(connection, this.dbType);
-        dialog = CreateModal(event, menuBar, "/fxml/SearchBrand.fxml", searchController, "Searching Brands");
-        searchController.init(dialog);
+        SearchBrandController searchController = null;
+        switch (dbType) {
+            case mongodb:
+                searchController = new SearchBrandController(this.mongoDatabase, this.dbType);
+                dialog = CreateModal(event, menuBar, "/fxml/SearchBrand.fxml", searchController, "Searching Brands");
+                searchController.init(dialog);
+                break;
+            default:
+                searchController = new SearchBrandController(connection, this.dbType);
+                dialog = CreateModal(event, menuBar, "/fxml/SearchBrand.fxml", searchController, "Searching Brands");
+                searchController.init(dialog);
+                break;
+        }
 
     }
 
@@ -299,12 +329,25 @@ public class PrincipalController extends ControllerModel {
     @FXML
     public void addTypes(ActionEvent event) {
         if (getUserType() == userType.admin) {
-            AddTypeController addTypeController = new AddTypeController(this.connection, this.dbType);
-            dialog = CreateModal(event, menuBar,
-                    "/fxml/AddType.fxml",
-                    addTypeController,
-                    "Add a Product Type");
-            addTypeController.init(dialog);
+            AddTypeController addTypeController = null;
+            switch (dbType) {
+                case mongodb:
+                    addTypeController = new AddTypeController(this.mongoDatabase, this.dbType);
+                    dialog = CreateModal(event, menuBar,
+                            "/fxml/AddType.fxml",
+                            addTypeController,
+                            "Add a Product Type");
+                    addTypeController.init(dialog);
+                    break;
+                default:
+                    addTypeController = new AddTypeController(this.connection, this.dbType);
+                    dialog = CreateModal(event, menuBar,
+                            "/fxml/AddType.fxml",
+                            addTypeController,
+                            "Add a Product Type");
+                    addTypeController.init(dialog);
+                    break;
+            }
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",
@@ -342,9 +385,19 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public void searchTypes(ActionEvent event) {
-        SearchTypeController controller = new SearchTypeController(connection, this.dbType);
-        dialog = CreateModal(event, menuBar, "/fxml/SearchType.fxml", controller, "Searching Types");
-        controller.init(dialog);
+        SearchTypeController controller = null;
+        switch (dbType) {
+            case mongodb:
+                controller = new SearchTypeController(this.mongoDatabase, this.dbType);
+                dialog = CreateModal(event, menuBar, "/fxml/SearchType.fxml", controller, "Searching Types");
+                controller.init(dialog);
+                break;
+            default:
+                controller = new SearchTypeController(connection, this.dbType);
+                dialog = CreateModal(event, menuBar, "/fxml/SearchType.fxml", controller, "Searching Types");
+                controller.init(dialog);
+                break;
+        }
 
     }
 
@@ -352,18 +405,32 @@ public class PrincipalController extends ControllerModel {
     public void addBrands(ActionEvent event) {
 
         if (getUserType() == userType.admin) {
-            AddBrandController brandController = new AddBrandController(this.connection, this.dbType);
-            dialog = CreateModal(event, menuBar,
-                    "/fxml/AddBrand.fxml",
-                    brandController,
-                    "Add a Brand");
-            brandController.init(dialog);
+            AddBrandController brandController = null;
+            switch (dbType) {
+                case mongodb:
+                    brandController = new AddBrandController(this.mongoDatabase, this.dbType);
+                    dialog = CreateModal(event, menuBar,
+                            "/fxml/AddBrand.fxml",
+                            brandController,
+                            "Add a Brand");
+                    brandController.init(dialog);
+                    break;
+                default:
+                    brandController = new AddBrandController(this.connection, this.dbType);
+                    dialog = CreateModal(event, menuBar,
+                            "/fxml/AddBrand.fxml",
+                            brandController,
+                            "Add a Brand");
+                    brandController.init(dialog);
+                    break;
+            }
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",
                     "You have no access to add Brands. Sign in as an administrator.",
                     Alert.AlertType.ERROR);
         }
+
     }
 
     @FXML

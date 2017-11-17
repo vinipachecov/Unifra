@@ -81,10 +81,9 @@ numsales D_INT,
 telephone D_TELEPHONE,
 email D_EMAIL,
 govid D_GOVID,
-birthdate D_DATA);
+birthdate D_DATE,
+JOINDATE D_DATE);
 
-ALTER TABLE CLIENTS
-ADD JOINDATE D_DATE
 
 CREATE generator g_inc_clients;
 
@@ -269,13 +268,10 @@ actiondate D_DATE
 )
 
 
-DROP TABLE actionhistory;
+
 
 CREATE generator g_inc_actionhistory;
 
--- Trigger tipo
-
-DROP TRIGGER t_inc_actionhistory;
 
 CREATE OR ALTER TRIGGER t_inc_actionhistory FOR actionhistory
 active BEFORE INSERT POSITION 5

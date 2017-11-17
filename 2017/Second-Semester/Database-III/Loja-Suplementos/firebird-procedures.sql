@@ -29,13 +29,7 @@ CREATE OR ALTER VIEW getbrands(
   
   SELECT name FROM gettypes
   
-  SELECT * FROM CLIENTS;
-  
-  SELECT * FROM BRANDS;
-  
-  SELECT * FROM TYPES;
-  
-  SELECT * FROM PRODUCTS;
+ 
   
   EXECUTE PROCEDURE SP_ADDPRODUCT('Whey 500%','Optimum','Whey Protein',0,0,150,'900g')
   
@@ -68,8 +62,7 @@ CREATE OR ALTER VIEW getbrands(
   	 END
   	 
 
-	EXECUTE SP_ADDPRODUCT('Whey 200%','Optimum','Whey Protein',0,0,150.0,'900g');
- 
+
 	
 SELECT * FROM PRODUCTS
 
@@ -166,7 +159,6 @@ FROM CLIENTS c
   
 SELECT cname FROM get_clients
 
-DROP PROCEDURE addSale;
 
 CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
 	total D_DECIMAL,
@@ -198,8 +190,7 @@ CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
   
   CREATE EXCEPTION INVOICEEXISTS 'Invoice already exists!';
 
-  DROP PROCEDURE checkInvoiceExists;
-  
+    
   -- CHECK IF INVOICE ALREADY EXISTS
   CREATE OR ALTER PROCEDURE checkInvoiceExists(inputinvoice D_INVOICE)  
   AS  
@@ -221,8 +212,7 @@ CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
   
   CREATE EXCEPTION NO_SALEID 'No sale found! Access Violation.';
   
-  DROP PROCEDURE setInvoice;
-  
+    
   -- SET INVOICE TO THE SALE
   CREATE OR ALTER PROCEDURE setInvoice(idsale D_INT, inputinvoice D_INVOICE)  
   AS  
@@ -245,7 +235,7 @@ CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
   EXECUTE PROCEDURE setInvoice(2 , '987654321');
   
   
-  DROP PROCEDURE finishSale;
+  
   
   CREATE OR ALTER PROCEDURE finishSale(saleid D_INT,  input_subtotal D_DECIMAL, input_total D_DECIMAL)  
   AS  
@@ -268,8 +258,7 @@ CREATE OR ALTER PROCEDURE addSale(subtotal D_DECIMAL,
   EXECUTE PROCEDURE finishSale(1 , 50.0,100.0);
   
   
-  DROP PROCEDURE removeSale;
-  
+    
     
   CREATE OR ALTER PROCEDURE removeSale(currentSaleID D_INT)
   AS  
@@ -380,7 +369,6 @@ SELECT cname FROM get_suppliers;
 
 CREATE EXCEPTION NO_SUPPLIER 'No Supplier Found!';
 
-DROP PROCEDURE addPurchase;
 
 --ADD A PURCHASE
 CREATE OR ALTER PROCEDURE addPurchase(subtotal D_DECIMAL,
@@ -1063,38 +1051,98 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
 --					MOST REQUIRED SUPPLIERS 
  	
   
-  --Ter uma lista dos fornecedores que são mais requisitados no negócio .e 	sua porcentagem de participação no estoque.
- 	
-CREATE OR ALTER PROCEDURE mostRequiredSupp
+  
+  CREATE OR ALTER PROCEDURE mostRequiredSupp
 RETURNS(
+suppliername D_NAME,
+suppliertotalpurchase D_INT,
+supplierpercentProductsTotal D_DECIMAL
 )
 AS
+DECLARE VARIABLE idpurchase D_INT;
+DECLARE VARIABLE idsupplier D_INT;
+DECLARE VARIABLE totalproducts D_INT;
+DECLARE VARIABLE totalproductsSupplier D_INT;
+DECLARE VARIABLE totalproductsSupplierTemp D_INT;
 BEGIN
+	-- GET TOTAL PRODUCTS ITEMS	
+	SELECT SUM(CURRENTQUANTITY)
+	FROM PRODUCTS	
+	INTO :totalproducts;	
 	
+	FOR SELECT S.FANTASYNAME ,SUM(pit.QUANTITY) NUMPURCHASES
+	FROM SUPPLIERS s   
+	INNER JOIN PURCHASES p ON p.SUPPLIERID = s.ID
+	INNER JOIN PURCHASEITEMS pit ON p.ID = pit.PURCHASEID
+	WHERE p.FINALIZED = 'Y'
+	GROUP BY s.FANTASYNAME
+	INTO :suppliername, :suppliertotalpurchase	
+	DO
+		BEGIN
+			supplierpercentProductsTotal = (suppliertotalpurchase * 100) / :totalproducts;
+			SUSPEND;
+		END 
+				
 END 
 
+
+CREATE OR ALTER PROCEDURE totalRequiredSupplier(input_suppliername D_NAME)
+RETURNS(
+suppliername D_NAME,
+suppliertotalpurchase D_INT,
+supplierpercentProductsTotal D_DECIMAL
+)
+AS
+DECLARE VARIABLE idpurchase D_INT;
+DECLARE VARIABLE idsupplier D_INT;
+DECLARE VARIABLE totalproducts D_INT;
+DECLARE VARIABLE totalproductsSupplier D_INT;
+DECLARE VARIABLE totalproductsSupplierTemp D_INT;
+BEGIN
+	-- GET TOTAL PRODUCTS ITEMS	
+	SELECT SUM(CURRENTQUANTITY)
+	FROM PRODUCTS	
+	INTO :totalproducts;	
+	
+	FOR SELECT S.FANTASYNAME ,SUM(pit.QUANTITY) NUMPURCHASES
+	FROM SUPPLIERS s   
+	INNER JOIN PURCHASES p ON p.SUPPLIERID = s.ID
+	INNER JOIN PURCHASEITEMS pit ON p.ID = pit.PURCHASEID
+	WHERE p.FINALIZED = 'Y' AND s.FANTASYNAME = :input_suppliername
+	GROUP BY s.FANTASYNAME
+	INTO :suppliername, :suppliertotalpurchase	
+	DO
+		BEGIN
+			supplierpercentProductsTotal = (suppliertotalpurchase * 100) / :totalproducts;
+			SUSPEND;
+		END 
+				
+END 
+
+SELECT * FROM mostRequiredSupp;
+
+
+SELECT * FROM totalRequiredSupplier('VWsales');
 -----------------------------------------------------------------------------
 --					NEW CLIENTS THIS YEAR
 
 CREATE OR ALTER PROCEDURE newclientsyear(input_year char(4))
 RETURNS(
 clientname D_NAME,
-email D_EMAIL,
 telephone D_TELEPHONE,
 cJOINDATE D_DATE
 )
 AS
 BEGIN
-	FOR SELECT c.NAME, c.EMAIL, c."TELEPHONE", c.JOINDATE 
+	FOR SELECT c.NAME,  c."TELEPHONE", c.JOINDATE 
 	FROM CLIENTS c
 	WHERE EXTRACT(YEAR FROM c.JOINDATE) = :input_year
-	INTO :clientname, :email, :TELEPHONE, :cjoindate
+	INTO :clientname, :TELEPHONE, :cjoindate
 	DO
 	BEGIN
 		SUSPEND;
 	END 
 END 
-
 
 SELECT * FROM newclientsyear('2017');
 

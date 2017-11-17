@@ -1,11 +1,19 @@
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javafx.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -15,6 +23,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import org.bson.BsonDocument;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import supportClasses.User;
 import supportClasses.databaseType;
 import supportClasses.userType;
@@ -49,13 +60,13 @@ public class LoginController extends ControllerModel {
     }
 
     @FXML
-    public void connectDatabase() {        
+    public void connectDatabase() {
         String dbToConnect = null;
 
         try {
 
             dbToConnect = dbComboBox.getValue();
-            
+
         } catch (Exception e) {
             sendAlert("Error",
                     "No Database Selected.",
@@ -70,11 +81,65 @@ public class LoginController extends ControllerModel {
                 connectDBFirebird();
                 break;
             case "MongoDB":
-                System.out.println("mongodb SELECTED");
+                connectMongoDB();
                 break;
         }
     }
 
+    public void connectMongoDB() {
+        MongoClient mongoClient = null;
+
+        System.out.println("Connecting to MongoDB!");
+        try {            
+            MongoClientURI uri = new MongoClientURI("mongodb://test:uTTtujcMU0OHIUL2@cluster0-shard-00-00-frcus.mongodb.net:27017,cluster0-shard-00-01-frcus.mongodb.net:27017,cluster0-shard-00-02-frcus.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin");
+            // Creating a Mongo client 
+            mongoClient = new MongoClient(uri);
+
+        } catch (Exception e) {
+            sendAlert(
+                    "Error Login",
+                    "Database Error",
+                    "Fail to connect to Database", Alert.AlertType.ERROR);
+        }
+        System.out.println("Connected to Database");
+
+        String username = usernameTextField.getText();
+        String password = passwordField.getText();
+        loginMongoDB(mongoClient, username, password);
+
+    }
+
+    public void loginMongoDB(MongoClient client, String username, String password) {
+        mongoDatabase = client.getDatabase("store");
+
+        MongoCollection<Document> users = mongoDatabase.getCollection("users");
+
+        BasicDBObject andquery = new BasicDBObject();
+        List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+        obj.add(new BasicDBObject("username", username));
+        obj.add(new BasicDBObject("password", password));
+        andquery.put("$and", obj);
+
+        List<Document> documents = users.find().filter(andquery).into(new ArrayList<Document>());
+
+        if (documents.size() != 0) {
+
+            User current = new User(username,
+                    userType.ParseUserType(documents.get(0).get("usertype").toString())
+            );
+            Stage stage;
+            PrincipalController controller = new PrincipalController(mongoDatabase, current, databaseType.mongodb);
+            stage = ChangeScreen(loginButton, "/fxml/MainScreen.fxml", controller);
+            controller.init(stage);
+
+        } else {
+            sendAlert("Login Error",
+                    "Error doing Login",
+                    "Username and password are incorrect.",
+                    Alert.AlertType.ERROR);
+
+        }
+    }
 
     public void connectDBPostgre() {
         System.out.println("-------- PostgreSQL "
@@ -95,7 +160,7 @@ public class LoginController extends ControllerModel {
         connection = null;
 
         try {
-            
+
             connection = DriverManager.getConnection(
                     "jdbc:postgresql://127.0.0.1:5432/loja-suplemento", "postgres",
                     "123456");
@@ -114,7 +179,6 @@ public class LoginController extends ControllerModel {
         checkLoginPostgres(usernameTextField.getText().toString(), passwordField.getText().toString());
 
     }
-
 
     public void connectDBFirebird() {
         System.out.println("-------- FireBird "
@@ -137,7 +201,7 @@ public class LoginController extends ControllerModel {
         try {
             java.util.Properties connectionProperties = new java.util.Properties();
             connectionProperties.put("user", "SYSDBA");
-            connectionProperties.put("password", "masterkey");            
+            connectionProperties.put("password", "masterkey");
             connection = DriverManager.getConnection(
                     "jdbc:firebirdsql://localhost:3050//home/vinicius/repos/University-Codes/2017/Second-Semester/Database-III/Loja-Suplementos/FireBirdDataBase.fdb", connectionProperties
             );
@@ -149,7 +213,7 @@ public class LoginController extends ControllerModel {
         }
 
         if (connection != null) {
-            System.out.println("Connection to Firebird Succeded!");            
+            System.out.println("Connection to Firebird Succeded!");
 
         } else {
             System.out.println("Failed to make connection!");
@@ -159,8 +223,6 @@ public class LoginController extends ControllerModel {
         checkLoginFirebird(usernameTextField.getText().toString(), passwordField.getText().toString());
 
     }
-    
-    
 
     public boolean checkLoginPostgres(String username, String password) {
         System.out.println("Signing in...");
@@ -210,17 +272,17 @@ public class LoginController extends ControllerModel {
                     + " FROM  USERS "
                     + " WHERE USERNAME = '" + username + "'"
                     + " AND PASSWORD = '" + password + "'"
-                    );
+            );
             // found a user
             if (rs.next()) {
-                
-                String tipousuario = rs.getString("usertype").toString();                
-                tipousuario = tipousuario.replace(" ", "");                              
+
+                String tipousuario = rs.getString("usertype").toString();
+                tipousuario = tipousuario.replace(" ", "");
                 User current = new User(username,
                         userType.ParseUserType(tipousuario)
                 );
                 Stage stage;
-                PrincipalController controller = new PrincipalController(this.connection, current, databaseType.firebird );
+                PrincipalController controller = new PrincipalController(this.connection, current, databaseType.firebird);
                 stage = ChangeScreen(loginButton, "/fxml/MainScreen.fxml", controller);
                 controller.init(stage);
             } else {
@@ -241,7 +303,5 @@ public class LoginController extends ControllerModel {
         }
         return false;
     }
-    
-    
 
 }

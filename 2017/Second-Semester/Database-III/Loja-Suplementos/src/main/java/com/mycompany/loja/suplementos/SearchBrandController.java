@@ -5,9 +5,14 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,7 +25,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import org.bson.Document;
 import supportClasses.Brand;
+import supportClasses.Type;
 import supportClasses.databaseType;
 
 /**
@@ -51,6 +58,10 @@ public class SearchBrandController extends ControllerModel {
 
     SearchBrandController(Connection connection, databaseType dbType) {
         super(connection, dbType);
+    }
+
+    SearchBrandController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
     }
 
     public void init(Stage modal) {
@@ -174,6 +185,47 @@ public class SearchBrandController extends ControllerModel {
                     }
                 }
                 break;
+            case mongodb:
+                 MongoCollection<Document> brands = mongoDatabase.getCollection("brands");
+                if (brandSearchString.equals("")) {
+                    try {
+
+                        List<Document> documents = brands.find().into(new ArrayList<Document>());
+                        int i = 0;
+                        for (Document document : documents) {
+                            data.add(new Brand(i,document.getString("name")));
+                            i++;
+                        }
+                    } catch (Exception e) {
+                        System.out.println( dbType + " error " + ": " + e.getMessage());
+                    }
+                } else {
+                    try {
+
+                        BasicDBObject andquery = new BasicDBObject();
+                        List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                        obj.add(new BasicDBObject("name", brandSearchString));
+                        andquery.put("$and", obj);
+                        List<Document> documents = brands.find().filter(andquery).into(new ArrayList<Document>());
+
+                        int i = 0;
+                        if (documents.size() != 0) {
+                            for (Document document : documents) {
+                                data.add(new Brand(i,document.getString("name")));
+                                i++;
+                            }
+                        } else {
+                            sendAlert("Information",
+                                    "Results",
+                                    "No results found with " + brandSearchString,
+                                    Alert.AlertType.INFORMATION);
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println( dbType + " error " + ": " + e.getMessage());
+                    }
+
+                }
         }
 
         // set items        

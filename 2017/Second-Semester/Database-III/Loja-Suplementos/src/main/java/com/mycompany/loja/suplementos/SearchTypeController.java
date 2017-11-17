@@ -5,9 +5,14 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,6 +25,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import org.bson.Document;
 import supportClasses.Brand;
 import supportClasses.Type;
 import supportClasses.databaseType;
@@ -54,6 +60,10 @@ public class SearchTypeController extends ControllerModel {
         super(connection, dbType);
     }
 
+    SearchTypeController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
+    }
+
     public void init(Stage modal) {
 
         dialog = modal;
@@ -65,8 +75,7 @@ public class SearchTypeController extends ControllerModel {
 
         typeTable.setItems(data);
 
-        
-         typeSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        typeSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
                 if (ke.getCode().equals(KeyCode.ENTER)) {
@@ -81,7 +90,6 @@ public class SearchTypeController extends ControllerModel {
 
         data.clear();
 
-        
         String typeSearchString = null;
         try {
             typeSearchString = typeSearchTextField.getText();
@@ -94,87 +102,127 @@ public class SearchTypeController extends ControllerModel {
                     "No Type name to search.", "Pick a type name to search.", Alert.AlertType.ERROR);
         }
 
-        switch(this.dbType){
+        switch (this.dbType) {
             case firebird:
-                       // if no type name, find all
-        if (typeSearchString.equals("")) {
-            try {
-                Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery(
-                        "select first 50 * "
-                        + " FROM types "                        
-                );
-                while (rs.next()) {
-                    data.add(new Type(rs.getInt("id"), rs.getString("name")));
+                // if no type name, find all
+                if (typeSearchString.equals("")) {
+                    try {
+                        Statement st = this.connection.createStatement();
+                        ResultSet rs = st.executeQuery(
+                                "select first 50 * "
+                                + " FROM types "
+                        );
+                        while (rs.next()) {
+                            data.add(new Type(rs.getInt("id"), rs.getString("name")));
+                        }
+                        rs.close();
+                        st.close();
+
+                    } catch (Exception e) {
+                        System.out.println( dbType + " error " + ": " + e.getMessage());
+                    }
+
+                } // find a specific type name
+                else {
+                    try {
+                        Statement st = this.connection.createStatement();
+                        ResultSet rs = st.executeQuery(
+                                "select * "
+                                + " FROM types "
+                                + " WHERE name = '" + typeSearchString + "'"
+                        );
+                        while (rs.next()) {
+                            data.add(new Type(rs.getInt("id"), rs.getString("name")));
+                        }
+                        rs.close();
+                        st.close();
+                    } catch (Exception e) {
+                        System.out.println( dbType + " error " + ": " + e.getMessage());
+                    }
                 }
-                rs.close();
-                st.close();
-
-            } catch (Exception e) {
-
-            }
-
-        } // find a specific type name
-        else {
-            try {
-                Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery(
-                        "select * "
-                        + " FROM types "
-                        + " WHERE name = '" + typeSearchString + "'"
-                );
-                while (rs.next()) {
-                    data.add(new Type(rs.getInt("id"), rs.getString("name")));
-                }
-                rs.close();
-                st.close();
-            } catch (Exception e) {
-
-            }
-        }
                 break;
             case postgres:
                 // if no type name, find all
-        if (typeSearchString.equals("")) {
-            try {
-                Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery(
-                        "select * "
-                        + " FROM types "
-                        + " limit 50"
-                );
-                while (rs.next()) {
-                    data.add(new Type(rs.getInt("id"), rs.getString("name")));
+                if (typeSearchString.equals("")) {
+                    try {
+                        Statement st = this.connection.createStatement();
+                        ResultSet rs = st.executeQuery(
+                                "select * "
+                                + " FROM types "
+                                + " limit 50"
+                        );
+                        while (rs.next()) {
+                            data.add(new Type(rs.getInt("id"), rs.getString("name")));
+                        }
+                        rs.close();
+                        st.close();
+
+                    } catch (Exception e) {
+                        System.out.println( dbType + " error " + ": " + e.getMessage());
+                    }
+
+                } // find a specific type name
+                else {
+                    try {
+                        Statement st = this.connection.createStatement();
+                        ResultSet rs = st.executeQuery(
+                                "select * "
+                                + " FROM types "
+                                + " WHERE name = '" + typeSearchString + "'"
+                        );
+                        while (rs.next()) {
+                            data.add(new Type(rs.getInt("id"), rs.getString("name")));
+                        }
+                        rs.close();
+                        st.close();
+                    } catch (Exception e) {
+                        System.out.println( dbType + " error " + ": " + e.getMessage());
+                    }
                 }
-                rs.close();
-                st.close();
+                break;
 
-            } catch (Exception e) {
+            case mongodb:
+                MongoCollection<Document> types = mongoDatabase.getCollection("types");
+                if (typeSearchString.equals("")) {
+                    try {
 
-            }
+                        List<Document> documents = types.find().into(new ArrayList<Document>());
 
-        } // find a specific type name
-        else {
-            try {
-                Statement st = this.connection.createStatement();
-                ResultSet rs = st.executeQuery(
-                        "select * "
-                        + " FROM types "
-                        + " WHERE name = '" + typeSearchString + "'"
-                );
-                while (rs.next()) {
-                    data.add(new Type(rs.getInt("id"), rs.getString("name")));
+                        for (Document document : documents) {
+                            data.add(new Type(document.getString("name")));
+                        }
+                    } catch (Exception e) {
+                        System.out.println( dbType + " error " + ": " + e.getMessage());
+                    }
+                } else {
+                    try {
+
+                        BasicDBObject andquery = new BasicDBObject();
+                        List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                        obj.add(new BasicDBObject("name", typeSearchString));
+                        andquery.put("$and", obj);
+                        List<Document> documents = types.find().filter(andquery).into(new ArrayList<Document>());
+
+                        if (documents.size() != 0) {
+                            for (Document document : documents) {
+                                data.add(new Type(document.getString("name")));
+                            }
+                        } else {
+                            sendAlert("Information",
+                                    "Results",
+                                    "No results found with " + typeSearchString,
+                                    Alert.AlertType.INFORMATION);
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println( dbType + " error " + ": " + e.getMessage());
+                    }
+
                 }
-                rs.close();
-                st.close();
-            } catch (Exception e) {
 
-            }
-        }
                 break;
         }
-        
-        
+
         // set items        
         typeTable.setItems(data);
     }

@@ -5,13 +5,19 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.bson.Document;
 import supportClasses.databaseType;
 
 /**
@@ -31,6 +37,10 @@ public class AddBrandController extends ControllerModel {
 
     AddBrandController(Connection connection, databaseType dbType) {
         super(connection, dbType);
+    }
+
+    AddBrandController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
     }
 
     public void init(Stage dialog) {
@@ -53,7 +63,11 @@ public class AddBrandController extends ControllerModel {
                             + " VALUES('" + brandString + "' )"
                     );
                     st.close();
-                    sendAlert("Brand added with success!", "Brand Added", "A brand have been added!", Alert.AlertType.CONFIRMATION);
+                    sendAlert(
+                            "Brand added with success!", 
+                            "Brand Added",
+                            "A brand have been added!", 
+                            Alert.AlertType.CONFIRMATION);
                 } catch (Exception e) {
                     System.out.println("Error " + e.getMessage());
                     return;
@@ -68,12 +82,34 @@ public class AddBrandController extends ControllerModel {
                             + " VALUES('" + brandString + "' )"
                     );
                     st.close();
-                    sendAlert("Brand added with success!", "Brand Added", "A brand have been added!", Alert.AlertType.CONFIRMATION);
+                    sendAlert(
+                            "Brand added with success!", 
+                            "Brand Added",
+                            "A brand have been added!", 
+                            Alert.AlertType.CONFIRMATION);
                 } catch (Exception e) {
                     System.out.println("Error " + e.getMessage());
                     return;
                 }
                 break;
+            case mongodb:
+                try {
+                    MongoCollection<Document> types = mongoDatabase.getCollection("brands");
+                    
+                    Document newbrand = new Document();
+                    newbrand.put("name", brandString);
+                    types.insertOne(newbrand);                    
+                    sendAlert(
+                            "Brand added with success!", 
+                            "Brand Added",
+                            "A brand have been added!", 
+                            Alert.AlertType.CONFIRMATION);                    
+                } catch (Exception e) {
+                    System.out.println("Erro no banco " + dbType + ": " + e.getMessage());
+                }
+                
+                break;
+
         }
 
     }
@@ -104,7 +140,7 @@ public class AddBrandController extends ControllerModel {
                 } catch (Exception e) {
 
                 }
-                return false;                
+                break;
 
             case postgres:
                 try {
@@ -129,7 +165,25 @@ public class AddBrandController extends ControllerModel {
                 } catch (Exception e) {
 
                 }
-                return false;                
+                break;
+
+            case mongodb:
+                MongoCollection<Document> types = mongoDatabase.getCollection("brands");
+
+                BasicDBObject andquery = new BasicDBObject();
+                List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                obj.add(new BasicDBObject("name", brandString));
+                andquery.put("$and", obj);
+                List<Document> documents = types.find().filter(andquery).into(new ArrayList<Document>());
+
+                if (documents.size() != 0) {
+                    sendAlert("Error to add a Brand",
+                            "Brand exists.",
+                            "Brand already Exists! Choose a different brand name!",
+                            Alert.AlertType.ERROR);
+                    return true;
+                }
+                break;
         }
 
         return false;

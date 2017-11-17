@@ -142,7 +142,7 @@ public class SearchPurchaseController extends ControllerModel {
                                         rs.getTimestamp("purchasedate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
-                                                        .ofPattern("YYYY-MM-dd HH:mm:ss"))
+                                                        .ofPattern("dd/MM/YYYY HH:mm:ss"))
                                 );
                             }
                             rs.close();
@@ -169,7 +169,7 @@ public class SearchPurchaseController extends ControllerModel {
                                         rs.getTimestamp("purchasedate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
-                                                        .ofPattern("YYYY-MM-dd HH:mm:ss"))
+                                                        .ofPattern("dd/MM/YYYY HH:mm:ss"))
                                 );
                             } else {
                                 sendAlert(
@@ -189,7 +189,7 @@ public class SearchPurchaseController extends ControllerModel {
                                         rs.getTimestamp("purchasedate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
-                                                        .ofPattern("YYYY-MM-dd HH:mm:ss"))
+                                                        .ofPattern("dd/MM/YYYY HH:mm:ss"))
                                 );
                             }
                             rs.close();
@@ -219,7 +219,7 @@ public class SearchPurchaseController extends ControllerModel {
                                         rs.getTimestamp("purchasedate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
-                                                        .ofPattern("YYYY-MM-dd HH:mm:ss"))
+                                                       .ofPattern("dd/MM/YYYY HH:mm:ss"))
                                 );
                             }
                             rs.close();
@@ -247,7 +247,7 @@ public class SearchPurchaseController extends ControllerModel {
                                         rs.getTimestamp("purchasedate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
-                                                        .ofPattern("YYYY-MM-dd HH:mm:ss"))
+                                                       .ofPattern("dd/MM/YYYY HH:mm:ss"))
                                 );
                             } else {
                                 sendAlert(
@@ -267,7 +267,7 @@ public class SearchPurchaseController extends ControllerModel {
                                         rs.getTimestamp("purchasedate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
-                                                        .ofPattern("YYYY-MM-dd HH:mm:ss"))
+                                                        .ofPattern("dd/MM/YYYY HH:mm:ss"))
                                 );
                             }
                             rs.close();
