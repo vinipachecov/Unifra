@@ -32,6 +32,8 @@ import javafx.stage.Stage;
 import org.bson.Document;
 import supportClasses.Client;
 import supportClasses.databaseType;
+import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  *
@@ -143,7 +145,7 @@ public class SearchClientController extends ControllerModel {
                     MongoCollection<Document> clients = mongoDatabase.getCollection("clients");
                     if (clientSearchString.equals("")) {
                         try {
-
+                            
                             List<Document> documents = clients.find().into(new ArrayList<Document>());
                             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 

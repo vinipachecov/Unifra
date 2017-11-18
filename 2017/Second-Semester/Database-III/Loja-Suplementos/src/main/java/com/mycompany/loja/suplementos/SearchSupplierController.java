@@ -5,10 +5,17 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,6 +28,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import org.bson.Document;
 import supportClasses.Supplier;
 import supportClasses.databaseType;
 
@@ -66,6 +74,10 @@ public class SearchSupplierController extends ControllerModel {
         super(connection, dbType);
     }
 
+    SearchSupplierController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
+    }
+
     public void init(Stage modal) {
 
         dialog = modal;
@@ -81,7 +93,7 @@ public class SearchSupplierController extends ControllerModel {
         purchasesColumn.setCellValueFactory(new PropertyValueFactory<Supplier, Integer>("purchases"));
 
         supplierTable.setItems(data);
-        
+
         supplierSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
@@ -121,13 +133,68 @@ public class SearchSupplierController extends ControllerModel {
         // if no brand name find all
         try {
             switch (dbType) {
+                case mongodb:
+                    MongoCollection<Document> suppliers = mongoDatabase.getCollection("suppliers");
+                    if (supplierSearchString.equals("")) {
+                        try {
+
+                            List<Document> documents = suppliers.find().into(new ArrayList<Document>());                            
+
+                            System.out.println("vai começar a pegar os documentos");
+                            for (Document document : documents) {
+                                addToSupplierList(
+                                        document.getString("socialreason"),
+                                        document.getString("email"),
+                                        document.getString("cnpj"),
+                                        document.getString("telephone"),
+                                        document.getString("fantasyname"),
+                                        document.getInteger("numberpurchases")
+                                );
+                            }
+                        } catch (Exception e) {
+                            System.out.println(dbType + " error " + ": " + e.getMessage() + " ");
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+
+                            BasicDBObject andquery = new BasicDBObject();
+                            List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                            obj.add(new BasicDBObject("fantasyname", supplierSearchString));
+                            andquery.put("$and", obj);
+                            List<Document> documents = suppliers.find().filter(andquery).into(new ArrayList<Document>());
+
+                            if (documents.size() != 0) {
+                                for (Document document : documents) {
+                                    addToSupplierList(
+                                        document.getString("socialreason"),
+                                        document.getString("email"),
+                                        document.getString("cnpj"),
+                                        document.getString("telephone"),
+                                        document.getString("fantasyname"),
+                                        document.getInteger("numberpurchases")
+                                );
+                                }
+                            } else {
+                                sendAlert("Information",
+                                        "Results",
+                                        "No results found with " + supplierSearchString,
+                                        Alert.AlertType.INFORMATION);
+                            }
+
+                        } catch (Exception e) {
+                            System.out.println(dbType + " error " + ": " + e.getMessage());
+                        }
+
+                    }
+                    break;
                 case firebird:
                     if (supplierSearchString.equals("")) {
                         try {
                             Statement st = this.connection.createStatement();
                             ResultSet rs = st.executeQuery(
                                     "select first 50 * "
-                                    + " FROM suppliers "                                    
+                                    + " FROM suppliers "
                             );
                             while (rs.next()) {
                                 addToSupplierList(

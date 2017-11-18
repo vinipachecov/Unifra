@@ -143,7 +143,7 @@ public class AddClientController extends ControllerModel {
                 obj.add(new BasicDBObject("govid", govid));
                 andquery.put("$and", obj);
 
-                List<Document> documents = clients.find().filter(andquery).into(new ArrayList<Document>());
+                List<Document> documents = clients.find().filter(andquery).into(new ArrayList<Document>());                
 
                 if (documents.size() != 0) {
                     sendAlert("Error",

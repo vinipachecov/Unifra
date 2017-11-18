@@ -186,23 +186,6 @@ public class PrincipalController extends ControllerModel {
     }
 
     @FXML
-    public void addSupplier(ActionEvent event) {
-        if (getUserType() == userType.admin) {
-            AddSupplierController addSupplier = new AddSupplierController(this.connection, this.dbType);
-            dialog = CreateModal(event, menuBar,
-                    "/fxml/AddSupplier.fxml",
-                    addSupplier,
-                    "Add a Supplier");
-            addSupplier.init(dialog);
-        } else {
-            sendAlert("Access error",
-                    "Attempt to access admin feature.",
-                    "You have no access to add Suppliers. Sign in as an administrator.",
-                    Alert.AlertType.ERROR);
-        }
-    }
-
-    @FXML
     public void checkHistory(ActionEvent event) {
         if (getUserType() == userType.admin) {
             CheckHistoryController historyController = new CheckHistoryController(this.connection, this.dbType);
@@ -258,12 +241,55 @@ public class PrincipalController extends ControllerModel {
     }
 
     @FXML
+    public void addSupplier(ActionEvent event) {
+        if (getUserType() == userType.admin) {
+            AddSupplierController addSupplier = null;
+            switch (dbType) {
+                case mongodb:
+                    addSupplier = new AddSupplierController(this.mongoDatabase, this.dbType);
+                    dialog = CreateModal(event, menuBar,
+                            "/fxml/AddSupplier.fxml",
+                            addSupplier,
+                            "Add a Supplier");
+                    addSupplier.init(dialog);
+                    break;
+                default:
+                    addSupplier = new AddSupplierController(this.connection, this.dbType);
+                    dialog = CreateModal(event, menuBar,
+                            "/fxml/AddSupplier.fxml",
+                            addSupplier,
+                            "Add a Supplier");
+                    addSupplier.init(dialog);
+                    break;
+
+            }
+        } else {
+            sendAlert("Access error",
+                    "Attempt to access admin feature.",
+                    "You have no access to add Suppliers. Sign in as an administrator.",
+                    Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
     public void searchSupplier(ActionEvent event) {
 
         if (getUserType() == userType.admin) {
-            SearchSupplierController searchController = new SearchSupplierController(connection, this.dbType);
-            dialog = CreateModal(event, menuBar, "/fxml/SearchSupplier.fxml", searchController, "Searching Suppliers");
-            searchController.init(dialog);
+            SearchSupplierController searchController = null;
+            switch (dbType) {
+                case mongodb:
+                    searchController = new SearchSupplierController(this.mongoDatabase, this.dbType);
+                    dialog = CreateModal(event, menuBar, "/fxml/SearchSupplier.fxml", searchController, "Searching Suppliers");
+                    searchController.init(dialog);
+                    break;
+                default:
+                    searchController = new SearchSupplierController(connection, this.dbType);
+                    dialog = CreateModal(event, menuBar, "/fxml/SearchSupplier.fxml", searchController, "Searching Suppliers");
+                    searchController.init(dialog);
+                    break;
+
+            }
+
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",
@@ -397,7 +423,7 @@ public class PrincipalController extends ControllerModel {
                     dialog = CreateModal(event, menuBar, "/fxml/SearchClient.fxml", searchController, "Searching Clients");
                     searchController.init(dialog);
                     break;
-            }            
+            }
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",

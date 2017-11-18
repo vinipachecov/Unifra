@@ -5,14 +5,22 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.bson.Document;
 import supportClasses.databaseType;
 
 /**
@@ -46,6 +54,10 @@ public class AddSupplierController extends ControllerModel {
         super(db, dbt);
     }
 
+    AddSupplierController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
+    }
+
     public void init(Stage modal) {
         dialog = modal;
     }
@@ -58,16 +70,38 @@ public class AddSupplierController extends ControllerModel {
     public void addSupplier(String socialrtf, String emailString,
             String cnpj, String telephone, String fantasyname) {
 
-        try {
-            Statement st = this.connection.createStatement();
-            st.executeUpdate(""
-                    + "insert into suppliers(socialreason, email, cnpj, telephone, fantasyname, numberpurchases)\n"
-                    + "values('" + socialrtf + "', '" + emailString + "' ,"
-                    + "'" + cnpj + "','" + telephone + " ', '" + fantasyname + "', 0)");
-            st.close();
-        } catch (Exception e) {
+        switch (dbType) {
+            case mongodb:
+                try {
+                    MongoCollection<Document> suppliers = mongoDatabase.getCollection("suppliers");
 
+                    Document newsupplier = new Document();
+                    newsupplier.put("socialreason", socialrtf);
+                    newsupplier.put("email", emailString);
+                    newsupplier.put("cnpj", cnpj);
+                    newsupplier.put("fantasyname", fantasyname);
+                    newsupplier.put("numpurchases", 0);
+                    suppliers.insertOne(newsupplier);
+                } catch (Exception e) {
+                    System.out.println("Erro no banco " + dbType + ": " + e.getMessage());
+                    return;
+                }
+                break;
+            default:
+                try {
+                    Statement st = this.connection.createStatement();
+                    st.executeUpdate(""
+                            + "insert into suppliers(socialreason, email, cnpj, telephone, fantasyname, numberpurchases)\n"
+                            + "values('" + socialrtf + "', '" + emailString + "' ,"
+                            + "'" + cnpj + "','" + telephone + " ', '" + fantasyname + "', 0)");
+                    st.close();
+                } catch (Exception e) {
+                    System.out.println("Erro no banco " + dbType + ": " + e.getMessage());
+                    return;
+                }
+                break;
         }
+
         sendAlert("Success", "Supplier Added!", "Supplier Added with Success.", Alert.AlertType.CONFIRMATION);
     }
 
@@ -75,6 +109,26 @@ public class AddSupplierController extends ControllerModel {
             String cnpj, String telephone, String fantasyname) {
 
         switch (this.dbType) {
+            case mongodb:
+                MongoCollection<Document> suppliers = mongoDatabase.getCollection("suppliers");
+
+                BasicDBObject andquery = new BasicDBObject();
+                List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                obj.add(new BasicDBObject("fantasyname", fantasyname));
+                obj.add(new BasicDBObject("email", emailString));
+                obj.add(new BasicDBObject("cnpj", cnpj));
+                andquery.put("$and", obj);
+
+                List<Document> documents = suppliers.find().filter(andquery).into(new ArrayList<Document>());
+
+                if (documents.size() != 0) {
+                    sendAlert("Error",
+                            "Client already exists!",
+                            "User already exists with those values",
+                            Alert.AlertType.ERROR);
+                    return true;
+                }
+                break;
             case firebird:
                 try {
                     Statement st = this.connection.createStatement();
@@ -85,7 +139,7 @@ public class AddSupplierController extends ControllerModel {
                             + " AND email = '" + emailString + "'"
                             + " AND cnpj= '" + cnpj + "'"
                             + " AND telephone= '" + telephone + "'"
-                            + " AND fantasyname= '" + fantasyname + "'"                            
+                            + " AND fantasyname= '" + fantasyname + "'"
                     );
                     if (rs.next()) {
                         sendAlert("Error",
