@@ -5,10 +5,18 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,6 +29,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import org.bson.Document;
 import supportClasses.Client;
 import supportClasses.databaseType;
 
@@ -69,6 +78,10 @@ public class SearchClientController extends ControllerModel {
         super(connection, dbType);
     }
 
+    SearchClientController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
+    }
+
     public void init(Stage modal) {
 
         dialog = modal;
@@ -84,8 +97,8 @@ public class SearchClientController extends ControllerModel {
         birthdateColumn.setCellValueFactory(new PropertyValueFactory<Client, LocalDate>("birthdate"));
 
         clientTable.setItems(data);
-        
-         clientSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+        clientSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
                 if (ke.getCode().equals(KeyCode.ENTER)) {
@@ -97,7 +110,7 @@ public class SearchClientController extends ControllerModel {
     }
 
     public void addToCLientList(String name, Integer numsales,
-            String email, String telephone, String govid, LocalDate birthdate) {
+            String email, String telephone, String govid, LocalDate birthdate) {        
         data.add(
                 new Client(name, numsales, email, telephone, govid, birthdate)
         );
@@ -123,16 +136,73 @@ public class SearchClientController extends ControllerModel {
 
         // if no brand name find all
         try {
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             ResultSet rs = null;
             switch (dbType) {
+                case mongodb:
+                    MongoCollection<Document> clients = mongoDatabase.getCollection("clients");
+                    if (clientSearchString.equals("")) {
+                        try {
+
+                            List<Document> documents = clients.find().into(new ArrayList<Document>());
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+                            System.out.println("vai começar a pegar os documentos");
+                            for (Document document : documents) {
+                                  addToCLientList(
+                                        document.getString("name"),
+                                        document.getInteger("numsales"),
+                                        document.getString("email"),
+                                        document.getString("telephone"),
+                                        document.getString("govid"),
+                                        document.getDate("birthdate").toInstant().atZone(ZoneId.systemDefault()).toLocalDate()                                        
+                                  );
+                            }
+                        } catch (Exception e) {
+                            System.out.println(dbType + " error " + ": " + e.getMessage() + " ");
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+
+                            BasicDBObject andquery = new BasicDBObject();
+                            List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                            obj.add(new BasicDBObject("name", clientSearchString));
+                            andquery.put("$and", obj);
+                            List<Document> documents = clients.find().filter(andquery).into(new ArrayList<Document>());
+
+                            if (documents.size() != 0) {
+                                for (Document document : documents) {
+                                     addToCLientList(
+                                        document.getString("name"),
+                                        document.getInteger("numsales"),
+                                        document.getString("email"),
+                                        document.getString("telephone"),
+                                        document.getString("govid"),
+                                        document.getDate("birthdate").toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                                     );
+                                }
+                            } else {
+                                sendAlert("Information",
+                                        "Results",
+                                        "No results found with " + clientSearchString,
+                                        Alert.AlertType.INFORMATION);
+                            }
+
+                        } catch (Exception e) {
+                            System.out.println(dbType + " error " + ": " + e.getMessage());
+                        }
+
+                    }
+                    break;
                 case firebird:
+                    st = this.connection.createStatement();
                     if (clientSearchString.equals("")) {
                         try {
                             st = this.connection.createStatement();
                             rs = st.executeQuery(
                                     "select first 50 * "
-                                    + " FROM clients "                                    
+                                    + " FROM clients "
                             );
                             while (rs.next()) {
                                 addToCLientList(
@@ -192,6 +262,7 @@ public class SearchClientController extends ControllerModel {
                     }
                     break;
                 case postgres:
+                    st = this.connection.createStatement();
                     if (clientSearchString.equals("")) {
                         try {
                             st = this.connection.createStatement();

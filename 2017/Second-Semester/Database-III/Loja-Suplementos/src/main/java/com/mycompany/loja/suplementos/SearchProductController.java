@@ -5,9 +5,14 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,8 +25,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import org.bson.Document;
 import supportClasses.Product;
 import supportClasses.Supplier;
+import supportClasses.Type;
 import supportClasses.databaseType;
 
 /**
@@ -69,6 +76,10 @@ public class SearchProductController extends ControllerModel {
         super(connection, dbType);
     }
 
+    SearchProductController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
+    }
+
     public void init(Stage modal) {
 
         dialog = modal;
@@ -85,8 +96,8 @@ public class SearchProductController extends ControllerModel {
         unitTypeColumn.setCellValueFactory(new PropertyValueFactory<Product, String>("unit"));
 
         productTable.setItems(data);
-        
-         productSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+        productSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
                 if (ke.getCode().equals(KeyCode.ENTER)) {
@@ -123,8 +134,62 @@ public class SearchProductController extends ControllerModel {
         }
 
         switch (this.dbType) {
+            case mongodb:
+                MongoCollection<Document> products = mongoDatabase.getCollection("products");
+                if (productSearchString.equals("")) {
+                    try {
+
+                        List<Document> documents = products.find().into(new ArrayList<Document>());
+
+                        for (Document document : documents) {
+                            addToProductList(
+                                    document.getString("name"),
+                                    document.getString("brandname"),
+                                    document.getString("typename"),
+                                    document.getInteger("minimumquantity"),
+                                    document.getInteger("currentquantity"),
+                                    document.getDouble("unitvalue").floatValue(),
+                                    document.getString("unittype")                                    
+                            );
+                        }
+                    } catch (Exception e) {
+                        System.out.println(dbType + " error " + ": " + e.getMessage());
+                    }
+                } else {
+                    try {
+
+                        BasicDBObject andquery = new BasicDBObject();
+                        List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                        obj.add(new BasicDBObject("name", productSearchString));
+                        andquery.put("$and", obj);
+                        List<Document> documents = products.find().filter(andquery).into(new ArrayList<Document>());
+
+                        if (documents.size() != 0) {
+                            for (Document document : documents) {
+                                addToProductList(
+                                        document.getString("name"),
+                                        document.getString("brandname"),
+                                        document.getString("typename"),
+                                        document.getInteger("minimumquantity"),
+                                        document.getInteger("currentquantity"),
+                                        document.getDouble("unitvalue").floatValue(),
+                                        document.getString("unittype")
+                                );
+                            }
+                        } else {
+                            sendAlert("Information",
+                                    "Results",
+                                    "No results found with " + productSearchString,
+                                    Alert.AlertType.INFORMATION);
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println(dbType + " error " + ": " + e.getMessage());
+                    }
+                }
+                break;
             case firebird:
-                 if (productSearchString.equals("")) {
+                if (productSearchString.equals("")) {
                     try {
                         Statement st = this.connection.createStatement();
                         ResultSet rs = st.executeQuery(

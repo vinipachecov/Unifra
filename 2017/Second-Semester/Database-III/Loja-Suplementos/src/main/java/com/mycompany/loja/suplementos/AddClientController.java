@@ -1,20 +1,29 @@
+
 /* To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import org.bson.Document;
 import supportClasses.databaseType;
 
 /**
@@ -45,7 +54,11 @@ public class AddClientController extends ControllerModel {
     }
 
     AddClientController(Connection connection, databaseType dbType) {
-        super(connection,dbType);
+        super(connection, dbType);
+    }
+
+    AddClientController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
     }
 
     public void init(Stage dialog) {
@@ -81,6 +94,24 @@ public class AddClientController extends ControllerModel {
 
         switch (this.dbType) {
             case mongodb:
+                try {
+                    MongoCollection<Document> clients = mongoDatabase.getCollection("clients");
+                    
+                    Document newclient = new Document();
+                    newclient.put("name", name);
+                    newclient.put("email", email);
+                    newclient.put("telephone", telephone);
+                    newclient.put("govid", govid);
+                    newclient.put("numsales", 0);
+                    newclient.put("birthdate", Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));                    
+                    clients.insertOne(newclient);                    
+                    sendAlert("Product type added with success!", 
+                            "Type Added", 
+                            "A new type have been added!", 
+                            Alert.AlertType.CONFIRMATION);
+                } catch (Exception e) {
+                    System.out.println("Erro no banco " + dbType + ": " + e.getMessage());
+                }
                 break;
 
             default:
@@ -102,6 +133,26 @@ public class AddClientController extends ControllerModel {
             String telephone, String govid, LocalDate date) {
 
         switch (this.dbType) {
+            case mongodb:
+                MongoCollection<Document> clients = mongoDatabase.getCollection("clients");
+
+                BasicDBObject andquery = new BasicDBObject();
+                List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                obj.add(new BasicDBObject("username", name));
+                obj.add(new BasicDBObject("email", email));
+                obj.add(new BasicDBObject("govid", govid));
+                andquery.put("$and", obj);
+
+                List<Document> documents = clients.find().filter(andquery).into(new ArrayList<Document>());
+
+                if (documents.size() != 0) {
+                    sendAlert("Error",
+                            "Client already exists!",
+                            "User already exists with those values",
+                            Alert.AlertType.ERROR);
+                    return true;
+                }
+                break;
             case firebird:
                 try {
                     Statement st = this.connection.createStatement();

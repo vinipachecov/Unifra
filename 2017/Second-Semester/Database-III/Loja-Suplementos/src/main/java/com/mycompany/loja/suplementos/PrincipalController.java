@@ -241,9 +241,20 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public void searchProduct(ActionEvent event) {
-        SearchProductController searchController = new SearchProductController(connection, this.dbType);
-        dialog = CreateModal(event, menuBar, "/fxml/SearchProduct.fxml", searchController, "Searching Products");
-        searchController.init(dialog);
+        SearchProductController searchController = null;
+        switch (dbType) {
+            case mongodb:
+                searchController = new SearchProductController(this.mongoDatabase, this.dbType);
+                dialog = CreateModal(event, menuBar, "/fxml/SearchProduct.fxml", searchController, "Searching Products");
+                searchController.init(dialog);
+                break;
+            default:
+                searchController = new SearchProductController(connection, this.dbType);
+                dialog = CreateModal(event, menuBar, "/fxml/SearchProduct.fxml", searchController, "Searching Products");
+                searchController.init(dialog);
+                break;
+        }
+
     }
 
     @FXML
@@ -312,12 +323,26 @@ public class PrincipalController extends ControllerModel {
     @FXML
     public void addProduct(ActionEvent event) {
         if (getUserType() == userType.admin) {
-            AddProductController productController = new AddProductController(connection, this.dbType);
-            dialog = CreateModal(event, menuBar,
-                    "/fxml/AddProduct.fxml",
-                    productController,
-                    "Add a Product");
-            productController.init(dialog);
+            AddProductController productController = null;
+            switch (dbType) {
+                case mongodb:
+                    productController = new AddProductController(this.mongoDatabase, this.dbType);
+                    dialog = CreateModal(event, menuBar,
+                            "/fxml/AddProduct.fxml",
+                            productController,
+                            "Add a Product");
+                    productController.init(dialog);
+                    break;
+                default:
+                    productController = new AddProductController(connection, this.dbType);
+                    dialog = CreateModal(event, menuBar,
+                            "/fxml/AddProduct.fxml",
+                            productController,
+                            "Add a Product");
+                    productController.init(dialog);
+                    break;
+            }
+
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",
@@ -360,9 +385,19 @@ public class PrincipalController extends ControllerModel {
     public void searchClients(ActionEvent event) {
 
         if (getUserType() == userType.admin) {
-            SearchClientController searchController = new SearchClientController(connection, this.dbType);
-            dialog = CreateModal(event, menuBar, "/fxml/SearchClient.fxml", searchController, "Searching Clients");
-            searchController.init(dialog);
+            SearchClientController searchController = null;
+            switch (dbType) {
+                case mongodb:
+                    searchController = new SearchClientController(this.mongoDatabase, this.dbType);
+                    dialog = CreateModal(event, menuBar, "/fxml/SearchClient.fxml", searchController, "Searching Clients");
+                    searchController.init(dialog);
+                    break;
+                default:
+                    searchController = new SearchClientController(connection, this.dbType);
+                    dialog = CreateModal(event, menuBar, "/fxml/SearchClient.fxml", searchController, "Searching Clients");
+                    searchController.init(dialog);
+                    break;
+            }            
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",
@@ -374,12 +409,25 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public void addClient(ActionEvent event) {
-        AddClientController clientController = new AddClientController(this.connection, this.dbType);
-        dialog = CreateModal(event, menuBar,
-                "/fxml/AddClient.fxml",
-                clientController,
-                "Add new Client");
-        clientController.init(dialog);
+        AddClientController clientController = null;
+        switch (dbType) {
+            case mongodb:
+                clientController = new AddClientController(this.mongoDatabase, this.dbType);
+                dialog = CreateModal(event, menuBar,
+                        "/fxml/AddClient.fxml",
+                        clientController,
+                        "Add new Client");
+                clientController.init(dialog);
+                break;
+            default:
+                clientController = new AddClientController(this.connection, this.dbType);
+                dialog = CreateModal(event, menuBar,
+                        "/fxml/AddClient.fxml",
+                        clientController,
+                        "Add new Client");
+                clientController.init(dialog);
+                break;
+        }
 
     }
 

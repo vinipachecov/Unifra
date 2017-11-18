@@ -6,10 +6,17 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +27,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 import supportClasses.ProductItem;
 import supportClasses.databaseType;
 
@@ -62,6 +71,8 @@ public class AddSaleItemController extends ControllerModel {
 
     public AddSaleController asic;
 
+    public BasicDBObject currentSale;
+
     public AddSaleItemController(Connection connection) {
         super(connection);
 
@@ -69,6 +80,15 @@ public class AddSaleItemController extends ControllerModel {
 
     AddSaleItemController(Connection connection, databaseType dbType) {
         super(connection, dbType);
+    }
+
+    AddSaleItemController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
+    }
+
+    AddSaleItemController(MongoDatabase mongoDatabase, BasicDBObject currentSale, databaseType dbType) {
+        super(mongoDatabase, dbType);
+        this.currentSale = currentSale;
     }
 
     /**
@@ -88,6 +108,17 @@ public class AddSaleItemController extends ControllerModel {
         saleTable = saletable;
         dialog = modal;
         this.saleID = id;
+        getProducts();
+    }
+
+    public void init(Stage modal, TableView saletable, ObservableList<ProductItem> listdata,
+            AddSaleController asic) {
+        this.asic = asic;
+        this.subtotalAddSaleScreen = subtotalAddSaleScreen;
+        this.totalAddSaleScreen = totalAddSaleScreen;
+        this.auxdata = listdata;
+        saleTable = saletable;
+        dialog = modal;
         getProducts();
     }
 
@@ -158,6 +189,10 @@ public class AddSaleItemController extends ControllerModel {
             Statement st = this.connection.createStatement();
             ResultSet rs = null;
             switch (dbType) {
+                case mongodb:
+                    
+                    
+                    break;
                 case firebird:
                     rs = st.executeQuery(
                             "SELECT productname FROM get_products_additem;");
@@ -224,9 +259,12 @@ public class AddSaleItemController extends ControllerModel {
     public void addItem(String itemname, Integer Quantity, Float unitValue) {
 
         try {
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             switch (dbType) {
+                case mongodb:
+                    break;
                 case firebird:
+                    st = this.connection.createStatement();
                     st.executeUpdate(
                             "EXECUTE PROCEDURE add_saleitem("
                             + "" + saleID + ","
@@ -237,6 +275,7 @@ public class AddSaleItemController extends ControllerModel {
                     );
                     break;
                 case postgres:
+                    st = this.connection.createStatement();
                     st.executeUpdate(
                             "DO $$ BEGIN\n"
                             + "    PERFORM add_saleitem("
@@ -262,16 +301,46 @@ public class AddSaleItemController extends ControllerModel {
     public boolean checkItemAlreadyExists(String itemname) {
 
         try {
-            System.out.println("CUrrent saleid = " + saleID);
-            Statement st = this.connection.createStatement();
-            ResultSet rs = null;
+
             switch (dbType) {
+                case mongodb:
+                    MongoCollection<Document> sales = mongoDatabase.getCollection("sales");
+
+                    BasicDBList saleitems = (BasicDBList) currentSale.get("saleitems");
+
+                    System.out.println("TOTAL DE ITEMS = " + saleitems.toArray().toString());
+                    if (saleitems.size() != 0) {
+                        for (Object saleitem : saleitems) {
+                            BasicDBObject aux = (BasicDBObject) saleitem;
+                            if(aux.getString(itemname).equals(saleitem)){
+                                return true;
+                            }
+                        }
+                    } else {
+                        System.out.println("VAZIO VAI ADICIONAR");
+                        return false;
+                    }
+                    
+                    // KEEP GOING
+                    try {
+                        List<Document> documents = sales.find().into(new ArrayList<Document>());
+                        for (Document document : documents) {
+
+                        }
+                    } catch (Exception e) {
+                        System.out.println(dbType + " error " + ": " + e.getMessage());
+                    }
+                    break;
                 case firebird:
-                    st.executeUpdate("EXECUTE PROCEDURE saleItem_exists(" + saleID + ","
+                    Statement st1 = this.connection.createStatement();
+                    ResultSet rs = null;
+                    st1.executeUpdate("EXECUTE PROCEDURE saleItem_exists(" + saleID + ","
                             + "'" + itemname + "');");
+                    st1.close();
                     break;
                 case postgres:
-                    rs = st.executeQuery(
+                    Statement st2 = this.connection.createStatement();
+                    rs = st2.executeQuery(
                             "select * from item_exists(" + saleID + ","
                             + "'" + itemname + "');");
                     rs.next();
@@ -284,10 +353,9 @@ public class AddSaleItemController extends ControllerModel {
                         rs.close();
                         return true;
                     }
-
+                    st2.close();
                     break;
             }
-            st.close();
 
         } catch (Exception e) {
             System.out.println("ERROR " + e.getMessage());
@@ -315,7 +383,7 @@ public class AddSaleItemController extends ControllerModel {
                     "Fill all the fields", Alert.AlertType.ERROR);
         } else {
             if (!checkItemAlreadyExists(findProductComboBox.getValue())) {
-                addItem(itemname, quantity, unitvalue);
+                //addItem(itemname, quantity, unitvalue);
             }
         }
     }

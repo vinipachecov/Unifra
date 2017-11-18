@@ -5,11 +5,14 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ThreadLocalRandom;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import org.bson.Document;
 import supportClasses.ProductItem;
 import supportClasses.databaseType;
 
@@ -77,6 +81,7 @@ public class AddSaleController extends ControllerModel {
 
     public boolean saleCreated = false;
 
+    public BasicDBObject currentSale;
     public ImageView imageView;
 
     private PrincipalController pc;
@@ -174,6 +179,8 @@ public class AddSaleController extends ControllerModel {
             Statement st = this.connection.createStatement();
             ResultSet rs = null;
             switch (this.dbType) {
+                case mongodb:
+                    break;
                 case firebird:
                     try {
                         rs = st.executeQuery(
@@ -186,8 +193,8 @@ public class AddSaleController extends ControllerModel {
                     }
                     break;
                 case postgres:
-                    try {                        
-                         rs = st.executeQuery(
+                    try {
+                        rs = st.executeQuery(
                                 "select * from get_clients();");
                         while (rs.next()) {
                             clientComboBox.getItems().add(rs.getString("name"));
@@ -199,7 +206,7 @@ public class AddSaleController extends ControllerModel {
             }
 
         } catch (Exception e) {
-            
+
         }
 
     }
@@ -207,10 +214,19 @@ public class AddSaleController extends ControllerModel {
     //Add item to this sale
     @FXML
     public void addItemSale() {
-
-        AddSaleItemController itemController = new AddSaleItemController(connection, this.dbType);
-        dialogAddItem = CreateModal(backButton, "/fxml/AddSaleItem.fxml", itemController, "Add Product Item");
-        itemController.init(dialogAddItem, saleId, saleTable, data, this);
+        AddSaleItemController itemController = null;
+        switch (dbType) {
+            case mongodb:
+                itemController = new AddSaleItemController(this.mongoDatabase, this.currentSale, this.dbType);
+                dialogAddItem = CreateModal(backButton, "/fxml/AddSaleItem.fxml", itemController, "Add Product Item");
+                itemController.init(dialogAddItem, saleTable, data, this);
+                break;
+            default:
+                itemController = new AddSaleItemController(connection, this.dbType);
+                dialogAddItem = CreateModal(backButton, "/fxml/AddSaleItem.fxml", itemController, "Add Product Item");
+                itemController.init(dialogAddItem, saleId, saleTable, data, this);
+                break;
+        }
 
     }
 
@@ -221,6 +237,27 @@ public class AddSaleController extends ControllerModel {
         // generate its invoice
 
         switch (this.dbType) {
+            case mongodb:
+                try {
+                    
+                    BasicDBList saleitems = new BasicDBList();
+                    MongoCollection<Document> sales = mongoDatabase.getCollection("sales");
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd//MM/YYYY HH:mm:ss");
+                    LocalDateTime now = LocalDateTime.now();
+                    currentSale = new BasicDBObject();
+                    currentSale.put("saledate", now);
+                    currentSale.put("discount", discount);
+                    currentSale.put("client", clientComboBox.getValue());
+                    currentSale.append("saleitems", saleitems);                    
+                    //sales.insertOne(newsale);                    
+                    sendAlert("Product type added with success!",
+                            "Type Added",
+                            "A new type have been added!",
+                            Alert.AlertType.CONFIRMATION);
+                } catch (Exception e) {
+                    System.out.println("Erro no banco " + dbType + ": " + e.getMessage());
+                }
+                break;
             case firebird:
                 try {
                     Statement st = this.connection.createStatement();
@@ -263,7 +300,7 @@ public class AddSaleController extends ControllerModel {
         }
         sendAlert(
                 "Information",
-                "Sale Created!", 
+                "Sale Created!",
                 "Now you can Add Items!", Alert.AlertType.CONFIRMATION);
         addItemButton.setDisable(false);
         saleCreated = true;
@@ -385,6 +422,7 @@ public class AddSaleController extends ControllerModel {
     public void checkForm() {
         System.out.println("começou a verificar o form");
         String discount = null;
+        currentSale = null;
         try {
             discount = discountTextField.getText();
         } catch (Exception e) {

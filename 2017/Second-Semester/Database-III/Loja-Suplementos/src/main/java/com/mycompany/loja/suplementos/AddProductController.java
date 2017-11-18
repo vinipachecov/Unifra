@@ -6,10 +6,14 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -17,6 +21,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.bson.Document;
+import supportClasses.Type;
 import supportClasses.databaseType;
 
 /**
@@ -67,6 +73,10 @@ public class AddProductController extends ControllerModel {
         super(connection, dbType);
     }
 
+    AddProductController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
+    }
+
     /**
      * Initializes the controller class.
      */
@@ -79,6 +89,16 @@ public class AddProductController extends ControllerModel {
 
         switch (this.dbType) {
             case mongodb:
+                MongoCollection<Document> brands = mongoDatabase.getCollection("brands");
+
+                try {
+                    List<Document> documents = brands.find().into(new ArrayList<Document>());
+                    for (Document document : documents) {
+                        brandComboBox.getItems().add(document.getString("name"));
+                    }
+                } catch (Exception e) {
+                    System.out.println(dbType + " error " + ": " + e.getMessage());
+                }
                 break;
             default:
                 try {
@@ -96,6 +116,16 @@ public class AddProductController extends ControllerModel {
     public void getTypes() {
         switch (this.dbType) {
             case mongodb:
+                 MongoCollection<Document> types = mongoDatabase.getCollection("types");
+
+                try {
+                    List<Document> documents = types.find().into(new ArrayList<Document>());
+                    for (Document document : documents) {
+                        typeComboBox.getItems().add(document.getString("name"));
+                    }
+                } catch (Exception e) {
+                    System.out.println(dbType + " error " + ": " + e.getMessage());
+                }
                 break;
             default:
                 try {
@@ -121,6 +151,27 @@ public class AddProductController extends ControllerModel {
             Integer minimumQ, Integer currentQ, Float unitvalue, String unittype) {
 
         switch (this.dbType) {
+            case mongodb:
+                try {
+                    MongoCollection<Document> products = mongoDatabase.getCollection("products");
+
+                    Document newproduct = new Document();
+                    newproduct.put("name", name);
+                    newproduct.put("brandname", brandname);
+                    newproduct.put("typename", typename);
+                    newproduct.put("minimumquantity", minimumQ);
+                    newproduct.put("currentquantity", currentQ);
+                    newproduct.put("unitvalue", unitvalue);
+                    newproduct.put("unittype", unittype);
+                    products.insertOne(newproduct);
+                    sendAlert("Product type added with success!",
+                            "Type Added",
+                            "A new type have been added!",
+                            Alert.AlertType.CONFIRMATION);
+                } catch (Exception e) {
+                    System.out.println("Erro no banco " + dbType + ": " + e.getMessage());
+                }
+                break;
             case firebird:
                 try {
                     System.out.println("COMEÇOU A ADICIONAR");
@@ -173,12 +224,30 @@ public class AddProductController extends ControllerModel {
     public boolean productAlreadyExists(String productname, String brandname) {
 
         switch (this.dbType) {
+            case mongodb:
+                MongoCollection<Document> types = mongoDatabase.getCollection("types");
+
+                BasicDBObject andquery = new BasicDBObject();
+                List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                obj.add(new BasicDBObject("name", productname));
+                obj.add(new BasicDBObject("brandname", brandname));
+                andquery.put("$and", obj);
+                List<Document> documents = types.find().filter(andquery).into(new ArrayList<Document>());
+
+                if (documents.size() != 0) {
+                    sendAlert("Error to add a Product",
+                            "Product exists.",
+                            "Product already Exists! Choose a different product name!",
+                            Alert.AlertType.ERROR);
+                    return true;
+                }
+                break;
             case postgres:
                 try {
                     Statement st = this.connection.createStatement();
                     ResultSet rs = st.executeQuery(
                             "select hasproduct from product_exists('" + productname + "' ,"
-                                    + " '" + brandname + "')"
+                            + " '" + brandname + "')"
                     );
                     rs.next();
                     if (rs.getString("hasproduct").equals("t")) {
@@ -199,19 +268,19 @@ public class AddProductController extends ControllerModel {
                 try {
                     Statement st = this.connection.createStatement();
                     st.executeUpdate(
-                            "EXECUTE PROCEDURE hasproduct('" + productname +"', "
-                                    + "'" + brandname + "')");     
+                            "EXECUTE PROCEDURE hasproduct('" + productname + "', "
+                            + "'" + brandname + "')");
                     System.out.println("PRODUTO DIFERENTE YES!");
                     // no similar product in the database
-                    return false;                    
+                    return false;
                 } catch (Exception e) {
                     sendAlert("Error to add a Product",
-                                "Product exists in the database.",
-                                "Product already Exists! Choose a different product name!",
-                                Alert.AlertType.ERROR);
+                            "Product exists in the database.",
+                            "Product already Exists! Choose a different product name!",
+                            Alert.AlertType.ERROR);
                     System.out.println("Error product already exists! :" + e.getMessage());
                     return true;
-                }                
+                }
         }
 
         return false;
@@ -227,15 +296,16 @@ public class AddProductController extends ControllerModel {
         Float unitvalue = Float.parseFloat(unitValueTextField.getText());
         String unittype = unitTextField.getText();
 
-        if (name.equals("") && brandname.equals("") || typename.equals("")
+        if (name.equals("") && brandname.equals("") || brandname == null 
+                || typename.equals("") || typename == null
                 || minimumQ.equals(null) || currentQ.equals(null)
                 || unitvalue.equals(null) || unittype.equals("")) {
             sendAlert("Error to add a Product",
                     "Form Error",
                     "Fill all the fields", Alert.AlertType.ERROR);
         } else {
-            if (!productAlreadyExists(name,brandname)) {
-               addProduct(name, brandname, typename, minimumQ, currentQ, unitvalue, unittype);
+            if (!productAlreadyExists(name, brandname)) {
+                addProduct(name, brandname, typename, minimumQ, currentQ, unitvalue, unittype);
             }
         }
     }
