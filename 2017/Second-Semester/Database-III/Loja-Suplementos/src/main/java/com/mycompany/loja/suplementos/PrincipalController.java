@@ -204,12 +204,26 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public void addSale(ActionEvent event) {
-        AddSaleController saleController = new AddSaleController(this.connection, this.dbType);
-        ChangeScreen(menuBar,
-                "/fxml/AddSale.fxml",
-                saleController,
-                "Add a Sale");
-        saleController.init(currentStage, this);
+        AddSaleController saleController = null;
+        switch (dbType) {
+            case mongodb:
+                saleController = new AddSaleController(this.mongoDatabase, this.dbType);
+                ChangeScreen(menuBar,
+                        "/fxml/AddSale.fxml",
+                        saleController,
+                        "Add a Sale");
+                saleController.init(currentStage, this);
+                break;
+            default:
+                saleController = new AddSaleController(this.connection, this.dbType);
+                ChangeScreen(menuBar,
+                        "/fxml/AddSale.fxml",
+                        saleController,
+                        "Add a Sale");
+                saleController.init(currentStage, this);
+                break;
+        }
+
     }
 
     @FXML

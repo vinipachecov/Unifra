@@ -8,10 +8,10 @@ package com.mycompany.loja.suplementos;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -28,7 +28,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import supportClasses.ProductItem;
 import supportClasses.databaseType;
 
@@ -96,7 +95,7 @@ public class AddSaleItemController extends ControllerModel {
      */
     @FXML
     public void cancel(ActionEvent event) {
-        dialog.close();
+        dialog.close();        
     }
 
     public void init(Stage modal, Integer id, TableView saletable, ObservableList<ProductItem> listdata,
@@ -135,44 +134,68 @@ public class AddSaleItemController extends ControllerModel {
         String brandname = "";
         String typename = "";
         try {
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             ResultSet rs = null;
             switch (dbType) {
+                case mongodb:
+
+                    MongoCollection<Document> products = mongoDatabase.getCollection("products");
+                    
+                    FindIterable<Document> documents =  products.find(eq("name", findProductComboBox.getValue()));
+                    if(documents == null ){
+
+                        return;
+                    } else{
+                        typename = documents.first().getString("typename");
+                        brandname = documents.first().getString("brandname");
+                    }                    
+                    break;
                 case firebird:
+                    st = this.connection.createStatement();
                     rs = st.executeQuery(
                             "EXECUTE PROCEDURE get_a_typeby_product('" + findProductComboBox.getValue() + "');"
                     );
+                    if (rs.next()) {
+                        typename = rs.getString("TYPENAME");
+                    } else {
+                        System.out.println("ERROR");
+                    }
                     break;
                 case postgres:
+                    st = this.connection.createStatement();
                     rs = st.executeQuery(
                             "select * from get_a_typeby_product('" + findProductComboBox.getValue() + "')"
                     );
+                    if (rs.next()) {
+                        typename = rs.getString("TYPENAME");
+                    } else {
+                        System.out.println("ERROR");
+                    }
                     break;
             }
-            if (rs.next()) {
-                typename = rs.getString("TYPENAME");
-            } else {
-                System.out.println("ERROR");
-            }
 
-            st = this.connection.createStatement();
-            switch (dbType) {
+            switch (dbType) {               
                 case firebird:
+                    st = this.connection.createStatement();
                     rs = st.executeQuery(
                             "EXECUTE PROCEDURE get_a_brandby_product('" + findProductComboBox.getValue() + "');"
                     );
+                    if (rs.next()) {
+                        brandname = rs.getString("BRANDNAME");
+                    }
                     break;
                 case postgres:
+                    st = this.connection.createStatement();
                     rs = st.executeQuery(
                             "select * from get_a_brandby_product('" + findProductComboBox.getValue() + "')"
                     );
+                    if (rs.next()) {
+                        brandname = rs.getString("BRANDNAME");
+                    }
                     break;
             }
-            if (rs.next()) {
-                brandname = rs.getString("BRANDNAME");
-            }
         } catch (Exception e) {
-            System.out.println("ERROR GETTING TYPES AND BRANDS " + e.getMessage());
+            System.out.println("ERROR GETTING TYPES AND BRANDS " + e.getMessage() +" " + e.getCause());
             sendAlert(
                     "Error ",
                     "Error retrieving values.",
@@ -186,24 +209,37 @@ public class AddSaleItemController extends ControllerModel {
 
     public void getProducts() {
         try {
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             ResultSet rs = null;
             switch (dbType) {
                 case mongodb:
-                    
-                    
+                    MongoCollection<Document> products = mongoDatabase.getCollection("products");
+
+                    try {
+                        List<Document> documents = products.find().into(new ArrayList<Document>());
+                        for (Document document : documents) {
+                            findProductComboBox.getItems().add(document.getString("name"));
+                        }
+                    } catch (Exception e) {
+                        System.out.println(dbType + " error " + ": " + e.getMessage());
+                    }
                     break;
                 case firebird:
+                    st = this.connection.createStatement();
                     rs = st.executeQuery(
                             "SELECT productname FROM get_products_additem;");
+                    while (rs.next()) {
+                        findProductComboBox.getItems().add(rs.getString("productname"));
+                    }
                     break;
                 case postgres:
+                    st = this.connection.createStatement();
                     rs = st.executeQuery(
                             "select * from get_products();");
+                    while (rs.next()) {
+                        findProductComboBox.getItems().add(rs.getString("productname"));
+                    }
                     break;
-            }
-            while (rs.next()) {
-                findProductComboBox.getItems().add(rs.getString("productname"));
             }
         } catch (Exception e) {
             sendAlert("Error",
@@ -218,28 +254,45 @@ public class AddSaleItemController extends ControllerModel {
     private void getUnitValue() {
         Float valperUnit = null;
         try {
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             ResultSet rs = null;
             switch (dbType) {
+                case mongodb:
+                    MongoCollection<Document> products = mongoDatabase.getCollection("products");
+
+                    try {
+                        List<Document> documents = products.find(eq("name", findProductComboBox.getValue().toString())).into(new ArrayList<Document>());
+                        double aux;
+                        for (Document document : documents) {
+                            aux = (double) document.get("unitvalue");
+                            valperUnit = (float) aux;
+                        }
+                    } catch (Exception e) {
+                        System.out.println(dbType + " error " + ": " + e.getMessage());
+                    }
+                    break;
                 case firebird:
+                    st = this.connection.createStatement();
                     rs = st.executeQuery(
                             "EXECUTE PROCEDURE get_itemunitvalue('" + findProductComboBox.getValue() + "');"
                     );
                     if (rs.next()) {
-                        valperUnit = rs.getFloat("UNITVALUE");
+                        valperUnit = (Float) rs.getFloat("UNITVALUE");
                     }
+                    st.close();
                     break;
                 case postgres:
+                    st = this.connection.createStatement();
                     rs = st.executeQuery(
                             "select * from get_itemunitvalue('" + findProductComboBox.getValue() + "')"
                     );
                     if (rs.next()) {
                         valperUnit = rs.getFloat("get_itemunitvalue");
                     }
+                    st.close();
                     break;
 
             }
-            st.close();
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage());
             return;
@@ -262,6 +315,35 @@ public class AddSaleItemController extends ControllerModel {
             Statement st = null;
             switch (dbType) {
                 case mongodb:
+                    //BasicDBObject saleitem = new BasicDBObject();
+
+                    ArrayList<BasicDBObject> saleitems = (ArrayList<BasicDBObject>) currentSale.get("saleitems");
+                    BasicDBObject properties = new BasicDBObject();
+
+                    properties.append("productname", itemname);
+                    properties.append("unitvalue", unitValue);
+                    properties.append("quantity", Quantity);
+                    properties.append("total", totalLabel.getText());
+
+                    if (saleitems.size() != 0) {
+
+                        saleitems.add(properties);
+                        currentSale.append("saleitems", saleitems);
+
+                    } else {
+
+                        List<BasicDBObject> saleitem = new ArrayList<BasicDBObject>();
+
+                        saleitem.add(properties);
+
+                        currentSale.append("saleitems", saleitem);
+
+                    }
+
+                    System.out.println("adicionou");
+
+                    System.out.println("valores adicionados = " + currentSale.getString("saleitems"));
+
                     break;
                 case firebird:
                     st = this.connection.createStatement();
@@ -304,29 +386,35 @@ public class AddSaleItemController extends ControllerModel {
 
             switch (dbType) {
                 case mongodb:
-                    MongoCollection<Document> sales = mongoDatabase.getCollection("sales");
+                    try {
+                        MongoCollection<Document> sales = mongoDatabase.getCollection("sales");
 
-                    BasicDBList saleitems = (BasicDBList) currentSale.get("saleitems");
+                        ArrayList<BasicDBObject> saleitems = (ArrayList<BasicDBObject>) currentSale.get("saleitems");
 
-                    System.out.println("TOTAL DE ITEMS = " + saleitems.toArray().toString());
-                    if (saleitems.size() != 0) {
+                        System.out.println("Todos valores");
                         for (Object saleitem : saleitems) {
                             BasicDBObject aux = (BasicDBObject) saleitem;
-                            if(aux.getString(itemname).equals(saleitem)){
-                                return true;
-                            }
+                            System.out.println("saleitem = " + aux.toJson());
                         }
-                    } else {
-                        System.out.println("VAZIO VAI ADICIONAR");
-                        return false;
-                    }
-                    
-                    // KEEP GOING
-                    try {
-                        List<Document> documents = sales.find().into(new ArrayList<Document>());
-                        for (Document document : documents) {
 
+                        if (saleitems.size() != 0) {
+                            System.out.println("não está vazio");
+                            for (Object saleitem : saleitems) {
+                                BasicDBObject aux = (BasicDBObject) saleitem;
+                                System.out.println("vai comparar " + aux.getString("productname") + "com " + itemname);
+                                if (aux.getString("productname").equals(itemname)) {
+                                    sendAlert("Duplication error",
+                                            "Item already added.",
+                                            "Item already added! Choose a different product!",
+                                            Alert.AlertType.ERROR);
+                                    return true;
+                                }
+                            }
+                        } else {
+                            return false;
                         }
+                        // KEEP GOING
+
                     } catch (Exception e) {
                         System.out.println(dbType + " error " + ": " + e.getMessage());
                     }
@@ -383,7 +471,7 @@ public class AddSaleItemController extends ControllerModel {
                     "Fill all the fields", Alert.AlertType.ERROR);
         } else {
             if (!checkItemAlreadyExists(findProductComboBox.getValue())) {
-                //addItem(itemname, quantity, unitvalue);
+                addItem(itemname, quantity, unitvalue);
             }
         }
     }

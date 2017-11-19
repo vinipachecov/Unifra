@@ -8,11 +8,14 @@ package com.mycompany.loja.suplementos;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -96,6 +99,10 @@ public class AddSaleController extends ControllerModel {
         super(connection, dbType);
     }
 
+    AddSaleController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
+    }
+
     public void init(Stage modal, PrincipalController princpController) {
 
         pc = princpController;
@@ -130,7 +137,9 @@ public class AddSaleController extends ControllerModel {
 
     @FXML
     public void cancel() {
-        deleteSale();
+        if(dbType != databaseType.mongodb){
+            deleteSale();        
+        }        
         ChangeScreen(dialog, "/fxml/MainScreen.fxml", pc);
     }
 
@@ -149,14 +158,16 @@ public class AddSaleController extends ControllerModel {
 
     public void deleteSale() {
         try {
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             switch (this.dbType) {
                 case firebird:
+                    st = this.connection.createStatement();
                     st.executeUpdate(
                             "EXECUTE PROCEDURE removeSale(" + saleId + ");"
                     );
                     break;
                 case postgres:
+                    st = this.connection.createStatement();
                     st.executeUpdate(
                             "DO $$ BEGIN\n"
                             + "    PERFORM removeSale(" + saleId + ");\n"
@@ -176,13 +187,24 @@ public class AddSaleController extends ControllerModel {
     public void getComboBoxClients() {
 
         try {
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             ResultSet rs = null;
             switch (this.dbType) {
                 case mongodb:
+                    MongoCollection<Document> clients = mongoDatabase.getCollection("clients");
+
+                    try {
+                        List<Document> documents = clients.find().into(new ArrayList<Document>());
+                        for (Document document : documents) {
+                            clientComboBox.getItems().add(document.getString("name"));
+                        }
+                    } catch (Exception e) {
+                        System.out.println(dbType + " error " + ": " + e.getMessage());
+                    }
                     break;
                 case firebird:
                     try {
+                        st = this.connection.createStatement();
                         rs = st.executeQuery(
                                 "select CNAME from get_clients;");
                         while (rs.next()) {
@@ -194,6 +216,7 @@ public class AddSaleController extends ControllerModel {
                     break;
                 case postgres:
                     try {
+                        st = this.connection.createStatement();
                         rs = st.executeQuery(
                                 "select * from get_clients();");
                         while (rs.next()) {
@@ -239,7 +262,7 @@ public class AddSaleController extends ControllerModel {
         switch (this.dbType) {
             case mongodb:
                 try {
-                    
+
                     BasicDBList saleitems = new BasicDBList();
                     MongoCollection<Document> sales = mongoDatabase.getCollection("sales");
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd//MM/YYYY HH:mm:ss");
@@ -248,7 +271,7 @@ public class AddSaleController extends ControllerModel {
                     currentSale.put("saledate", now);
                     currentSale.put("discount", discount);
                     currentSale.put("client", clientComboBox.getValue());
-                    currentSale.append("saleitems", saleitems);                    
+                    currentSale.append("saleitems", saleitems);
                     //sales.insertOne(newsale);                    
                     sendAlert("Product type added with success!",
                             "Type Added",
