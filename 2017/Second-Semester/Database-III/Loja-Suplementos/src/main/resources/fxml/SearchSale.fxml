@@ -12,7 +12,7 @@
         <URL value="@/styles/Styles.css" />
     </stylesheets>
    <children>
-      <TextField fx:id="purchaseSearchTextField" layoutX="35.0" layoutY="51.0" prefHeight="29.0" prefWidth="464.0" promptText="Supplier Client" />
+      <TextField fx:id="saleSearchTextField" layoutX="35.0" layoutY="51.0" prefHeight="29.0" prefWidth="464.0" promptText="Supplier Client" />
       <TableView fx:id="saleTable" layoutX="35.0" layoutY="98.0" prefHeight="381.0" prefWidth="732.0">
         <columns>
           <TableColumn fx:id="nameColumn" prefWidth="119.0" text="Name" />

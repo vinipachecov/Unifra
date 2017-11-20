@@ -5,10 +5,18 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,7 +29,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import supportClasses.Purchase;
+import org.bson.Document;
 import supportClasses.Sale;
 import supportClasses.databaseType;
 
@@ -67,13 +75,17 @@ public class SearchSaleController extends ControllerModel {
         super(connection, dbType);
     }
 
+    SearchSaleController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
+    }
+
     public void init(Stage modal) {
 
         dialog = modal;
 
         data = FXCollections.observableArrayList();
 
-        // the property name between "" has to be the same name of the attribute on the class
+//        // the property name between "" has to be the same name of the attribute on the class
         nameColumn.setCellValueFactory(new PropertyValueFactory<Sale, String>("client"));
         invoiceColumn.setCellValueFactory(new PropertyValueFactory<Sale, String>("invoice"));
         subtotalColumn.setCellValueFactory(new PropertyValueFactory<Sale, Float>("subtotal"));
@@ -82,7 +94,7 @@ public class SearchSaleController extends ControllerModel {
         saleDateColumn.setCellValueFactory(new PropertyValueFactory<Sale, String>("saleDate"));
 
         saleTable.setItems(data);
-        
+
         saleSearchTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
@@ -94,8 +106,8 @@ public class SearchSaleController extends ControllerModel {
 
     }
 
-    public void addToSaleList(String clientname, String invoice, 
-            Float subtotal, Float discount, Float total, String purchaseDate) {        
+    public void addToSaleList(String clientname, String invoice,
+            Float subtotal, Float discount, Float total, String purchaseDate) {
         data.add(
                 new Sale(clientname, invoice, subtotal, discount, total, purchaseDate)
         );
@@ -105,39 +117,93 @@ public class SearchSaleController extends ControllerModel {
     public void Search(ActionEvent event) {
 
         data.clear();
-        String purchaseSearchString = null;
+        String saleSearchString = null;
         try {
-            purchaseSearchString = saleSearchTextField.getText();
+            saleSearchString = saleSearchTextField.getText();
         } catch (Exception e) {
-
+            System.out.println("Error getting sale" + e.getMessage());
         }
 
-        if (purchaseSearchString == null) {
-            sendAlert("Error finding Brand",
-                    "No Brand name to search.",
-                    "Pick a brand name to search.",
+        if (saleSearchString == null) {
+            sendAlert("Error finding client",
+                    "No clientname to search.",
+                    "Pick a clientname to search.",
                     Alert.AlertType.ERROR);
         }
         // if no brand name find all
         try {
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             ResultSet rs = null;
             switch (dbType) {
+                case mongodb:
+                    MongoCollection<Document> sales = mongoDatabase.getCollection("sales");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    if (saleSearchString.equals("")) {
+                        try {
+
+                            List<Document> documents = sales.find().into(new ArrayList<Document>());                            
+
+                            for (Document document : documents) {                                                                
+                                addToSaleList(
+                                        document.getString("client"),
+                                        document.getString("invoice"),
+                                        Float.parseFloat(document.getString("subtotal")),
+                                        Float.parseFloat(document.getString("discount")),
+                                        Float.parseFloat(document.getString("total")),
+                                        sdf.format(document.get("saledate"))
+                                );
+                            }
+                        } catch (Exception e) {
+                            System.out.println(dbType + " error " + ": " + e.getMessage());
+                        }
+                    } else {
+                        try {
+
+                            BasicDBObject andquery = new BasicDBObject();
+                            List<BasicDBObject> obj = new ArrayList<BasicDBObject>();
+                            obj.add(new BasicDBObject("name", saleSearchString));
+                            andquery.put("$and", obj);
+                            List<Document> documents = sales.find().filter(andquery).into(new ArrayList<Document>());
+
+                            if (documents.size() != 0) {
+                                for (Document document : documents) {
+                                    addToSaleList(
+                                            document.getString("client"),
+                                            document.getString("invoice"),
+                                            Float.parseFloat(document.getString("subtotal")),
+                                            Float.parseFloat(document.getString("discount")),
+                                            Float.parseFloat(document.getString("total")),
+                                            sdf.format(document.get("saledate"))
+                                    );
+                                }
+                            } else {
+                                sendAlert("Information",
+                                        "Results",
+                                        "No results found with " + saleSearchString,
+                                        Alert.AlertType.INFORMATION);
+                            }
+
+                        } catch (Exception e) {
+                            System.out.println(dbType + " error " + ": " + e.getMessage());
+                        }
+
+                    }
+                    break;
                 case firebird:
-                    
-                    if (purchaseSearchString.equals("")) {
+                    st = this.connection.createStatement();
+                    if (saleSearchString.equals("")) {
                         try {
                             rs = st.executeQuery(
                                     "select first 50 * "
                                     + " FROM searchSale "
                             );
-                            while (rs.next()) {                                
+                            while (rs.next()) {
                                 addToSaleList(
                                         rs.getString("clientname"),
                                         rs.getString("invoice"),
-                                        rs.getFloat("subtotal"),                                        
+                                        rs.getFloat("subtotal"),
                                         rs.getFloat("discount"),
-                                        rs.getFloat("total"),                                        
+                                        rs.getFloat("total"),
                                         rs.getTimestamp("saledate")
                                                 .toLocalDateTime()
                                                 .format(DateTimeFormatter
@@ -156,7 +222,7 @@ public class SearchSaleController extends ControllerModel {
                         try {
                             st = this.connection.createStatement();
                             rs = st.executeQuery(
-                                    "EXECUTE PROCEDURE search_a_sale( '" + purchaseSearchString + "');"
+                                    "EXECUTE PROCEDURE search_a_sale( '" + saleSearchString + "');"
                             );
                             if (rs.next()) {
                                 addToSaleList(
@@ -201,7 +267,8 @@ public class SearchSaleController extends ControllerModel {
                     }
                     break;
                 case postgres:
-                    if (purchaseSearchString.equals("")) {
+                    st = this.connection.createStatement();
+                    if (saleSearchString.equals("")) {
                         try {
                             st = this.connection.createStatement();
                             rs = st.executeQuery(
@@ -234,7 +301,7 @@ public class SearchSaleController extends ControllerModel {
                             st = this.connection.createStatement();
                             rs = st.executeQuery(
                                     "select * "
-                                    + " search_a_purchase('" + purchaseSearchString + "')"
+                                    + " search_a_purchase('" + saleSearchString + "')"
                             );
                             if (rs.next()) {
                                 addToSaleList(

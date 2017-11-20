@@ -158,6 +158,7 @@ public class PrincipalController extends ControllerModel {
         worstSaleProductsController = new WorstSaleProductsController(yearWorstProductsTextField, worstProductsTable, productNameWSColumn, numberSalesWSColumn, cashGeneratedWSColumn, connection, dbType);
         newClientsController = new NewClientsController(yearNewClientsTextField, newClientsTable, clientNameNCColumn, contactColumn, JoinDateNCColumn, connection, dbType);
         mostRequiredSuppliersController = new MostRequiredSuppliersController(requiredSupplierTextField, mostRequiredSuppliersTable, nameMRSColumn, totalItemsMRSColumn, totalPercentMRSColumn, connection, dbType);
+        
     }
 
     @FXML
@@ -331,9 +332,20 @@ public class PrincipalController extends ControllerModel {
     public void searchSale(ActionEvent event) {
 
         if (getUserType() == userType.admin) {
-            SearchSaleController searchController = new SearchSaleController(connection, this.dbType);
-            dialog = CreateModal(event, menuBar, "/fxml/SearchSale.fxml", searchController, "Searching Sales");
-            searchController.init(dialog);
+            SearchSaleController searchController = null;
+            switch (dbType) {
+                case mongodb:
+                    searchController = new SearchSaleController(this.mongoDatabase, this.dbType);
+                    dialog = CreateModal(event, menuBar, "/fxml/SearchSale.fxml", searchController, "Searching Sales");
+                    searchController.init(dialog);
+                    break;
+                default:
+                    searchController = new SearchSaleController(connection, this.dbType);
+                    dialog = CreateModal(event, menuBar, "/fxml/SearchSale.fxml", searchController, "Searching Sales");
+                    searchController.init(dialog);
+                    break;
+            }
+
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",

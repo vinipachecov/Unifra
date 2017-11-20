@@ -12,8 +12,6 @@ import static com.mongodb.client.model.Filters.eq;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -143,8 +141,10 @@ public class AddSaleController extends ControllerModel {
     public void cancel() {
         if (dbType != databaseType.mongodb) {
             deleteSale();
-        }
-        ChangeScreen(dialog, "/fxml/MainScreen.fxml", pc);
+            ChangeScreen(dialog, "/fxml/MainScreen.fxml", pc);            
+        }else{
+            ChangeScreen(dialog, "/fxml/MainScreen.fxml", pc);            
+        }        
     }
 
     public void calculateSubtotalAndTotal() {
@@ -268,12 +268,12 @@ public class AddSaleController extends ControllerModel {
                 try {
 
                     BasicDBList saleitems = new BasicDBList();
-                    MongoCollection<Document> sales = mongoDatabase.getCollection("sales");
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd//MM/YYYY HH:mm:ss");
-                    LocalDateTime now = LocalDateTime.now();
+                    MongoCollection<Document> sales = mongoDatabase.getCollection("sales");                    
+                    
+                    Date now = new Date();                    
                     currentSale = new Document();
                     
-                    currentSale.put("saledate", Date.from(now.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                    currentSale.put("saledate", now);
                     currentSale.put("discount", discount);
                     currentSale.put("client", clientComboBox.getValue());
                     currentSale.put("saleitems", saleitems);
@@ -471,8 +471,7 @@ public class AddSaleController extends ControllerModel {
 
         sendAlert("Success",
                 "Sale Added",
-                "Sale added with success!", Alert.AlertType.CONFIRMATION);
-        backToMainScreen();
+                "Sale added with success!", Alert.AlertType.CONFIRMATION);        
     }
 
     @FXML
