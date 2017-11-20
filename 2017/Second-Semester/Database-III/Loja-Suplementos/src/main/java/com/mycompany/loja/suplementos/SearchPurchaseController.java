@@ -5,6 +5,7 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -66,6 +67,10 @@ public class SearchPurchaseController extends ControllerModel {
 
     SearchPurchaseController(Connection connection, databaseType dbType) {
         super(connection, dbType);
+    }
+
+    SearchPurchaseController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
     }
 
     public void init(Stage modal) {

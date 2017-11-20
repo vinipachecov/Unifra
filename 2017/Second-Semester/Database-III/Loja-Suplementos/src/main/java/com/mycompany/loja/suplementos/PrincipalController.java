@@ -158,7 +158,7 @@ public class PrincipalController extends ControllerModel {
         worstSaleProductsController = new WorstSaleProductsController(yearWorstProductsTextField, worstProductsTable, productNameWSColumn, numberSalesWSColumn, cashGeneratedWSColumn, connection, dbType);
         newClientsController = new NewClientsController(yearNewClientsTextField, newClientsTable, clientNameNCColumn, contactColumn, JoinDateNCColumn, connection, dbType);
         mostRequiredSuppliersController = new MostRequiredSuppliersController(requiredSupplierTextField, mostRequiredSuppliersTable, nameMRSColumn, totalItemsMRSColumn, totalPercentMRSColumn, connection, dbType);
-        
+
     }
 
     @FXML
@@ -229,12 +229,27 @@ public class PrincipalController extends ControllerModel {
 
     @FXML
     public void addPurchase(ActionEvent event) {
-        AddPurchaseController purchaseController = new AddPurchaseController(this.connection, this.dbType);
-        ChangeScreen(menuBar,
-                "/fxml/AddPurchase.fxml",
-                purchaseController,
-                "Add a Purchase");
-        purchaseController.init(currentStage, this);
+
+        AddPurchaseController purchaseController = null;
+        switch (dbType) {
+            case mongodb:
+                purchaseController = new AddPurchaseController(this.mongoDatabase, this.dbType);
+                ChangeScreen(menuBar,
+                        "/fxml/AddPurchase.fxml",
+                        purchaseController,
+                        "Add a Purchase");
+                purchaseController.init(currentStage, this);
+                break;
+            default:
+                purchaseController = new AddPurchaseController(this.connection, this.dbType);
+                ChangeScreen(menuBar,
+                        "/fxml/AddPurchase.fxml",
+                        purchaseController,
+                        "Add a Purchase");
+                purchaseController.init(currentStage, this);
+                break;
+        }
+
     }
 
     @FXML
@@ -316,10 +331,21 @@ public class PrincipalController extends ControllerModel {
     @FXML
     public void searchPurchase(ActionEvent event) {
 
+        SearchPurchaseController searchController = null;
         if (getUserType() == userType.admin) {
-            SearchPurchaseController searchController = new SearchPurchaseController(connection, this.dbType);
-            dialog = CreateModal(event, menuBar, "/fxml/SearchPurchase.fxml", searchController, "Searching Purchases");
-            searchController.init(dialog);
+
+            switch (dbType) {
+                case mongodb:
+                    searchController = new SearchPurchaseController(mongoDatabase, this.dbType);
+                    dialog = CreateModal(event, menuBar, "/fxml/SearchPurchase.fxml", searchController, "Searching Purchases");
+                    searchController.init(dialog);
+                    break;
+                default:
+                    searchController = new SearchPurchaseController(connection, this.dbType);
+                    dialog = CreateModal(event, menuBar, "/fxml/SearchPurchase.fxml", searchController, "Searching Purchases");
+                    searchController.init(dialog);
+                    break;
+            }
         } else {
             sendAlert("Access error",
                     "Attempt to access admin feature.",

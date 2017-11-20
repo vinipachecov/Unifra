@@ -5,10 +5,15 @@
  */
 package com.mycompany.loja.suplementos;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import javafx.collections.FXCollections;
@@ -23,6 +28,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import org.bson.Document;
 import supportClasses.ProductItem;
 import supportClasses.databaseType;
 
@@ -81,6 +87,8 @@ public class AddPurchaseController extends ControllerModel {
 
     private PrincipalController pc;
 
+    public Document currentPurchase;
+
     private Integer purchaseId;
 
     public AddPurchaseController(Connection db) {
@@ -89,6 +97,10 @@ public class AddPurchaseController extends ControllerModel {
 
     AddPurchaseController(Connection connection, databaseType dbType) {
         super(connection, dbType);
+    }
+
+    AddPurchaseController(MongoDatabase mongoDatabase, databaseType dbType) {
+        super(mongoDatabase, dbType);
     }
 
     public void init(Stage modal, PrincipalController princpController) {
@@ -148,8 +160,7 @@ public class AddPurchaseController extends ControllerModel {
             switch (dbType) {
                 case firebird:
                     st.executeUpdate(
-                            
-                            "EXECUTE PROCEDURE removePurchase(" + purchaseId + ")"                            
+                            "EXECUTE PROCEDURE removePurchase(" + purchaseId + ")"
                     );
                     break;
                 case postgres:
@@ -163,9 +174,9 @@ public class AddPurchaseController extends ControllerModel {
 
         } catch (Exception e) {
             System.out.println("ERRO AO DELETAR PURCHASE " + e.getMessage());
-            sendAlert("Error Deleting Item", 
+            sendAlert("Error Deleting Item",
                     "Error Deleting Purchase",
-                    "Error deleting current purchase. " + e.getMessage(), 
+                    "Error deleting current purchase. " + e.getMessage(),
                     Alert.AlertType.ERROR);
         }
     }
@@ -173,10 +184,24 @@ public class AddPurchaseController extends ControllerModel {
     public void getComboBoxSuppliers() {
 
         try {
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             ResultSet rs = null;
             switch (this.dbType) {
+                case mongodb:
+                    System.out.println("entrou");
+                    MongoCollection<Document> clients = mongoDatabase.getCollection("suppliers");
+
+                    try {
+                        List<Document> documents = clients.find().into(new ArrayList<Document>());
+                        for (Document document : documents) {
+                            suppliersComboBox.getItems().add(document.getString("fantasyname"));
+                        }
+                    } catch (Exception e) {
+                        System.out.println(dbType + " error " + ": " + e.getMessage());
+                    }
+                    break;
                 case firebird:
+                    st  = this.connection.createStatement();
                     try {
                         rs = st.executeQuery(
                                 "select cname from get_suppliers;");
@@ -188,6 +213,7 @@ public class AddPurchaseController extends ControllerModel {
                     }
                     break;
                 case postgres:
+                    st = this.connection.createStatement();
                     try {
                         rs = st.executeQuery(
                                 "select * from get_suppliers();");
@@ -208,9 +234,19 @@ public class AddPurchaseController extends ControllerModel {
     @FXML
     public void addItemPurchase() {
 
-        AddPurchaseItemController itemController = new AddPurchaseItemController(connection, dbType);
-        dialogAddItem = CreateModal(backButton, "/fxml/AddPurchaseItem.fxml", itemController, "Add Product Item");
-        itemController.init(dialogAddItem, purchaseId, purchaseTable, data, this);
+        AddPurchaseItemController itemController = null;
+        switch (dbType) {
+            case mongodb:
+                itemController = new AddPurchaseItemController(mongoDatabase, dbType, currentPurchase);
+                dialogAddItem = CreateModal(backButton, "/fxml/AddPurchaseItem.fxml", itemController, "Add Product Item");
+                itemController.init(dialogAddItem, purchaseId, purchaseTable, data, this);
+                break;
+            default:
+                itemController = new AddPurchaseItemController(connection, dbType);
+                dialogAddItem = CreateModal(backButton, "/fxml/AddPurchaseItem.fxml", itemController, "Add Product Item");
+                itemController.init(dialogAddItem, purchaseId, purchaseTable, data, this);
+                break;
+        }
 
     }
 
@@ -220,9 +256,26 @@ public class AddPurchaseController extends ControllerModel {
         //so the salesman can add products to this sale and then 
         // generate its invoice
         try {
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             ResultSet rs = null;
             switch (this.dbType) {
+                case mongodb:
+                    try {
+
+                        BasicDBList saleitems = new BasicDBList();
+                        MongoCollection<Document> purchases = mongoDatabase.getCollection("purchases");
+
+                        Date now = new Date();
+                        currentPurchase = new Document();
+
+                        currentPurchase.put("purchasedate", now);
+                        currentPurchase.put("discount", discount);
+                        currentPurchase.put("supplier", suppliersComboBox.getValue());
+                        currentPurchase.put("purchaseitems", saleitems);
+                    } catch (Exception e) {
+                        System.out.println("Erro no banco " + dbType + ": " + e.getMessage());
+                    }
+                    break;
                 case firebird:
                     try {
                         st = this.connection.createStatement();
@@ -283,25 +336,45 @@ public class AddPurchaseController extends ControllerModel {
 
             //verify if there is already a sale with the generated fiscal note        
             try {
-                Statement st = this.connection.createStatement();
+                Statement st = null;
                 ResultSet rs = null;
                 switch (dbType) {
+                    case mongodb:
+                        MongoCollection<Document> sales = mongoDatabase.getCollection("purchases");
+
+                        List<Document> documents = null;
+                        documents = sales.find(eq("invoice", invoice)).into(new ArrayList<Document>());
+                        if (documents == null || documents.size() == 0) {
+                            return invoice;
+                        }
+                        break;
                     case firebird:
+                        st = this.connection.createStatement();
                         st.executeUpdate("EXECUTE PROCEDURE checkPurchaseInvoiceExists('" + invoice + "');");
-                        return invoice;                        
+                        if (rs.next()) {
+                            sendAlert(
+                                    "Error invoice generation",
+                                    "Error creating invoice.",
+                                    "Critical error on invoice", Alert.AlertType.ERROR);
+                        } else {
+                            return invoice;
+                        }
+                        return invoice;
                     case postgres:
+                        st = this.connection.createStatement();
                         rs = st.executeQuery("select * from checkInvoicePurchaseAlreadyExists('" + invoice + "');");
+                        if (rs.next()) {
+                            sendAlert(
+                                    "Error invoice generation",
+                                    "Error creating invoice.",
+                                    "Critical error on invoice", Alert.AlertType.ERROR);
+                        } else {
+                            return invoice;
+                        }
                         break;
                 }
-                if (rs.next()) {
-                    sendAlert(
-                        "Error invoice generation",
-                        "Error creating invoice.",
-                        "Critical error on invoice", Alert.AlertType.ERROR);                
-                } else {
-                    return invoice;
-                }
-            } catch (Exception e) {                
+
+            } catch (Exception e) {
             }
         }
         sendAlert(
@@ -316,9 +389,26 @@ public class AddPurchaseController extends ControllerModel {
             Float subtotal = Float.parseFloat(subtotalLabel.getText());
             Float total = Float.parseFloat(totalLabel.getText());
 
-            Statement st = this.connection.createStatement();
+            Statement st = null;
             switch (dbType) {
+                case mongodb:
+                    MongoCollection<Document> purchases = mongoDatabase.getCollection("purchases");
+                    try {
+
+                        String invoice = generateInvoice();
+
+                        currentPurchase.put("invoice", invoice);
+                        currentPurchase.put("subtotal", subtotalLabel.getText());
+                        currentPurchase.put("total", totalLabel.getText());
+
+                        purchases.insertOne(currentPurchase);
+
+                    } catch (Exception e) {
+                        System.out.println(dbType + " error " + ": " + e.getMessage() + e.getCause());
+                    }
+                    break;
                 case firebird:
+                    st = this.connection.createStatement();
                     st.executeUpdate(
                             "EXECUTE PROCEDURE finishPurchase("
                             + "" + purchaseId + ","
@@ -327,6 +417,7 @@ public class AddPurchaseController extends ControllerModel {
                     );
                     break;
                 case postgres:
+                    st = this.connection.createStatement();
                     st.executeUpdate(
                             "DO $$ BEGIN\n"
                             + "PERFORM finishPurchase("

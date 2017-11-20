@@ -95,7 +95,7 @@ public class AddSaleItemController extends ControllerModel {
      */
     @FXML
     public void cancel(ActionEvent event) {
-        dialog.close();        
+        dialog.close();
     }
 
     public void init(Stage modal, Integer id, TableView saletable, ObservableList<ProductItem> listdata,
@@ -140,15 +140,15 @@ public class AddSaleItemController extends ControllerModel {
                 case mongodb:
 
                     MongoCollection<Document> products = mongoDatabase.getCollection("products");
-                    
-                    FindIterable<Document> documents =  products.find(eq("name", findProductComboBox.getValue()));
-                    if(documents == null ){
+
+                    FindIterable<Document> documents = products.find(eq("name", findProductComboBox.getValue()));
+                    if (documents == null) {
 
                         return;
-                    } else{
+                    } else {
                         typename = documents.first().getString("typename");
                         brandname = documents.first().getString("brandname");
-                    }                    
+                    }
                     break;
                 case firebird:
                     st = this.connection.createStatement();
@@ -174,7 +174,7 @@ public class AddSaleItemController extends ControllerModel {
                     break;
             }
 
-            switch (dbType) {               
+            switch (dbType) {
                 case firebird:
                     st = this.connection.createStatement();
                     rs = st.executeQuery(
@@ -195,7 +195,7 @@ public class AddSaleItemController extends ControllerModel {
                     break;
             }
         } catch (Exception e) {
-            System.out.println("ERROR GETTING TYPES AND BRANDS " + e.getMessage() +" " + e.getCause());
+            System.out.println("ERROR GETTING TYPES AND BRANDS " + e.getMessage() + " " + e.getCause());
             sendAlert(
                     "Error ",
                     "Error retrieving values.",
@@ -315,18 +315,15 @@ public class AddSaleItemController extends ControllerModel {
             Statement st = null;
             switch (dbType) {
                 case mongodb:
-                    //BasicDBObject saleitem = new BasicDBObject();
-                    System.out.println("vai pegar os valores já adicionados para adicionar um novo");
+
                     ArrayList<BasicDBObject> saleitems = (ArrayList<BasicDBObject>) currentSale.get("saleitems");
                     BasicDBObject properties = new BasicDBObject();
 
-                    
                     properties.append("productname", itemname);
                     properties.append("unitvalue", unitValue);
                     properties.append("quantity", Quantity);
                     properties.append("total", totalLabel.getText());
 
-                    System.out.println("adicionando ->" + properties.toJson());
                     if (saleitems.size() != 0) {
 
                         saleitems.add(properties);
@@ -341,10 +338,6 @@ public class AddSaleItemController extends ControllerModel {
                         currentSale.append("saleitems", saleitem);
 
                     }
-
-                    System.out.println("adicionou");
-
-                    
 
                     break;
                 case firebird:
@@ -393,17 +386,15 @@ public class AddSaleItemController extends ControllerModel {
 
                         ArrayList<BasicDBObject> saleitems = (ArrayList<BasicDBObject>) currentSale.get("saleitems");
 
-                        System.out.println("Todos valores");
                         for (Object saleitem : saleitems) {
                             BasicDBObject aux = (BasicDBObject) saleitem;
-                            System.out.println("saleitem = " + aux.toJson());
                         }
 
                         if (saleitems.size() != 0) {
-                            System.out.println("não está vazio");
+
                             for (Object saleitem : saleitems) {
                                 BasicDBObject aux = (BasicDBObject) saleitem;
-                                System.out.println("vai comparar " + aux.getString("productname") + "com " + itemname);
+
                                 if (aux.getString("productname").equals(itemname)) {
                                     sendAlert("Duplication error",
                                             "Item already added.",
