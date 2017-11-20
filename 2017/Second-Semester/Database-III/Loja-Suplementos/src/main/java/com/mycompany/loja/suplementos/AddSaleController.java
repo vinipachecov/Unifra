@@ -6,15 +6,17 @@
 package com.mycompany.loja.suplementos;
 
 import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import javafx.collections.FXCollections;
@@ -84,7 +86,7 @@ public class AddSaleController extends ControllerModel {
 
     public boolean saleCreated = false;
 
-    public BasicDBObject currentSale;
+    public Document currentSale;
     public ImageView imageView;
 
     private PrincipalController pc;
@@ -127,6 +129,8 @@ public class AddSaleController extends ControllerModel {
         saleTable.setItems(data);
 
         addItemButton.setDisable(true);
+        
+        currentSale = null;
 
     }
 
@@ -137,9 +141,9 @@ public class AddSaleController extends ControllerModel {
 
     @FXML
     public void cancel() {
-        if(dbType != databaseType.mongodb){
-            deleteSale();        
-        }        
+        if (dbType != databaseType.mongodb) {
+            deleteSale();
+        }
         ChangeScreen(dialog, "/fxml/MainScreen.fxml", pc);
     }
 
@@ -267,16 +271,12 @@ public class AddSaleController extends ControllerModel {
                     MongoCollection<Document> sales = mongoDatabase.getCollection("sales");
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd//MM/YYYY HH:mm:ss");
                     LocalDateTime now = LocalDateTime.now();
-                    currentSale = new BasicDBObject();
-                    currentSale.put("saledate", now);
+                    currentSale = new Document();
+                    
+                    currentSale.put("saledate", Date.from(now.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
                     currentSale.put("discount", discount);
                     currentSale.put("client", clientComboBox.getValue());
-                    currentSale.append("saleitems", saleitems);
-                    //sales.insertOne(newsale);                    
-                    sendAlert("Product type added with success!",
-                            "Type Added",
-                            "A new type have been added!",
-                            Alert.AlertType.CONFIRMATION);
+                    currentSale.put("saleitems", saleitems);
                 } catch (Exception e) {
                     System.out.println("Erro no banco " + dbType + ": " + e.getMessage());
                 }
@@ -335,6 +335,18 @@ public class AddSaleController extends ControllerModel {
         boolean newnumber = false;
 
         switch (this.dbType) {
+            case mongodb:
+                while (!newnumber) {
+                    String invoice = Integer.toString(ThreadLocalRandom.current().nextInt(100000000, 999999999 + 1));
+                    MongoCollection<Document> sales = mongoDatabase.getCollection("sales");
+
+                    List<Document> documents = null;
+                    documents = sales.find(eq("invoice", invoice)).into(new ArrayList<Document>());
+                    if (documents == null || documents.size() == 0) {
+                        return invoice;
+                    }
+                }
+                break;
             case firebird:
                 while (!newnumber) {
                     String invoice = Integer.toString(ThreadLocalRandom.current().nextInt(100000000, 999999999 + 1));
@@ -388,6 +400,27 @@ public class AddSaleController extends ControllerModel {
     public void finishSale() {
 
         switch (this.dbType) {
+            case mongodb:
+                MongoCollection<Document> sales = mongoDatabase.getCollection("sales");
+                try {
+                    
+                    String invoice = generateInvoice();
+
+                                        
+                    
+                    currentSale.put("invoice", invoice);
+                    currentSale.put("subtotal", subtotalLabel.getText());
+                    currentSale.put("total", totalLabel.getText());                    
+                    
+                    
+                    
+                    sales.insertOne(currentSale);
+
+
+                } catch (Exception e) {
+                    System.out.println(dbType + " error " + ": " + e.getMessage() + e.getCause());
+                }
+                break;
             case firebird:
                 try {
 
@@ -439,13 +472,14 @@ public class AddSaleController extends ControllerModel {
         sendAlert("Success",
                 "Sale Added",
                 "Sale added with success!", Alert.AlertType.CONFIRMATION);
+        backToMainScreen();
     }
 
     @FXML
     public void checkForm() {
         System.out.println("começou a verificar o form");
         String discount = null;
-        currentSale = null;
+        
         try {
             discount = discountTextField.getText();
         } catch (Exception e) {

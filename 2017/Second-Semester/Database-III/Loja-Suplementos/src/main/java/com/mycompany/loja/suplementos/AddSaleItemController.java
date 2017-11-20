@@ -70,7 +70,7 @@ public class AddSaleItemController extends ControllerModel {
 
     public AddSaleController asic;
 
-    public BasicDBObject currentSale;
+    public Document currentSale;
 
     public AddSaleItemController(Connection connection) {
         super(connection);
@@ -85,7 +85,7 @@ public class AddSaleItemController extends ControllerModel {
         super(mongoDatabase, dbType);
     }
 
-    AddSaleItemController(MongoDatabase mongoDatabase, BasicDBObject currentSale, databaseType dbType) {
+    AddSaleItemController(MongoDatabase mongoDatabase, Document currentSale, databaseType dbType) {
         super(mongoDatabase, dbType);
         this.currentSale = currentSale;
     }
@@ -316,15 +316,17 @@ public class AddSaleItemController extends ControllerModel {
             switch (dbType) {
                 case mongodb:
                     //BasicDBObject saleitem = new BasicDBObject();
-
+                    System.out.println("vai pegar os valores já adicionados para adicionar um novo");
                     ArrayList<BasicDBObject> saleitems = (ArrayList<BasicDBObject>) currentSale.get("saleitems");
                     BasicDBObject properties = new BasicDBObject();
 
+                    
                     properties.append("productname", itemname);
                     properties.append("unitvalue", unitValue);
                     properties.append("quantity", Quantity);
                     properties.append("total", totalLabel.getText());
 
+                    System.out.println("adicionando ->" + properties.toJson());
                     if (saleitems.size() != 0) {
 
                         saleitems.add(properties);
@@ -342,7 +344,7 @@ public class AddSaleItemController extends ControllerModel {
 
                     System.out.println("adicionou");
 
-                    System.out.println("valores adicionados = " + currentSale.getString("saleitems"));
+                    
 
                     break;
                 case firebird:
