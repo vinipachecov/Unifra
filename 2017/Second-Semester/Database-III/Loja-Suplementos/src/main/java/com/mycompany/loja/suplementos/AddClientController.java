@@ -103,7 +103,7 @@ public class AddClientController extends ControllerModel {
                     newclient.put("telephone", telephone);
                     newclient.put("govid", govid);
                     newclient.put("numsales", 0);
-                    newclient.put("birthdate", Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));                    
+                    newclient.put("birthdate", Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));                                                           
                     clients.insertOne(newclient);                    
                     sendAlert("Product type added with success!", 
                             "Type Added", 

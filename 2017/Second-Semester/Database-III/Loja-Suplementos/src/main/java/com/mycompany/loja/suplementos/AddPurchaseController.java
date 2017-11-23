@@ -283,10 +283,11 @@ public class AddPurchaseController extends ControllerModel {
                                 "EXECUTE PROCEDURE addPurchase(0.0,0.0,"
                                 + "'" + suppliersComboBox.getValue() + "',"
                                 + "" + discount + ", 'F');"
-                        );
+                        );                        
                         Statement st2 = this.connection.createStatement();
-                        rs = st2.executeQuery(""
-                                + "select max(id) from purchases");
+                        rs = st2.executeQuery(
+                                "select max(id) from purchases"
+                        );
                         if (rs.next()) {
                             purchaseId = rs.getInt("max");
                             System.out.println("PURCHASEID RECEBEU = " + purchaseId);
@@ -324,7 +325,7 @@ public class AddPurchaseController extends ControllerModel {
                 "Purchase Created with sucess!", Alert.AlertType.CONFIRMATION);
         addItemButton.setDisable(false);
         purchaseCreated = true;
-        addFinishPurchaseButton.setText("Finish Sale");
+        addFinishPurchaseButton.setText("Finish Sale");        
     }
 
     // fake fiscal notes
@@ -350,15 +351,8 @@ public class AddPurchaseController extends ControllerModel {
                         break;
                     case firebird:
                         st = this.connection.createStatement();
-                        st.executeUpdate("EXECUTE PROCEDURE checkPurchaseInvoiceExists('" + invoice + "');");
-                        if (rs.next()) {
-                            sendAlert(
-                                    "Error invoice generation",
-                                    "Error creating invoice.",
-                                    "Critical error on invoice", Alert.AlertType.ERROR);
-                        } else {
-                            return invoice;
-                        }
+                        System.out.println("executou check invoice");
+                        st.executeUpdate("EXECUTE PROCEDURE checkPurchaseInvoiceExists('" + invoice + "');");                                                                        
                         return invoice;
                     case postgres:
                         st = this.connection.createStatement();
@@ -373,8 +367,9 @@ public class AddPurchaseController extends ControllerModel {
                         }
                         break;
                 }
-
+                
             } catch (Exception e) {
+                System.out.println("Erro no banco " + dbType + " " + e.getMessage() + e.getCause());
             }
         }
         sendAlert(
@@ -388,7 +383,8 @@ public class AddPurchaseController extends ControllerModel {
         try {
             Float subtotal = Float.parseFloat(subtotalLabel.getText());
             Float total = Float.parseFloat(totalLabel.getText());
-
+            System.out.println("começou  terminar");
+                    
             Statement st = null;
             switch (dbType) {
                 case mongodb:
@@ -408,6 +404,7 @@ public class AddPurchaseController extends ControllerModel {
                     }
                     break;
                 case firebird:
+                    
                     st = this.connection.createStatement();
                     st.executeUpdate(
                             "EXECUTE PROCEDURE finishPurchase("
@@ -415,6 +412,7 @@ public class AddPurchaseController extends ControllerModel {
                             + "" + subtotal + ","
                             + "" + total + ");"
                     );
+                    System.out.println("executou a finalização");
                     break;
                 case postgres:
                     st = this.connection.createStatement();
@@ -435,10 +433,13 @@ public class AddPurchaseController extends ControllerModel {
         }
 
         try {
+            System.out.println("começou a gerar invoice");
             String invoice = generateInvoice();
-            Statement st = this.connection.createStatement();
+            System.out.println("gerou invoice " + invoice);
+            Statement st = null;
             switch (dbType) {
                 case firebird:
+                    st = this.connection.createStatement();
                     st.executeUpdate(
                             "EXECUTE PROCEDURE "
                             + "setInvoicePurchase(" + purchaseId + ","
@@ -446,6 +447,7 @@ public class AddPurchaseController extends ControllerModel {
                     );
                     break;
                 case postgres:
+                    st = this.connection.createStatement();
                     st.executeUpdate(
                             "DO $$ BEGIN\n"
                             + "    PERFORM setPurchaseInvoice(" + purchaseId + ",'" + invoice + "');\n"
@@ -453,13 +455,13 @@ public class AddPurchaseController extends ControllerModel {
                     );
                     break;
             }
-
         } catch (Exception e) {
             System.out.println("Error generating invoice! " + e.getMessage());
         }
         sendAlert("Success",
                 "Purchase Added",
                 "Purchase added with success!", Alert.AlertType.CONFIRMATION);
+        addFinishPurchaseButton.setDisable(true);
     }
 
     @FXML
@@ -471,7 +473,8 @@ public class AddPurchaseController extends ControllerModel {
             sendAlert("Error Adding new Purchase",
                     "Form Error", "Error getting discount value.", Alert.AlertType.ERROR);
             return;
-        }
+        }       
+        
 
         if (discount.equals("")) {
             sendAlert("Error Adding new Purchase",

@@ -140,7 +140,7 @@ public class AddTypeController extends ControllerModel {
                 try {
                     Statement st = this.connection.createStatement();
                     ResultSet rs = st.executeQuery(
-                            "select first * "
+                            "select first 1 * "
                             + " FROM types "
                             + " WHERE name = '" + typeString + "'"
                     );

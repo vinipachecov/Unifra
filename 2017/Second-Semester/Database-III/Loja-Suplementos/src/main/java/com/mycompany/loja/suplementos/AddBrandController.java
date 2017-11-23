@@ -121,10 +121,10 @@ public class AddBrandController extends ControllerModel {
                 try {
                     Statement st = this.connection.createStatement();
                     ResultSet rs = st.executeQuery(
-                            "select id "
+                            "select first 1 id "
                             + " FROM brands "
                             + " WHERE name = '" + brandString + "'"
-                            + " limit 1 ");
+                            );
                     if (rs.next()) {
                         System.out.println("There is already a brand with this name");
                         sendAlert("Error to add a Brand",
@@ -138,7 +138,7 @@ public class AddBrandController extends ControllerModel {
                     st.close();
 
                 } catch (Exception e) {
-
+                    System.out.println("Error checking brands in " + dbType + " " + e.getMessage());
                 }
                 break;
 

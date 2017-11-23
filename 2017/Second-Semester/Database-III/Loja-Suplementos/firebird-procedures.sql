@@ -1003,7 +1003,7 @@ CREATE OR ALTER PROCEDURE purchaseItem_exists(currentPurchaseID D_INT, pname D_N
 	  INNER JOIN CLIENTS c ON s.CLIENTID = c.ID
   	  WHERE s.FINALIZED = 'Y'
   	  GROUP BY c.NAME
-  	  ORDER BY SUM(s.total) DESC
+  	  ORDER BY 3 DESC
   	  INTO :clientname, :numbuys, :totalcash
   	  DO
   	  	BEGIN
